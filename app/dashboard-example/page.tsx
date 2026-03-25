@@ -105,8 +105,8 @@ export default function DashboardExample() {
 
   useEffect(() => {
     if (bootPhase !== 'fading') return;
-    // Fade takes 0.6s
-    const t = setTimeout(() => setBootPhase('done'), 600);
+    // Morph + fade takes 0.8s
+    const t = setTimeout(() => setBootPhase('done'), 800);
     return () => clearTimeout(t);
   }, [bootPhase]);
 
@@ -141,13 +141,13 @@ export default function DashboardExample() {
             </h1>
             <svg
               className={s.bootUnderline}
-              width="320"
+              width="480"
               height="14"
-              viewBox="0 0 320 14"
+              viewBox="0 0 480 14"
               aria-hidden="true"
             >
               <path
-                d="M0,7 C26,1 53,13 80,6 C106,0 133,12 160,5 C186,-1 213,11 240,6 C266,1 293,11 320,7"
+                d="M0,7 C40,1 80,13 120,6 C160,0 200,12 240,5 C280,-1 320,11 360,6 C400,1 440,11 480,7"
                 className={`${s.bootUnderlinePath} ${bootPhase !== 'typing' ? s.bootUnderlineDrawn : ''}`}
               />
             </svg>
