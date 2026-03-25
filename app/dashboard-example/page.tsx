@@ -417,6 +417,14 @@ export default function DashboardExample() {
                 <span className={s.messageTime}>{msg.time}</span>
               </div>
             ))}
+            <a href="#" target="_blank" rel="noopener noreferrer" className={s.roomLink}>
+              Mijn kamer
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4.5 1.5H2a.5.5 0 0 0-.5.5v8a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5V7.5" />
+                <path d="M7 1.5h3.5V5" />
+                <path d="M5 7L10.5 1.5" />
+              </svg>
+            </a>
           </section>
         </div>
       </main>

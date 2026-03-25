@@ -960,6 +960,25 @@
   letter-spacing: 0.04em;
 }
 
+.roomLink {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 10px 0 0;
+  border-top: 1px solid #e8e4dd;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  color: #3a3a3a;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: color 0.15s ease;
+}
+
+.roomLink:hover {
+  color: #8b6d4f;
+}
+
 /* ── Mobile ── */
 @media (max-width: 768px) {
   .topBar {
