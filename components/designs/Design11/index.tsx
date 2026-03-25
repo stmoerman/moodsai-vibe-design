@@ -790,63 +790,8 @@ export default function Design11() {
             A therapist&apos;s day: before &amp; after
           </h2>
 
-          {/* Desktop: interactive draggable slider */}
-          <div
-            className={`${s.sliderContainer} ${s.reveal}`}
-            data-delay="200"
-            ref={sliderRef}
-          >
-            {/* After (background, full width) */}
-            <div className={s.sliderSide}>
-              <div className={s.splitTitle}>
-                With Moods <span className={s.accentGreen}>(your future)</span>
-              </div>
-              {WITH_MOODS.map((slot, i) => (
-                <div className={s.timeSlot} key={i}>
-                  <span className={s.timeLabel}>{slot.time}</span>
-                  <span className={s.taskClient}>{slot.task}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Before (overlay, clipped) */}
-            <div
-              className={s.sliderBefore}
-              style={{ width: `${sliderPos}%` }}
-            >
-              <div className={s.sliderSide} style={{ width: sliderRef.current?.offsetWidth || '100%' }}>
-                <div className={s.splitTitle}>
-                  Without Moods <span className={s.accent}>(today)</span>
-                </div>
-                {WITHOUT_MOODS.map((slot, i) => (
-                  <div className={s.timeSlot} key={i}>
-                    <span className={s.timeLabel}>{slot.time}</span>
-                    <span className={slot.type === 'admin' ? s.taskAdmin : s.taskClient}>
-                      {slot.task}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Drag handle */}
-            <div
-              className={s.sliderHandle}
-              style={{ left: `${sliderPos}%` }}
-              onMouseDown={onSliderMouseDown}
-              onTouchStart={onSliderTouchStart}
-            >
-              <div className={s.sliderHandleGrip}>
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                  <line x1="4" y1="3" x2="4" y2="11" />
-                  <line x1="10" y1="3" x2="10" y2="11" />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          {/* Mobile: stacked side by side */}
-          <div className={s.splitScreenMobile}>
+          {/* Two-column comparison */}
+          <div className={`${s.splitGrid} ${s.reveal}`} data-delay="200">
             <div className={s.splitColumn}>
               <div className={s.splitTitle}>
                 Without Moods <span className={s.accent}>(today)</span>
@@ -860,6 +805,7 @@ export default function Design11() {
                 </div>
               ))}
             </div>
+            <div className={s.splitDivider} />
             <div className={s.splitColumn}>
               <div className={s.splitTitle}>
                 With Moods <span className={s.accentGreen}>(your future)</span>
