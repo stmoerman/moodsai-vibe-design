@@ -109,7 +109,7 @@ export default function DashboardExample() {
         <div className={`${s.bootScreen} ${bootPhase === 'fading' ? s.bootFading : ''}`}>
           <div className={s.bootContent}>
             <h1 className={s.bootGreeting}>
-              {now ? `${getGreeting(now.getHours())}, Nathalie` : 'Good morning, Nathalie'}
+              {now ? `${getGreeting(now.getHours())}, Jaime` : 'Good morning, Jaime'}
             </h1>
             <svg
               className={s.bootUnderline}
@@ -138,7 +138,7 @@ export default function DashboardExample() {
 
       {/* Welcome */}
       <div className={s.welcomeHero}>
-        <h1 className={s.greeting}>{greeting}, Nathalie</h1>
+        <h1 className={s.greeting}>{greeting}, Jaime</h1>
         <svg className={s.greetingUnderline} width="280" height="12" viewBox="0 0 280 12" aria-hidden="true">
           <path
             d="M0,6 C23,1 46,11 70,5 C93,0 116,10 140,4 C163,-1 186,9 210,5 C233,1 256,9 280,6"
