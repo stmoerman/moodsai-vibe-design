@@ -19,33 +19,73 @@ function formatDate(date: Date) {
   return `${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]}`;
 }
 
-type AppointmentStatus = 'confirmed' | 'pending' | 'available' | 'none';
+type AppointmentStatus = 'confirmed' | 'pending' | 'available' | 'break';
 
 interface Appointment {
   time: string;
-  duration: string;
+  endTime: string;
+  durationMin: number;
   client: string;
   type: string;
   status: AppointmentStatus;
-  isBreak?: boolean;
 }
 
 const schedule: Appointment[] = [
-  { time: '08:00', duration: '30m', client: '\u2014',             type: 'Administratietijd',    status: 'none',      isBreak: true },
-  { time: '09:00', duration: '60m', client: 'M. de Vries',       type: 'Behandeling (ZPM)',    status: 'confirmed' },
-  { time: '09:30', duration: '60m', client: 'M.D. Kemme',        type: 'Behandeling (ZPM)',    status: 'confirmed' },
-  { time: '10:30', duration: '90m', client: 'Workshop Stress',   type: '8 deelnemers',         status: 'confirmed' },
-  { time: '12:30', duration: '60m', client: 'M.D. Kemme',        type: 'Behandeling (ZPM)',    status: 'confirmed' },
-  { time: '13:00', duration: '30m', client: '\u2014',             type: 'Pauze',                status: 'none',      isBreak: true },
-  { time: '13:30', duration: '60m', client: 'A. Hoekstra',       type: 'Intake',               status: 'pending' },
-  { time: '14:30', duration: '60m', client: 'J. Bakker',         type: 'Vervolgconsult',       status: 'confirmed' },
-  { time: '15:30', duration: '\u2014',  client: '\u2014',         type: 'Beschikbaar',          status: 'available', isBreak: true },
+  { time: '08:00', endTime: '09:00', durationMin: 60, client: '',                    type: 'Beschikbaar',          status: 'available' },
+  { time: '09:00', endTime: '10:00', durationMin: 60, client: 'M. de Vries',         type: 'Behandeling (ZPM)',    status: 'confirmed' },
+  { time: '09:30', endTime: '10:30', durationMin: 60, client: 'M.D. Kemme',          type: 'Behandeling (ZPM)',    status: 'confirmed' },
+  { time: '10:30', endTime: '12:00', durationMin: 90, client: 'Workshop Stressregulatie', type: '8 deelnemers',    status: 'confirmed' },
+  { time: '12:00', endTime: '12:30', durationMin: 30, client: '',                    type: 'Beschikbaar',          status: 'available' },
+  { time: '12:30', endTime: '13:00', durationMin: 30, client: 'M.D. Kemme',          type: 'Behandeling (ZPM)',    status: 'confirmed' },
+  { time: '13:00', endTime: '13:30', durationMin: 30, client: '',                    type: 'Pauze',                status: 'break' },
+  { time: '13:30', endTime: '14:30', durationMin: 60, client: 'A. Hoekstra',         type: 'Intake',               status: 'pending' },
+  { time: '14:30', endTime: '15:30', durationMin: 60, client: 'J. Bakker',           type: 'Vervolgconsult',       status: 'confirmed' },
+  { time: '15:30', endTime: '16:00', durationMin: 30, client: '',                    type: 'Beschikbaar',          status: 'available' },
+  { time: '16:00', endTime: '17:00', durationMin: 60, client: '',                    type: 'Beschikbaar',          status: 'available' },
+  { time: '17:00', endTime: '18:00', durationMin: 60, client: '',                    type: 'Beschikbaar',          status: 'available' },
 ];
 
+const appointmentDetails: Record<string, {
+  fullName: string;
+  initials: string;
+  location: string;
+  lastSession: string;
+  notes: string;
+}> = {
+  'M. de Vries': {
+    fullName: 'Maria de Vries',
+    initials: 'MV',
+    location: 'Kamer 3',
+    lastSession: '18 maart 2026',
+    notes: 'GAD-7: 12 → 8 (verbetering). Behandelplan loopt goed.',
+  },
+  'M.D. Kemme': {
+    fullName: 'Marcus D. Kemme',
+    initials: 'MK',
+    location: 'Kamer 1',
+    lastSession: '20 maart 2026',
+    notes: 'PHQ-9: stabiel op 6. Volgende sessie: cognitieve herstructurering.',
+  },
+  'A. Hoekstra': {
+    fullName: 'Anna Hoekstra',
+    initials: 'AH',
+    location: 'Online (video)',
+    lastSession: 'Eerste intake',
+    notes: 'Verwezen door huisarts. Klachten: angst en slapeloosheid.',
+  },
+  'J. Bakker': {
+    fullName: 'Jan Bakker',
+    initials: 'JB',
+    location: 'Kamer 2',
+    lastSession: '21 maart 2026',
+    notes: 'EMDR fase 3 gestart. Goede voortgang.',
+  },
+};
+
 const recentNotes = [
-  { text: 'M. de Vries \u2014 Sessienotitie', time: 'gisteren' },
-  { text: 'M.D. Kemme \u2014 Behandelplan', time: '2d geleden' },
-  { text: 'Workshop \u2014 Samenvatting', time: '3d geleden' },
+  { text: 'M. de Vries — Sessienotitie', time: 'gisteren' },
+  { text: 'M.D. Kemme — Behandelplan', time: '2d geleden' },
+  { text: 'Workshop — Samenvatting', time: '3d geleden' },
 ];
 
 const messages = [
@@ -53,14 +93,18 @@ const messages = [
   { name: 'A. Hoekstra', preview: 'Ik heb de vragenlijst...', time: '2u' },
 ];
 
-const navTiles = [
+const navTabs = [
   { label: 'Agenda', active: true },
   { label: 'Teamchats', active: false },
   { label: 'Directe Tijd', active: false },
-  { label: 'Mijn Cli\u00ebnten', active: false },
-  { label: 'Cli\u00ebnt Chat', active: false },
+  { label: 'Mijn Cliënten', active: false },
+  { label: 'Cliënt Chat', active: false },
   { label: 'MyMoody', active: false },
 ];
+
+const mockDates = ['Di 24 maart', 'Wo 25 maart', 'Do 26 maart'];
+
+const timeSlots = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
 
 function parseHour(time: string): number {
   const [h, m] = time.split(':').map(Number);
@@ -70,11 +114,13 @@ function parseHour(time: string): number {
 export default function DashboardExample() {
   const [now, setNow] = useState<Date | null>(null);
   const [bootPhase, setBootPhase] = useState<'visible' | 'fading' | 'done'>('done');
+  const [expandedAppointment, setExpandedAppointment] = useState<number | null>(null);
+  const [dateIndex, setDateIndex] = useState(1); // 1 = today (Wo 25 maart)
+  const [viewMode, setViewMode] = useState<'dag' | 'week'>('dag');
 
   useEffect(() => {
     setNow(new Date());
 
-    // Check if we already showed the splash today (24h cookie)
     const lastSplash = document.cookie
       .split('; ')
       .find((c) => c.startsWith('moods_splash='));
@@ -85,7 +131,6 @@ export default function DashboardExample() {
       return;
     }
 
-    // Show splash and set 24h cookie
     setBootPhase('visible');
     const expires = new Date(Date.now() + 24 * 60 * 60 * 1000).toUTCString();
     document.cookie = `moods_splash=1; expires=${expires}; path=/`;
@@ -97,18 +142,19 @@ export default function DashboardExample() {
 
   const greeting = now ? getGreeting(now.getHours()) : 'Goedemorgen';
   const dateStr = now ? formatDate(now) : '';
+  const currentHour = now ? now.getHours() + now.getMinutes() / 60 : 10.5;
 
-  const currentHour = now ? now.getHours() + now.getMinutes() / 60 : 9;
-  const currentSlotIndex = (() => {
-    let idx = -1;
-    for (let i = 0; i < schedule.length; i++) {
-      if (currentHour >= parseHour(schedule[i].time)) idx = i;
-    }
-    return idx;
-  })();
+  // Calculate "now" line position as percentage of the timeline (08:00 - 18:00)
+  const nowPct = Math.max(0, Math.min(100, ((currentHour - 8) / 10) * 100));
+  const showNowLine = currentHour >= 8 && currentHour <= 18;
 
-  const sessionCount = schedule.filter((a) => !a.isBreak).length;
-  const availableCount = schedule.filter((a) => a.status === 'available').length;
+  const handlePrevDate = () => setDateIndex((i) => Math.max(0, i - 1));
+  const handleNextDate = () => setDateIndex((i) => Math.min(mockDates.length - 1, i + 1));
+  const handleToday = () => setDateIndex(1);
+
+  const toggleExpand = (idx: number) => {
+    setExpandedAppointment((prev) => (prev === idx ? null : idx));
+  };
 
   return (
     <div className={s.root}>
@@ -159,10 +205,24 @@ export default function DashboardExample() {
         <span className={s.dateTime}>Therapeut &middot; Amsterdam &middot; {dateStr}</span>
       </div>
 
+      {/* Navigation Tabs */}
+      <nav className={s.navTabs}>
+        <div className={s.navTabsInner}>
+          {navTabs.map((tab, i) => (
+            <button
+              key={i}
+              className={`${s.navTab} ${tab.active ? s.navTabActive : ''}`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </nav>
+
       {/* Main 3-Column Grid */}
       <main className={s.mainGrid}>
 
-        {/* Left Column */}
+        {/* Left Column — Key Stats */}
         <div className={s.leftCol}>
           <div className={s.statBlock}>
             <div className={s.statLabel}>Cli&euml;nten vandaag</div>
@@ -188,54 +248,135 @@ export default function DashboardExample() {
           </div>
         </div>
 
-        {/* Center Column */}
+        {/* Center Column — Interactive Agenda */}
         <div className={s.centerCol}>
-          <section className={s.scheduleSection}>
-            <div className={s.scheduleHeader}>
-              <div className={s.scheduleHeaderLeft}>
-                <span className={s.scheduleTitle}>Vandaag</span>
-                <span className={s.scheduleCount}>
-                  {sessionCount} sessies &middot; {availableCount} beschikbaar
-                </span>
+          <section className={s.agendaSection}>
+            {/* Agenda Header */}
+            <div className={s.agendaHeader}>
+              <div className={s.agendaNav}>
+                <button className={s.agendaNavBtn} onClick={handlePrevDate} disabled={dateIndex === 0}>&lt;</button>
+                <button className={s.agendaTodayBtn} onClick={handleToday}>Vandaag</button>
+                <button className={s.agendaNavBtn} onClick={handleNextDate} disabled={dateIndex === mockDates.length - 1}>&gt;</button>
+                <span className={s.agendaDateLabel}>{mockDates[dateIndex]}</span>
               </div>
               <div className={s.togglePills}>
-                <button className={`${s.togglePill} ${s.togglePillActive}`}>Dag</button>
-                <button className={s.togglePill}>Week</button>
+                <button
+                  className={`${s.togglePill} ${viewMode === 'dag' ? s.togglePillActive : ''}`}
+                  onClick={() => setViewMode('dag')}
+                >
+                  Dag
+                </button>
+                <button
+                  className={`${s.togglePill} ${viewMode === 'week' ? s.togglePillActive : ''}`}
+                  onClick={() => setViewMode('week')}
+                >
+                  Week
+                </button>
               </div>
             </div>
 
-            <div className={s.scheduleList}>
-              {schedule.map((apt, i) => (
-                <div
-                  key={i}
-                  className={[
-                    s.scheduleRow,
-                    i === currentSlotIndex ? s.scheduleRowActive : '',
-                    apt.isBreak ? s.scheduleRowMuted : '',
-                  ].filter(Boolean).join(' ')}
-                  style={{ animationDelay: `${1.5 + i * 0.03}s` }}
-                >
-                  <span className={s.scheduleTime}>{apt.time}</span>
-                  <span className={s.scheduleDuration}>{apt.duration}</span>
-                  <span className={s.scheduleClient}>{apt.client}</span>
-                  <span className={s.scheduleType}>{apt.type}</span>
-                  <span
-                    className={`${s.statusDot} ${
-                      apt.status === 'confirmed' ? s.statusConfirmed :
-                      apt.status === 'pending' ? s.statusPending :
-                      apt.status === 'available' ? s.statusAvailable :
-                      s.statusNone
-                    }`}
-                  />
-                </div>
-              ))}
+            {/* Agenda Timeline */}
+            <div className={s.timeline}>
+              <div className={s.timelineGutter}>
+                {timeSlots.map((t) => (
+                  <div key={t} className={s.timelineGutterSlot}>
+                    <span className={s.timelineGutterTime}>{t}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className={s.timelineBody}>
+                <div className={s.timelineVerticalLine} />
+
+                {/* Now marker */}
+                {showNowLine && dateIndex === 1 && (
+                  <div className={s.nowMarker} style={{ top: `${nowPct}%` }}>
+                    <div className={s.nowDot} />
+                    <div className={s.nowLine} />
+                  </div>
+                )}
+
+                {/* Appointment blocks */}
+                {schedule.map((apt, i) => {
+                  const topPct = ((parseHour(apt.time) - 8) / 10) * 100;
+                  const heightPct = (apt.durationMin / 600) * 100;
+                  const isExpanded = expandedAppointment === i;
+                  const details = apt.client ? appointmentDetails[apt.client] : null;
+                  const isAppointment = apt.status === 'confirmed' || apt.status === 'pending';
+
+                  return (
+                    <div
+                      key={i}
+                      className={[
+                        s.aptBlock,
+                        apt.status === 'confirmed' ? s.aptConfirmed : '',
+                        apt.status === 'pending' ? s.aptPending : '',
+                        apt.status === 'available' ? s.aptAvailable : '',
+                        apt.status === 'break' ? s.aptBreak : '',
+                        isExpanded ? s.aptExpanded : '',
+                      ].filter(Boolean).join(' ')}
+                      style={{
+                        top: `${topPct}%`,
+                        height: isExpanded ? 'auto' : `${heightPct}%`,
+                        minHeight: isExpanded ? '200px' : undefined,
+                        animationDelay: `${1.5 + i * 0.04}s`,
+                      }}
+                      onClick={isAppointment ? () => toggleExpand(i) : undefined}
+                    >
+                      <div className={s.aptCollapsed}>
+                        <span className={s.aptClient}>
+                          {isAppointment ? apt.client : apt.type}
+                        </span>
+                        <span className={s.aptMeta}>
+                          {isAppointment && `${apt.type} — ${apt.durationMin} min`}
+                          {apt.status === 'break' && `${apt.durationMin} min`}
+                          {apt.status === 'available' && 'Beschikbaar'}
+                        </span>
+                      </div>
+
+                      {/* Expanded Details */}
+                      {isAppointment && (
+                        <div className={`${s.aptDetails} ${isExpanded ? s.aptDetailsOpen : ''}`}>
+                          <div className={s.aptDetailsInner}>
+                            <div className={s.aptDetailsTop}>
+                              <div className={s.aptDetailAvatar}>{details?.initials || '??'}</div>
+                              <div className={s.aptDetailInfo}>
+                                <span className={s.aptDetailName}>{details?.fullName || apt.client}</span>
+                                <span className={s.aptDetailType}>{apt.type} &middot; {apt.durationMin} min &middot; {details?.location}</span>
+                              </div>
+                            </div>
+                            <div className={s.aptDetailRow}>
+                              <span className={s.aptDetailLabel}>Vorige sessie</span>
+                              <span className={s.aptDetailValue}>{details?.lastSession}</span>
+                            </div>
+                            <div className={s.aptDetailRow}>
+                              <span className={s.aptDetailLabel}>Notities</span>
+                              <span className={s.aptDetailValue}>{details?.notes}</span>
+                            </div>
+                            <div className={s.aptDetailActions}>
+                              <button className={s.aptDetailAction}>Start videogesprek</button>
+                              <button className={s.aptDetailAction}>Bekijk dossier</button>
+                              <button className={s.aptDetailAction}>Notitie maken</button>
+                            </div>
+                            <button
+                              className={s.aptDetailClose}
+                              onClick={(e) => { e.stopPropagation(); setExpandedAppointment(null); }}
+                            >
+                              Sluiten
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </section>
         </div>
 
-        {/* Right Column */}
+        {/* Right Column — Context */}
         <div className={s.rightCol}>
-
           <section className={s.askMoody}>
             <div className={s.askMoodyHeader}>
               <span className={s.askMoodyLabel}>ASKMOODY</span>
@@ -277,21 +418,8 @@ export default function DashboardExample() {
               </div>
             ))}
           </section>
-
         </div>
       </main>
-
-      {/* Bottom Nav */}
-      <div className={s.bottomNav}>
-        {navTiles.map((tile, i) => (
-          <div
-            key={i}
-            className={`${s.navTile} ${tile.active ? s.navTileActive : ''}`}
-          >
-            <span className={s.navTileLabel}>{tile.label}</span>
-          </div>
-        ))}
-      </div>
     </div>
   );
 }
