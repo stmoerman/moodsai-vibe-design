@@ -69,10 +69,46 @@ function parseHour(time: string): number {
 
 export default function DashboardExample() {
   const [now, setNow] = useState<Date | null>(null);
+  const [bootPhase, setBootPhase] = useState<'typing' | 'drawn' | 'fading' | 'done'>('typing');
+  const [typedChars, setTypedChars] = useState(0);
 
   useEffect(() => {
     setNow(new Date());
+    // Skip boot animation if reduced motion preferred
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setBootPhase('done');
+      setTypedChars(999);
+    }
   }, []);
+
+  // Boot screen: type name, then draw line, then fade out
+  const fullName = now ? `${getGreeting(now.getHours())}, Nathalie` : 'Good morning, Nathalie';
+
+  useEffect(() => {
+    if (bootPhase !== 'typing') return;
+    if (typedChars < fullName.length) {
+      const speed = fullName[typedChars] === ',' ? 120 : 40 + Math.random() * 30;
+      const t = setTimeout(() => setTypedChars((c) => c + 1), speed);
+      return () => clearTimeout(t);
+    }
+    // Done typing — pause, then draw line
+    const t = setTimeout(() => setBootPhase('drawn'), 200);
+    return () => clearTimeout(t);
+  }, [bootPhase, typedChars, fullName]);
+
+  useEffect(() => {
+    if (bootPhase !== 'drawn') return;
+    // Line draws for 0.8s, then start fading
+    const t = setTimeout(() => setBootPhase('fading'), 1000);
+    return () => clearTimeout(t);
+  }, [bootPhase]);
+
+  useEffect(() => {
+    if (bootPhase !== 'fading') return;
+    // Fade takes 0.6s
+    const t = setTimeout(() => setBootPhase('done'), 600);
+    return () => clearTimeout(t);
+  }, [bootPhase]);
 
   const greeting = now ? getGreeting(now.getHours()) : 'Good morning';
   const dateStr = now ? formatDate(now) : '';
@@ -94,6 +130,30 @@ export default function DashboardExample() {
   return (
     <div className={s.root}>
       <div className={s.dotGrid} aria-hidden="true" />
+
+      {/* Boot Screen */}
+      {bootPhase !== 'done' && (
+        <div className={`${s.bootScreen} ${bootPhase === 'fading' ? s.bootFading : ''}`}>
+          <div className={s.bootContent}>
+            <h1 className={s.bootGreeting}>
+              {fullName.slice(0, typedChars)}
+              {bootPhase === 'typing' && <span className={s.bootCursor} />}
+            </h1>
+            <svg
+              className={s.bootUnderline}
+              width="320"
+              height="14"
+              viewBox="0 0 320 14"
+              aria-hidden="true"
+            >
+              <path
+                d="M0,7 C26,1 53,13 80,6 C106,0 133,12 160,5 C186,-1 213,11 240,6 C266,1 293,11 320,7"
+                className={`${s.bootUnderlinePath} ${bootPhase !== 'typing' ? s.bootUnderlineDrawn : ''}`}
+              />
+            </svg>
+          </div>
+        </div>
+      )}
 
       {/* Top Bar */}
       <header className={s.topBar}>
