@@ -1804,6 +1804,28 @@
     order: 3;
   }
 
+  /* Chat views: stack vertically on mobile */
+  .teamchatsView {
+    grid-template-columns: 1fr;
+    padding: 16px 16px 32px;
+    min-height: auto;
+  }
+
+  .teamchatsSidebar {
+    max-height: 250px;
+    overflow-y: auto;
+    border-right: none;
+    border-bottom: 1px solid #d0cdc6;
+  }
+
+  .teamchatMain {
+    min-height: 400px;
+  }
+
+  .teamchatMessages {
+    max-height: 300px;
+  }
+
   /* Show mobile Berichten below agenda */
   .mobileBerichtenWrap {
     display: block;
