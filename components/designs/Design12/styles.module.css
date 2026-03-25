@@ -425,9 +425,18 @@
 }
 
 .featureCard:hover {
-  transform: translateY(-4px) scale(1);
-  box-shadow: 0 8px 24px rgba(33, 30, 28, 0.08);
+  transform: translateY(-6px) scale(1);
+  box-shadow: 0 12px 32px rgba(33, 30, 28, 0.1), 0 0 0 1px #423C38;
   border-color: #423C38;
+}
+
+.featureCard:hover .cardIcon {
+  transform: translateY(-2px);
+  color: #2559F4;
+}
+
+.cardIcon {
+  transition: transform 0.3s ease, color 0.3s ease;
 }
 
 .cardIcon {
@@ -525,30 +534,51 @@
 .chatSection {
   background: #211E1C;
   padding: 120px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle radial glow behind chat window */
+.chatSection::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 400px;
+  background: radial-gradient(ellipse, rgba(37, 89, 244, 0.04) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .chatWindow {
   max-width: 560px;
   margin: 0 auto;
-  border: 1px solid rgba(242, 238, 233, 0.15);
+  border: 1px solid rgba(242, 238, 233, 0.12);
+  background: rgba(242, 238, 233, 0.03);
+  backdrop-filter: blur(20px);
   transform: translateY(30px);
   opacity: 0;
   transition:
     transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.5s ease;
+  position: relative;
 }
 
 .chatWindow.visible {
   transform: translateY(0);
   opacity: 1;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.3), 0 0 1px rgba(242, 238, 233, 0.1);
 }
 
 .chatHeader {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 20px;
-  border-bottom: 1px solid rgba(242, 238, 233, 0.08);
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(242, 238, 233, 0.06);
+  background: rgba(242, 238, 233, 0.02);
 }
 
 .chatDot {
@@ -556,12 +586,18 @@
   height: 8px;
   border-radius: 50%;
   background: #5a7268;
+  animation: dotGlow 2s ease-in-out infinite;
+}
+
+@keyframes dotGlow {
+  0%, 100% { box-shadow: 0 0 0 rgba(90, 114, 104, 0); }
+  50% { box-shadow: 0 0 8px rgba(90, 114, 104, 0.5); }
 }
 
 .chatTitle {
   font-family: 'Space Mono', monospace;
   font-size: 0.75rem;
-  color: #f2eee9;
+  color: rgba(242, 238, 233, 0.6);
   letter-spacing: 0.05em;
 }
 
@@ -571,26 +607,27 @@
 }
 
 .chatBubbleUser {
-  background: rgba(242, 238, 233, 0.08);
+  background: rgba(242, 238, 233, 0.07);
   color: #f2eee9;
   font-family: 'Crimson Pro', serif;
   font-size: 1rem;
-  padding: 12px 16px;
+  padding: 14px 18px;
   margin-bottom: 16px;
   max-width: 80%;
   margin-left: auto;
   line-height: 1.5;
+  border: 1px solid rgba(242, 238, 233, 0.05);
 }
 
 .chatBubbleAi {
-  background: rgba(242, 238, 233, 0.04);
-  border: 1px solid rgba(242, 238, 233, 0.08);
-  color: #f2eee9;
+  background: rgba(242, 238, 233, 0.03);
+  border: 1px solid rgba(242, 238, 233, 0.06);
+  color: rgba(242, 238, 233, 0.9);
   font-family: 'Crimson Pro', serif;
   font-size: 1rem;
-  padding: 12px 16px;
+  padding: 16px 18px;
   max-width: 90%;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .chatPre {
@@ -684,6 +721,12 @@
 
 .securityCell:hover {
   background: #f2eee9;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 16px rgba(33, 30, 28, 0.06);
+}
+
+.securityCell:hover .securityCheck {
+  stroke: #2559F4;
 }
 
 .securityCheck {
@@ -746,12 +789,21 @@
   padding: 32px;
   flex: 1;
   max-width: 320px;
-  border-top: 1px solid #CBBDB9;
+  border-top: 2px solid #CBBDB9;
   box-shadow: 0 2px 12px rgba(33, 30, 28, 0.04);
   transform: translateX(0) rotate(0deg);
   transition:
-    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
   transition-delay: 0.2s;
+  cursor: default;
+}
+
+.quoteCard:hover {
+  box-shadow: 0 8px 32px rgba(33, 30, 28, 0.08);
+  border-color: #423C38;
+  transform: translateY(-3px) rotate(0deg) !important;
 }
 
 /* Fan positions when parent is visible */
@@ -824,6 +876,16 @@
 
 .pricingCard.featured {
   border-top: 2px solid #2559F4;
+  box-shadow: 0 0 0 0 rgba(37, 89, 244, 0);
+  transition:
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.3s ease;
+  transition-delay: var(--delay, 0s);
+}
+
+.pricingCard.featured:hover {
+  box-shadow: 0 8px 32px rgba(37, 89, 244, 0.1), 0 0 0 1px rgba(37, 89, 244, 0.2);
 }
 
 .planName {
@@ -953,12 +1015,14 @@
   text-decoration: none;
   border: none;
   cursor: pointer;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: background 0.4s ease, color 0.4s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .closeButton:hover {
   background: #2559F4;
   color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(37, 89, 244, 0.25);
 }
 
 .closeNote {
