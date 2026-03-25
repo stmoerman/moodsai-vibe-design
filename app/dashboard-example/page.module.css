@@ -1465,6 +1465,233 @@
   color: #b0a99f;
 }
 
+/* ── Tab Content (shared) ── */
+.tabContent {
+  position: relative;
+  z-index: 1;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 20px 32px 40px;
+  opacity: 0;
+  animation: dashboardReveal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.1s;
+}
+
+.tabContentHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #d0cdc6;
+}
+
+.tabContentTitle {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: #3a3a3a;
+  margin: 0;
+}
+
+.tabContentMeta {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  color: #7a746e;
+  letter-spacing: 0.04em;
+}
+
+/* ── Directe Tijd ── */
+.directeTijdGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.directeTijdCard {
+  background: #f5f2ec;
+  border: 1px solid #d0cdc6;
+  padding: 20px;
+}
+
+.directeTijdTable {
+  background: #f5f2ec;
+  border: 1px solid #d0cdc6;
+}
+
+.dtRow {
+  display: flex;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid #e8e4dd;
+}
+
+.dtRow:last-child {
+  border-bottom: none;
+}
+
+.dtDay {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1rem;
+  color: #3a3a3a;
+  width: 120px;
+  flex-shrink: 0;
+}
+
+.dtHours {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  color: #3a3a3a;
+  width: 80px;
+  flex-shrink: 0;
+}
+
+.dtBar {
+  flex: 1;
+  height: 6px;
+  background: #e8e4dd;
+}
+
+.dtBarFill {
+  display: block;
+  height: 100%;
+  background: #8b6d4f;
+  transition: width 0.6s ease;
+}
+
+/* ── Mijn Cliënten ── */
+.clientList {
+  background: #f5f2ec;
+  border: 1px solid #d0cdc6;
+}
+
+.clientRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e8e4dd;
+  transition: background 0.15s ease;
+  cursor: pointer;
+}
+
+.clientRow:last-child {
+  border-bottom: none;
+}
+
+.clientRow:hover {
+  background: #ece8e1;
+}
+
+.clientAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #d0cdc6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  color: #3a3a3a;
+  flex-shrink: 0;
+}
+
+.clientInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.clientName {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1rem;
+  color: #3a3a3a;
+}
+
+.clientMeta {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: #7a746e;
+  letter-spacing: 0.02em;
+}
+
+.clientNext {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.clientNextLabel {
+  display: block;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  color: #7a746e;
+  letter-spacing: 0.04em;
+}
+
+.clientNextValue {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  color: #3a3a3a;
+}
+
+/* ── Teamchat improvements ── */
+.teamchatNewBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #d0cdc6;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  color: #8b6d4f;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  letter-spacing: 0.04em;
+}
+
+.teamchatNewBtn:hover {
+  background: #ece8e1;
+}
+
+.teamchatInputRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-top: 1px solid #d0cdc6;
+}
+
+.teamchatInputActions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.teamchatInputAction {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid #d0cdc6;
+  color: #7a746e;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.teamchatInputAction:hover {
+  background: #3a3a3a;
+  color: #eeeae3;
+}
+
 /* ── Placeholder Tab ── */
 .placeholderTab {
   position: relative;

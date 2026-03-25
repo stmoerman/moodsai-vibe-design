@@ -105,7 +105,6 @@ const navTabs = [
   { label: 'Directe Tijd', id: 'directe-tijd' },
   { label: 'Mijn Cliënten', id: 'clienten' },
   { label: 'Cliënt Chat', id: 'client-chat' },
-  { label: 'MyMoody', id: 'mymoody' },
 ];
 
 const mockDates = ['Di 24 maart', 'Wo 25 maart', 'Do 26 maart'];
@@ -477,6 +476,7 @@ export default function DashboardExample() {
       {activeTab === 'teamchats' && (
         <div className={s.teamchatsView}>
           <div className={s.teamchatsSidebar}>
+            <button className={s.teamchatNewBtn}>+ Nieuw gesprek</button>
             <div className={s.teamchatSearch}>
               <input type="text" placeholder="Zoek gesprek..." className={s.teamchatSearchInput} readOnly />
             </div>
@@ -526,18 +526,179 @@ export default function DashboardExample() {
                 </div>
               ))}
             </div>
-            <div className={s.teamchatInput}>
+            <div className={s.teamchatInputRow}>
+              <div className={s.teamchatInputActions}>
+                <button className={s.teamchatInputAction} title="Bijlage">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                    <path d="M7 1v8M3 5l4-4 4 4" />
+                  </svg>
+                </button>
+                <button className={s.teamchatInputAction} title="Audio opname">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                    <rect x="5" y="1" width="4" height="7" rx="2" />
+                    <path d="M3 7a4 4 0 0 0 8 0M7 11v2" />
+                  </svg>
+                </button>
+              </div>
               <input type="text" placeholder="Bericht naar # Algemeen..." className={s.teamchatInputField} readOnly />
             </div>
           </div>
         </div>
       )}
 
-      {/* Tab: Placeholder for other tabs */}
-      {activeTab !== 'agenda' && activeTab !== 'teamchats' && (
-        <div className={s.placeholderTab}>
-          <span className={s.placeholderIcon}>&#9744;</span>
-          <span className={s.placeholderText}>{navTabs.find(t => t.id === activeTab)?.label} — binnenkort beschikbaar</span>
+      {/* Tab: Directe Tijd */}
+      {activeTab === 'directe-tijd' && (
+        <div className={s.tabContent}>
+          <div className={s.tabContentHeader}>
+            <h2 className={s.tabContentTitle}>Directe tijd</h2>
+            <span className={s.tabContentMeta}>Week 13 · 24–28 maart 2026</span>
+          </div>
+          <div className={s.directeTijdGrid}>
+            <div className={s.directeTijdCard}>
+              <div className={s.statLabel}>Directe uren deze week</div>
+              <div className={s.statValue}>19,0</div>
+              <div className={s.statSub}>van 23,4 uur target</div>
+            </div>
+            <div className={s.directeTijdCard}>
+              <div className={s.statLabel}>Declarabiliteit</div>
+              <div className={s.statValue}>81%</div>
+              <div className={s.statSub}>Target: 80%</div>
+            </div>
+            <div className={s.directeTijdCard}>
+              <div className={s.statLabel}>Indirecte uren</div>
+              <div className={s.statValue}>4,4</div>
+              <div className={s.statSub}>Administratie, overleg</div>
+            </div>
+          </div>
+          <div className={s.directeTijdTable}>
+            <div className={s.dtRow}>
+              <span className={s.dtDay}>Maandag</span>
+              <span className={s.dtHours}>4,0 uur</span>
+              <span className={s.dtBar}><span className={s.dtBarFill} style={{ width: '80%' }} /></span>
+            </div>
+            <div className={s.dtRow}>
+              <span className={s.dtDay}>Dinsdag</span>
+              <span className={s.dtHours}>5,0 uur</span>
+              <span className={s.dtBar}><span className={s.dtBarFill} style={{ width: '100%' }} /></span>
+            </div>
+            <div className={s.dtRow}>
+              <span className={s.dtDay}>Woensdag</span>
+              <span className={s.dtHours}>4,5 uur</span>
+              <span className={s.dtBar}><span className={s.dtBarFill} style={{ width: '90%' }} /></span>
+            </div>
+            <div className={s.dtRow}>
+              <span className={s.dtDay}>Donderdag</span>
+              <span className={s.dtHours}>3,5 uur</span>
+              <span className={s.dtBar}><span className={s.dtBarFill} style={{ width: '70%' }} /></span>
+            </div>
+            <div className={s.dtRow}>
+              <span className={s.dtDay}>Vrijdag</span>
+              <span className={s.dtHours}>2,0 uur</span>
+              <span className={s.dtBar}><span className={s.dtBarFill} style={{ width: '40%' }} /></span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tab: Mijn Cliënten */}
+      {activeTab === 'clienten' && (
+        <div className={s.tabContent}>
+          <div className={s.tabContentHeader}>
+            <h2 className={s.tabContentTitle}>Mijn cli&euml;nten</h2>
+            <span className={s.tabContentMeta}>12 actieve cli&euml;nten</span>
+          </div>
+          <div className={s.clientList}>
+            {[
+              { name: 'Maria de Vries', code: 'MV', status: 'In behandeling', since: 'jan 2026', next: 'Wo 26 mrt · 09:00' },
+              { name: 'Marcus D. Kemme', code: 'MK', status: 'In behandeling', since: 'feb 2026', next: 'Wo 26 mrt · 09:30' },
+              { name: 'Anna Hoekstra', code: 'AH', status: 'Intake gepland', since: 'mrt 2026', next: 'Wo 26 mrt · 13:30' },
+              { name: 'Jan Bakker', code: 'JB', status: 'In behandeling', since: 'dec 2025', next: 'Wo 26 mrt · 14:30' },
+              { name: 'Sophie Jansen', code: 'SJ', status: 'In behandeling', since: 'nov 2025', next: 'Do 27 mrt · 10:30' },
+              { name: 'Thijs van Berg', code: 'TB', status: 'Afronding', since: 'sep 2025', next: 'Vr 28 mrt · 11:00' },
+            ].map((client, i) => (
+              <div key={i} className={s.clientRow}>
+                <div className={s.clientAvatar}>{client.code}</div>
+                <div className={s.clientInfo}>
+                  <span className={s.clientName}>{client.name}</span>
+                  <span className={s.clientMeta}>{client.status} &middot; sinds {client.since}</span>
+                </div>
+                <div className={s.clientNext}>
+                  <span className={s.clientNextLabel}>Volgende afspraak</span>
+                  <span className={s.clientNextValue}>{client.next}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Tab: Cliënt Chat */}
+      {activeTab === 'client-chat' && (
+        <div className={s.teamchatsView}>
+          <div className={s.teamchatsSidebar}>
+            <div className={s.teamchatSearch}>
+              <input type="text" placeholder="Zoek cli&euml;nt..." className={s.teamchatSearchInput} readOnly />
+            </div>
+            {[
+              { name: 'M. de Vries', preview: 'Bedankt voor de sessie', time: '10m', unread: 1 },
+              { name: 'A. Hoekstra', preview: 'Ik heb de vragenlijst ingevuld', time: '2u', unread: 1 },
+              { name: 'J. Bakker', preview: 'Kan ik de afspraak verzetten?', time: '3u', unread: 0 },
+              { name: 'M.D. Kemme', preview: 'Heb je het verslag al gezien?', time: '5u', unread: 0 },
+              { name: 'T. van Berg', preview: 'Ik voel me veel beter', time: '2d', unread: 0 },
+            ].map((chat, i) => (
+              <div key={i} className={`${s.teamchatItem} ${i === 0 ? s.teamchatItemActive : ''}`}>
+                <div className={s.teamchatItemTop}>
+                  <span className={s.teamchatItemName}>{chat.name}</span>
+                  <span className={s.teamchatItemTime}>{chat.time}</span>
+                </div>
+                <div className={s.teamchatItemPreview}>
+                  {chat.preview}
+                  {chat.unread > 0 && <span className={s.teamchatUnread}>{chat.unread}</span>}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className={s.teamchatMain}>
+            <div className={s.teamchatHeader}>
+              <span className={s.teamchatChannelName}>M. de Vries</span>
+              <span className={s.teamchatChannelMeta}>Beveiligde zorgchat</span>
+            </div>
+            <div className={s.teamchatMessages}>
+              {[
+                { author: 'M. de Vries', initials: 'MV', time: '14:20', text: 'Bedankt voor de sessie van vandaag. Ik ga de oefeningen proberen.' },
+                { author: 'Jaime', initials: 'JS', time: '14:25', text: 'Graag gedaan! Probeer de ademhalingsoefening twee keer per dag. Laat weten hoe het gaat.' },
+                { author: 'M. de Vries', initials: 'MV', time: '14:28', text: 'Zal ik doen. Moet ik de vragenlijst ook nog invullen voor volgende week?' },
+                { author: 'Jaime', initials: 'JS', time: '14:30', text: 'Ja, die krijg je automatisch per email. Vul hem in voor onze volgende sessie.' },
+              ].map((msg, i) => (
+                <div key={i} className={s.teamchatMsg}>
+                  <div className={s.teamchatMsgAvatar}>{msg.initials}</div>
+                  <div className={s.teamchatMsgBody}>
+                    <div className={s.teamchatMsgTop}>
+                      <span className={s.teamchatMsgAuthor}>{msg.author}</span>
+                      <span className={s.teamchatMsgTime}>{msg.time}</span>
+                    </div>
+                    <p className={s.teamchatMsgText}>{msg.text}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className={s.teamchatInputRow}>
+              <div className={s.teamchatInputActions}>
+                <button className={s.teamchatInputAction} title="Bijlage">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                    <path d="M7 1v8M3 5l4-4 4 4" />
+                  </svg>
+                </button>
+                <button className={s.teamchatInputAction} title="Audio opname">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                    <rect x="5" y="1" width="4" height="7" rx="2" />
+                    <path d="M3 7a4 4 0 0 0 8 0M7 11v2" />
+                  </svg>
+                </button>
+              </div>
+              <input type="text" placeholder="Bericht naar M. de Vries..." className={s.teamchatInputField} readOnly />
+            </div>
+          </div>
         </div>
       )}
 
