@@ -15,13 +15,14 @@ const designMap: Record<number, ReturnType<typeof dynamic>> = {
   10: dynamic(() => import('@/components/designs/Design10'), { ssr: false }),
   11: dynamic(() => import('@/components/designs/Design11'), { ssr: false }),
   12: dynamic(() => import('@/components/designs/Design12'), { ssr: false }),
+  13: dynamic(() => import('@/components/designs/Design13'), { ssr: false }),
 }
 
 // Featured designs shown in gallery and nav
-const FEATURED_IDS = [1, 10, 11, 12]
+const FEATURED_IDS = [1, 10, 11, 12, 13]
 
 export function generateStaticParams() {
-  return Array.from({ length: 12 }, (_, i) => ({ id: String(i + 1) }))
+  return Array.from({ length: 13 }, (_, i) => ({ id: String(i + 1) }))
 }
 
 export default function DesignPage({ params }: { params: { id: string } }) {
