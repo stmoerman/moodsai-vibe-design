@@ -109,6 +109,7 @@ const navTabs = [
 ];
 
 const mockDates = ['Di 24 maart', 'Wo 25 maart', 'Do 26 maart'];
+const mockWeeks = ['Week 12 · 17–21 mrt', 'Week 13 · 24–28 mrt', 'Week 14 · 31 mrt–4 apr'];
 
 const timeSlots = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
 
@@ -151,6 +152,7 @@ export default function DashboardExample() {
   const [expandedAppointment, setExpandedAppointment] = useState<number | null>(null);
   const [selectedWeekApt, setSelectedWeekApt] = useState<{ day: string; idx: number } | null>(null);
   const [dateIndex, setDateIndex] = useState(1); // 1 = today (Wo 25 maart)
+  const [weekIndex, setWeekIndex] = useState(1); // 1 = current week (Week 13)
   const [viewMode, setViewMode] = useState<'dag' | 'week'>('dag');
   const [isAgendaExpanded, setIsAgendaExpanded] = useState(false);
 
@@ -198,9 +200,21 @@ export default function DashboardExample() {
   const nowPct = Math.max(0, Math.min(100, ((currentHour - 8) / 10) * 100));
   const showNowLine = currentHour >= 8 && currentHour <= 18;
 
-  const handlePrevDate = () => setDateIndex((i) => Math.max(0, i - 1));
-  const handleNextDate = () => setDateIndex((i) => Math.min(mockDates.length - 1, i + 1));
-  const handleToday = () => setDateIndex(1);
+  const handlePrev = () => {
+    if (viewMode === 'dag') setDateIndex((i) => Math.max(0, i - 1));
+    else setWeekIndex((i) => Math.max(0, i - 1));
+  };
+  const handleNext = () => {
+    if (viewMode === 'dag') setDateIndex((i) => Math.min(mockDates.length - 1, i + 1));
+    else setWeekIndex((i) => Math.min(mockWeeks.length - 1, i + 1));
+  };
+  const handleToday = () => {
+    setDateIndex(1);
+    setWeekIndex(1);
+  };
+  const navLabel = viewMode === 'dag' ? mockDates[dateIndex] : mockWeeks[weekIndex];
+  const isPrevDisabled = viewMode === 'dag' ? dateIndex === 0 : weekIndex === 0;
+  const isNextDisabled = viewMode === 'dag' ? dateIndex === mockDates.length - 1 : weekIndex === mockWeeks.length - 1;
 
   const toggleExpand = (idx: number) => {
     setExpandedAppointment((prev) => (prev === idx ? null : idx));
@@ -233,10 +247,10 @@ export default function DashboardExample() {
       {/* Agenda Header */}
       <div className={s.agendaHeader}>
         <div className={s.agendaNav}>
-          <button className={s.agendaNavBtn} onClick={handlePrevDate} disabled={dateIndex === 0}>&lt;</button>
+          <button className={s.agendaNavBtn} onClick={handlePrev} disabled={isPrevDisabled}>&lt;</button>
           <button className={s.agendaTodayBtn} onClick={handleToday}>Vandaag</button>
-          <button className={s.agendaNavBtn} onClick={handleNextDate} disabled={dateIndex === mockDates.length - 1}>&gt;</button>
-          <span className={s.agendaDateLabel}>{mockDates[dateIndex]}</span>
+          <button className={s.agendaNavBtn} onClick={handleNext} disabled={isNextDisabled}>&gt;</button>
+          <span className={s.agendaDateLabel}>{navLabel}</span>
         </div>
         <div className={s.agendaHeaderRight}>
           <div className={s.togglePills}>
