@@ -12,7 +12,7 @@
   background: #E7E1D5;
   color: #423C38;
   font-family: 'EB Garamond', serif;
-  overflow-x: hidden;
+  overflow: hidden;
   min-height: 100vh;
 }
 

@@ -287,70 +287,45 @@ function Checkmark({ drawn }: { drawn: boolean }) {
   )
 }
 
-function ContinuousLine({ progress }: { progress: number }) {
-  const pathRef = useRef<SVGPathElement>(null)
-  const branchRefs = useRef<(SVGPathElement | null)[]>([])
-  const [totalLength, setTotalLength] = useState(0)
-  const [branchLengths, setBranchLengths] = useState<number[]>([])
-
-  useEffect(() => {
-    if (pathRef.current) {
-      setTotalLength(pathRef.current.getTotalLength())
-    }
-    const lengths = branchRefs.current.map((ref) => ref?.getTotalLength() || 0)
-    setBranchLengths(lengths)
-  }, [])
-
-  const dashOffset = totalLength * (1 - progress)
-
+function ContinuousLine() {
   return (
     <svg className={styles.lineSvg} viewBox="0 0 1200 8000" preserveAspectRatio="none">
       {/* Glow behind main line */}
       <path
         d={MAIN_PATH}
+        className="sketchbook-glow"
         stroke="#423C38"
         strokeWidth="6"
         strokeLinecap="round"
         strokeLinejoin="round"
         fill="none"
         opacity="0.06"
-        filter="blur(3px)"
-        strokeDasharray={totalLength || undefined}
-        strokeDashoffset={dashOffset}
       />
       {/* Main continuous line */}
       <path
-        ref={pathRef}
         d={MAIN_PATH}
+        className="sketchbook-main"
         stroke="#423C38"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
         fill="none"
         opacity="0.8"
-        strokeDasharray={totalLength || undefined}
-        strokeDashoffset={dashOffset}
       />
       {/* Branch lines */}
-      {BRANCH_PATHS.map((branch, i) => {
-        const branchProgress = Math.max(0, Math.min(1, (progress - branch.threshold) / 0.04))
-        const bLen = branchLengths[i] || 0
-        const bOffset = bLen * (1 - branchProgress)
-        return (
-          <path
-            key={i}
-            ref={(el) => { branchRefs.current[i] = el }}
-            d={branch.d}
-            stroke="#423C38"
-            strokeWidth="1"
-            strokeLinecap="round"
-            fill="none"
-            opacity="0.3"
-            strokeDasharray={bLen || undefined}
-            strokeDashoffset={bOffset}
-          />
-        )
-      })}
+      {BRANCH_PATHS.map((branch, i) => (
+        <path
+          key={i}
+          d={branch.d}
+          className="sketchbook-branch"
+          data-threshold={branch.threshold}
+          stroke="#423C38"
+          strokeWidth="1"
+          strokeLinecap="round"
+          fill="none"
+          opacity="0.3"
+        />
+      ))}
     </svg>
   )
 }
@@ -385,58 +360,122 @@ function WaypointDot({
 
 export default function Design12() {
   const pageRef = useRef<HTMLDivElement>(null)
-  const [scrollProgress, setScrollProgress] = useState(0)
-  const [penPos, setPenPos] = useState<{ x: number; y: number } | null>(null)
   const mainPathRef = useRef<SVGPathElement | null>(null)
+  const glowPathRef = useRef<SVGPathElement | null>(null)
+  const penNibRef = useRef<HTMLDivElement | null>(null)
+  const totalLengthRef = useRef(0)
+  const scrollProgressRef = useRef(0)
 
-  // Scroll handler
+  // Scroll handler — direct DOM manipulation, no React state
   useEffect(() => {
     let rafId: number
+    let ticking = false
+
     const onScroll = () => {
+      if (ticking) return
+      ticking = true
       rafId = requestAnimationFrame(() => {
+        ticking = false
         const docHeight = document.documentElement.scrollHeight - window.innerHeight
-        const progress = docHeight > 0 ? window.scrollY / docHeight : 0
-        setScrollProgress(Math.min(1, Math.max(0, progress)))
+        const progress = docHeight > 0 ? Math.min(1, Math.max(0, window.scrollY / docHeight)) : 0
+        scrollProgressRef.current = progress
+
+        // Update stroke-dashoffset directly on DOM (no re-render)
+        const len = totalLengthRef.current
+        if (len > 0) {
+          const offset = String(len * (1 - progress))
+          mainPathRef.current?.setAttribute('stroke-dashoffset', offset)
+          glowPathRef.current?.setAttribute('stroke-dashoffset', offset)
+        }
+
+        // Update branch paths
+        const branches = pageRef.current?.querySelectorAll('.sketchbook-branch') as NodeListOf<SVGPathElement> | undefined
+        branches?.forEach((branch) => {
+          const threshold = parseFloat(branch.dataset.threshold ?? '0')
+          const bLen = parseFloat(branch.dataset.totalLength ?? '0')
+          const branchProgress = Math.max(0, Math.min(1, (progress - threshold) / 0.04))
+          branch.setAttribute('stroke-dashoffset', String(bLen * (1 - branchProgress)))
+        })
+
+        // Update pen nib position directly
+        if (mainPathRef.current && penNibRef.current) {
+          const point = mainPathRef.current.getPointAtLength(len * progress)
+          const svgEl = mainPathRef.current.ownerSVGElement
+          if (svgEl) {
+            const rect = svgEl.getBoundingClientRect()
+            const scaleX = rect.width / 1200
+            const scaleY = rect.height / 8000
+            const x = point.x * scaleX
+            const y = point.y * scaleY
+            penNibRef.current.style.transform = `translate(${x - 4}px, ${y - 4}px)`
+          }
+        }
       })
     }
+
+    // Initialize path lengths
+    requestAnimationFrame(() => {
+      const mainEl = pageRef.current?.querySelector('.sketchbook-main') as SVGPathElement | null
+      const glowEl = pageRef.current?.querySelector('.sketchbook-glow') as SVGPathElement | null
+      if (mainEl) {
+        mainPathRef.current = mainEl
+        totalLengthRef.current = mainEl.getTotalLength()
+        const len = String(totalLengthRef.current)
+        mainEl.setAttribute('stroke-dasharray', len)
+        mainEl.setAttribute('stroke-dashoffset', len)
+      }
+      if (glowEl) {
+        glowPathRef.current = glowEl
+        const len = String(totalLengthRef.current)
+        glowEl.setAttribute('stroke-dasharray', len)
+        glowEl.setAttribute('stroke-dashoffset', len)
+      }
+      // Initialize branch paths
+      const branches = pageRef.current?.querySelectorAll('.sketchbook-branch') as NodeListOf<SVGPathElement> | undefined
+      branches?.forEach((branch) => {
+        const bLen = branch.getTotalLength()
+        branch.setAttribute('stroke-dasharray', String(bLen))
+        branch.setAttribute('stroke-dashoffset', String(bLen))
+        branch.dataset.totalLength = String(bLen)
+      })
+      onScroll()
+    })
+
     window.addEventListener('scroll', onScroll, { passive: true })
-    onScroll()
     return () => {
       window.removeEventListener('scroll', onScroll)
       cancelAnimationFrame(rafId)
     }
   }, [])
 
-  // Update pen nib position based on scroll progress
-  useEffect(() => {
-    if (!mainPathRef.current) {
-      const svgEl = pageRef.current?.querySelector(`.${styles.lineSvg} path`)
-      if (svgEl) mainPathRef.current = svgEl as SVGPathElement
-    }
-    if (mainPathRef.current) {
-      const len = mainPathRef.current.getTotalLength()
-      const point = mainPathRef.current.getPointAtLength(len * scrollProgress)
-      // Convert from viewBox coords to page coords
-      const pageEl = pageRef.current
-      if (pageEl) {
-        const svgEl = mainPathRef.current.ownerSVGElement
-        if (svgEl) {
-          const rect = svgEl.getBoundingClientRect()
-          const scaleX = rect.width / 1200
-          const scaleY = rect.height / 8000
-          setPenPos({
-            x: point.x * scaleX,
-            y: point.y * scaleY + window.scrollY - rect.top - window.scrollY,
-          })
-        }
-      }
-    }
-  }, [scrollProgress])
+  // Section reveals via IntersectionObserver (not scroll position)
+  const [revealedSections, setRevealedSections] = useState<Set<string>>(new Set())
 
-  // Section reveal based on scroll progress
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = (entry.target as HTMLElement).dataset.sectionId
+            if (id) setRevealedSections((prev) => new Set(prev).add(id))
+          }
+        })
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -60px 0px' }
+    )
+    const sections = pageRef.current?.querySelectorAll('[data-section-id]')
+    sections?.forEach((s) => observer.observe(s))
+    return () => observer.disconnect()
+  }, [])
+
   const isRevealed = useCallback(
-    (threshold: number) => scrollProgress >= threshold,
-    [scrollProgress]
+    (threshold: number) => {
+      // Map thresholds to section IDs (approximate)
+      const sectionIndex = Math.floor(threshold * WAYPOINTS.length)
+      const wp = WAYPOINTS[Math.min(sectionIndex, WAYPOINTS.length - 1)]
+      return revealedSections.has(wp?.sectionId ?? '')
+    },
+    [revealedSections]
   )
 
   const revealClass = useCallback(
@@ -453,15 +492,13 @@ export default function Design12() {
   return (
     <div className={styles.page} ref={pageRef}>
       {/* The continuous SVG line */}
-      <ContinuousLine progress={scrollProgress} />
+      <ContinuousLine />
 
       {/* Pen nib indicator */}
-      {penPos && (
-        <div
-          className={styles.penNib}
-          style={{ left: penPos.x, top: penPos.y }}
-        />
-      )}
+      <div
+        ref={penNibRef}
+        className={styles.penNib}
+      />
 
       {/* Waypoint dots */}
       {WAYPOINTS.map((wp) => (
