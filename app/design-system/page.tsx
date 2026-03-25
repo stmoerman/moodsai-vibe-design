@@ -3,8 +3,8 @@ import DesignSystem from '@/components/DesignSystem'
 import styles from './page.module.css'
 
 export const metadata: Metadata = {
-  title: 'Moods.ai — Design System',
-  description: 'Living design system reference for the Moods AI brand',
+  title: 'Moods AI — Design System',
+  description: 'Practical brand guidelines for the Moods AI platform. reMarkable-derived palette.',
 }
 
 export default function DesignSystemPage() {
