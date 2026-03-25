@@ -52,7 +52,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: bootFadeIn 0.6s ease both;
   transition: opacity 0.8s ease;
 }
 
@@ -63,8 +62,6 @@
 
 .bootContent {
   text-align: center;
-  opacity: 0;
-  animation: bootFadeIn 0.8s ease forwards 0.3s;
 }
 
 .bootGreeting {
@@ -95,7 +92,7 @@
 
 .bootUnderlineDrawn {
   stroke-dashoffset: 0;
-  transition: stroke-dashoffset 1s ease-out 0.6s;
+  transition: stroke-dashoffset 1s ease-out 0.3s;
 }
 
 /* ── Root ── */
