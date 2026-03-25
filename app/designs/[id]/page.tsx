@@ -1,19 +1,18 @@
 import { notFound } from 'next/navigation'
-import Design01 from '@/components/designs/Design01'
-import Design02 from '@/components/designs/Design02'
-import Design03 from '@/components/designs/Design03'
-import Design04 from '@/components/designs/Design04'
-import Design05 from '@/components/designs/Design05'
-import Design06 from '@/components/designs/Design06'
-import Design07 from '@/components/designs/Design07'
-import Design08 from '@/components/designs/Design08'
-import Design09 from '@/components/designs/Design09'
-import Design10 from '@/components/designs/Design10'
+import dynamic from 'next/dynamic'
 import DesignNav from '@/components/DesignNav'
 
-const designMap: Record<number, React.ComponentType> = {
-  1: Design01, 2: Design02, 3: Design03, 4: Design04, 5: Design05,
-  6: Design06, 7: Design07, 8: Design08, 9: Design09, 10: Design10,
+const designMap: Record<number, ReturnType<typeof dynamic>> = {
+  1: dynamic(() => import('@/components/designs/Design01'), { ssr: false }),
+  2: dynamic(() => import('@/components/designs/Design02'), { ssr: false }),
+  3: dynamic(() => import('@/components/designs/Design03'), { ssr: false }),
+  4: dynamic(() => import('@/components/designs/Design04'), { ssr: false }),
+  5: dynamic(() => import('@/components/designs/Design05'), { ssr: false }),
+  6: dynamic(() => import('@/components/designs/Design06'), { ssr: false }),
+  7: dynamic(() => import('@/components/designs/Design07'), { ssr: false }),
+  8: dynamic(() => import('@/components/designs/Design08'), { ssr: false }),
+  9: dynamic(() => import('@/components/designs/Design09'), { ssr: false }),
+  10: dynamic(() => import('@/components/designs/Design10'), { ssr: false }),
 }
 
 export function generateStaticParams() {
