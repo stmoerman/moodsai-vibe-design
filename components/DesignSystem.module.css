@@ -25,13 +25,13 @@
 .headerBreadcrumb {
   font-family: 'Space Mono', monospace;
   font-size: 0.7rem;
-  color: #8a7e79;
+  color: #6b625c;
   letter-spacing: 0.05em;
   margin-bottom: 32px;
 }
 
 .headerBreadcrumb a {
-  color: #8a7e79;
+  color: #6b625c;
   text-decoration: none;
   transition: color 0.15s;
 }
@@ -63,7 +63,7 @@
 .headerMeta {
   font-family: 'Space Mono', monospace;
   font-size: 0.7rem;
-  color: #8a7e79;
+  color: #6b625c;
   margin-top: 24px;
   letter-spacing: 0.03em;
 }
@@ -114,7 +114,7 @@
   font-family: 'Space Mono', monospace;
   font-size: 0.7rem;
   font-weight: 500;
-  color: #8a7e79;
+  color: #6b625c;
   text-transform: uppercase;
   letter-spacing: 0.15em;
   margin-bottom: 16px;
@@ -187,7 +187,7 @@
 .colorSwatchHex {
   font-family: 'Space Mono', monospace;
   font-size: 0.6875rem;
-  color: #8a7e79;
+  color: #6b625c;
   margin-bottom: 4px;
 }
 
@@ -214,7 +214,7 @@
 .typeMeta {
   font-family: 'Space Mono', monospace;
   font-size: 0.6875rem;
-  color: #8a7e79;
+  color: #6b625c;
   margin-bottom: 8px;
   display: flex;
   gap: 12px;
@@ -285,7 +285,7 @@
   font-family: 'Space Mono', monospace;
   font-size: 0.7rem;
   font-weight: 500;
-  color: #8a7e79;
+  color: #6b625c;
   text-transform: uppercase;
   letter-spacing: 0.15em;
 }
@@ -339,7 +339,7 @@
 }
 
 .spacingName {
-  color: #8a7e79;
+  color: #6b625c;
   margin-left: 4px;
 }
 
@@ -361,7 +361,7 @@
 .buttonPairLabel {
   font-family: 'Space Mono', monospace;
   font-size: 0.6875rem;
-  color: #8a7e79;
+  color: #6b625c;
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
@@ -369,7 +369,7 @@
 .buttonStateLabel {
   font-family: 'Space Mono', monospace;
   font-size: 0.625rem;
-  color: #8a7e79;
+  color: #6b625c;
 }
 
 .btnPrimary {
@@ -442,7 +442,7 @@
 
 .btnGhost {
   background: transparent;
-  color: #8a7e79;
+  color: #6b625c;
   border: none;
   border-radius: 0;
   padding: 12px 24px;
@@ -497,7 +497,7 @@
 .cardTag {
   font-family: 'Space Mono', monospace;
   font-size: 0.6875rem;
-  color: #8a7e79;
+  color: #6b625c;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   margin-bottom: 8px;
@@ -539,7 +539,7 @@
   font-family: 'Space Mono', monospace;
   font-size: 0.7rem;
   font-weight: 500;
-  color: #8a7e79;
+  color: #6b625c;
   text-transform: uppercase;
   letter-spacing: 0.15em;
 }
@@ -561,7 +561,7 @@
 }
 
 .inputText::placeholder {
-  color: #b0b7c1;
+  color: #7a7873;
 }
 
 .selectInput {
@@ -686,25 +686,25 @@
 .badgeSuccess {
   composes: badgeDefault;
   background: rgba(90, 114, 104, 0.12);
-  color: #5a7268;
+  color: #3d5c4f;
 }
 
 .badgeWarning {
   composes: badgeDefault;
   background: rgba(196, 140, 40, 0.1);
-  color: #c48c28;
+  color: #8a6318;
 }
 
 .badgeError {
   composes: badgeDefault;
   background: rgba(204, 68, 68, 0.1);
-  color: #c44;
+  color: #a33636;
 }
 
 .badgeDanger {
   composes: badgeDefault;
   background: rgba(156, 64, 64, 0.1);
-  color: #9c4040;
+  color: #843636;
 }
 
 /* ===== Dashboard Components ===== */
@@ -725,7 +725,7 @@
   font-family: 'Space Mono', monospace;
   font-size: 0.7rem;
   font-weight: 500;
-  color: #8a7e79;
+  color: #6b625c;
   text-transform: uppercase;
   letter-spacing: 0.15em;
   margin-bottom: 8px;
@@ -747,12 +747,12 @@
 
 .statTrendUp {
   composes: statTrend;
-  color: #5a7268;
+  color: #3d5c4f;
 }
 
 .statTrendDown {
   composes: statTrend;
-  color: #c44;
+  color: #a33636;
 }
 
 /* Chart placeholder */
@@ -790,7 +790,7 @@
 .chartLabel {
   font-family: 'Space Mono', monospace;
   font-size: 0.625rem;
-  color: #b0b7c1;
+  color: #6b625c;
 }
 
 /* Data table */
@@ -804,7 +804,7 @@
   font-family: 'Space Mono', monospace;
   font-size: 0.7rem;
   font-weight: 500;
-  color: #8a7e79;
+  color: #6b625c;
   text-transform: uppercase;
   letter-spacing: 0.15em;
   text-align: left;
@@ -845,7 +845,7 @@
   padding: 12px 16px;
   font-family: 'Space Mono', monospace;
   font-size: 0.8125rem;
-  color: #8a7e79;
+  color: #6b625c;
   border-left: 2px solid transparent;
   transition: color 0.15s, border-color 0.15s;
 }
@@ -883,12 +883,12 @@
 
 .rulesColDo {
   composes: rulesColTitle;
-  color: #5a7268;
+  color: #3d5c4f;
 }
 
 .rulesColDont {
   composes: rulesColTitle;
-  color: #c44;
+  color: #a33636;
 }
 
 .rulesList {
