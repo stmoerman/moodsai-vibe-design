@@ -142,7 +142,7 @@ export default function DashboardExample() {
       <header className={s.topBar}>
         <Link href="/" className={s.logo}>Oh My Mood</Link>
         <div className={s.topBarRight}>
-          <span className={s.userName}>GGZ Noord</span>
+          <span className={s.userName}>Amsterdam</span>
           <div className={s.avatar}>JS</div>
         </div>
       </header>
@@ -156,7 +156,7 @@ export default function DashboardExample() {
             className={s.greetingUnderlinePath}
           />
         </svg>
-        <span className={s.dateTime}>Therapeut &middot; GGZ Noord &middot; {dateStr}</span>
+        <span className={s.dateTime}>Therapeut &middot; Amsterdam &middot; {dateStr}</span>
       </div>
 
       {/* Main 3-Column Grid */}
