@@ -94,14 +94,25 @@
   margin: 0 auto;
 }
 
+/* ── Hero entrance animations ── */
+@keyframes heroFadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes drawUnderline {
+  to { stroke-dashoffset: 0; }
+}
+
 .heroEyebrow {
   font-family: 'Space Mono', monospace;
   font-size: 0.65rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #3a3a3a;
-  opacity: 0.5;
+  color: #7a746e;
   margin-bottom: 32px;
+  opacity: 0;
+  animation: heroFadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.1s;
 }
 
 .heroHeadline {
@@ -114,6 +125,8 @@
   margin-bottom: 8px;
   position: relative;
   display: inline-block;
+  opacity: 0;
+  animation: heroFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.25s;
 }
 
 .heroUnderline {
@@ -128,24 +141,29 @@
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+  animation: drawUnderline 1s ease-out forwards 0.7s;
 }
 
 .heroSub {
   font-family: 'Space Mono', monospace;
   font-size: 0.78rem;
   line-height: 1.85;
-  color: #3a3a3a;
-  opacity: 0.5;
+  color: #7a746e;
   margin-top: 24px;
+  opacity: 0;
+  animation: heroFadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards 1.3s;
 }
 
 .heroMeta {
   font-family: 'Space Mono', monospace;
   font-size: 0.72rem;
-  color: #3a3a3a;
-  opacity: 0.65;
+  color: #7a746e;
   margin-top: 12px;
   letter-spacing: 0.04em;
+  opacity: 0;
+  animation: heroFadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards 1.5s;
 }
 
 /* ── Section divider ── */
@@ -474,5 +492,21 @@
 
   .footer {
     padding: 48px 24px 40px;
+  }
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .heroEyebrow,
+  .heroHeadline,
+  .heroSub,
+  .heroMeta {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+  .underlinePath {
+    stroke-dashoffset: 0;
+    animation: none;
   }
 }
