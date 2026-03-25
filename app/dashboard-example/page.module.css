@@ -297,7 +297,13 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  align-self: stretch;
+}
+
+/* Make Berichten fill remaining space to align with agenda bottom */
+.leftCol .messagesSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ── Stat Block ── */
@@ -792,6 +798,7 @@
   border: 1px solid #d0cdc6;
   display: flex;
   flex-direction: column;
+  min-height: 200px;
 }
 
 .askMoodyHeader {
@@ -978,6 +985,27 @@
 
 .roomLink:hover {
   color: #8b6d4f;
+}
+
+.roomLinkCard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #f5f2ec;
+  border: 1px solid #d0cdc6;
+  padding: 14px 20px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  color: #3a3a3a;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.roomLinkCard:hover {
+  background: #3a3a3a;
+  color: #eeeae3;
 }
 
 /* ── Mobile ── */
