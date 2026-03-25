@@ -94,8 +94,8 @@ const BRANCH_PATHS = [
   { d: 'M 605,140 C 650,150 720,160 780,155', threshold: 0.02 },
   { d: 'M 605,140 C 560,150 480,160 420,155', threshold: 0.02 },
   // Problem branches
-  { d: 'M 280,1020 C 250,1030 190,1040 140,1035', threshold: 0.13 },
-  { d: 'M 940,1180 C 970,1170 1020,1160 1060,1170', threshold: 0.15 },
+  { d: 'M 280,1020 C 260,1030 230,1040 210,1035', threshold: 0.13 },
+  { d: 'M 940,1180 C 960,1170 980,1160 990,1170', threshold: 0.15 },
   // Solution branches
   { d: 'M 610,1770 C 560,1780 490,1790 440,1785', threshold: 0.22 },
   { d: 'M 610,1770 C 660,1780 730,1790 780,1785', threshold: 0.22 },
@@ -145,77 +145,77 @@ const ANNOTATIONS = [
 
 // ---- Data ----
 const WITHOUT_TASKS = [
-  { icon: '\u2717', text: 'Handmatig notities typen na elke sessie' },
-  { icon: '\u2717', text: 'ROM-vragenlijsten printen en invoeren' },
-  { icon: '\u2717', text: 'Behandelplannen in Word opmaken' },
-  { icon: '\u2717', text: 'Aparte agenda, chat, en facturatietool' },
-  { icon: '\u2717', text: 'Eindeloze admin op vrijdagmiddag' },
+  { icon: '\u2717', text: 'Manually typing notes after every session' },
+  { icon: '\u2717', text: 'Printing and entering ROM questionnaires' },
+  { icon: '\u2717', text: 'Formatting treatment plans in Word' },
+  { icon: '\u2717', text: 'Separate calendar, chat, and billing tools' },
+  { icon: '\u2717', text: 'Endless admin on Friday afternoons' },
 ]
 
 const WITH_TASKS = [
-  { icon: '\u2713', text: 'AI schrijft je notities in realtime' },
-  { icon: '\u2713', text: 'ROM automatisch afgenomen en verwerkt' },
-  { icon: '\u2713', text: 'Behandelplan gegenereerd uit intake' },
-  { icon: '\u2713', text: 'Alles in \u00e9\u00e9n platform, \u00e9\u00e9n login' },
-  { icon: '\u2713', text: 'Admin afgerond v\u00f3\u00f3r je client de deur uit is' },
+  { icon: '\u2713', text: 'AI writes your notes in real time' },
+  { icon: '\u2713', text: 'ROM automatically administered and processed' },
+  { icon: '\u2713', text: 'Treatment plan generated from intake' },
+  { icon: '\u2713', text: 'Everything in one platform, one login' },
+  { icon: '\u2713', text: 'Admin finished before your client walks out the door' },
 ]
 
 const REPLACED_TOOLS = [
-  'Pen & papier', 'Word templates', 'Excel ROM', 'Losse agenda',
-  'E-mail', 'Facturatie-app', 'PDF generator', 'Vragenlijst-tool',
-  'Notitie-app', 'Handmatige DBC-registratie',
+  'Pen & paper', 'Word templates', 'Excel ROM', 'Separate calendar',
+  'Email', 'Billing app', 'PDF generator', 'Questionnaire tool',
+  'Note-taking app', 'Manual DBC registration',
 ]
 
 const TOUR_STEPS = [
   {
     title: 'Intake',
-    desc: 'Gestructureerde intake met AI-gestuurde vraagondersteuning. Behandelplan wordt direct gegenereerd.',
+    desc: 'Structured intake with AI-powered question support. Treatment plan generated immediately.',
   },
   {
-    title: 'Sessie',
-    desc: 'Voer je gesprek. Moods luistert mee en maakt real-time notities op de achtergrond.',
+    title: 'Session',
+    desc: 'Have your conversation. Moods listens along and takes real-time notes in the background.',
   },
   {
-    title: 'Notities',
-    desc: 'Na de sessie: complete, gestructureerde notities klaar voor review. Eén klik om te finaliseren.',
+    title: 'Notes',
+    desc: 'After the session: complete, structured notes ready for review. One click to finalize.',
   },
   {
     title: 'ROM',
-    desc: 'Vragenlijsten automatisch verstuurd, ingevuld door cliënt, resultaten direct zichtbaar.',
+    desc: 'Questionnaires sent automatically, completed by clients, results instantly visible.',
   },
   {
-    title: 'Rapportage',
-    desc: 'Voortgangsrapport, behandelevaluatie en brieven gegenereerd op basis van sessiedata.',
+    title: 'Reporting',
+    desc: 'Progress reports, treatment evaluations, and letters generated from session data.',
   },
   {
-    title: 'Facturatie',
-    desc: 'DBC-registratie en facturatie automatisch bijgewerkt. Export naar je boekhouding.',
+    title: 'Billing',
+    desc: 'DBC registration and billing automatically updated. Export to your accounting software.',
   },
 ]
 
 const SECURITY_ITEMS = [
-  'NEN 7510 gecertificeerd',
-  'Data in Nederlandse datacenters',
-  'End-to-end encryptie',
+  'NEN 7510 certified',
+  'Data in Dutch data centers',
+  'End-to-end encryption',
   'AVG / GDPR compliant',
-  'Tweefactorauthenticatie',
+  'Two-factor authentication',
   'Audit logging',
-  'BAA-overeenkomsten',
+  'BAA agreements',
   'ISO 27001 aligned',
 ]
 
 const QUOTES = [
   {
-    text: '\u201cIk heb weer tijd voor mijn cli\u00ebnten. De administratie regelt zichzelf.\u201d',
-    author: 'GZ-psycholoog, Amsterdam',
+    text: '\u201cI have time for my clients again. The admin takes care of itself.\u201d',
+    author: 'Healthcare psychologist, Amsterdam',
   },
   {
-    text: '\u201cVan 4 uur admin per dag naar 30 minuten. Dat is geen overdrijving.\u201d',
-    author: 'Klinisch psycholoog, Utrecht',
+    text: '\u201cFrom 4 hours of admin per day to 30 minutes. That\u2019s no exaggeration.\u201d',
+    author: 'Clinical psychologist, Utrecht',
   },
   {
-    text: '\u201cMijn notities zijn nu beter \u00e9n ik hoef er minder tijd aan te besteden.\u201d',
-    author: 'Psychotherapeut, Rotterdam',
+    text: '\u201cMy notes are better now and I spend less time on them.\u201d',
+    author: 'Psychotherapist, Rotterdam',
   },
 ]
 
@@ -223,25 +223,25 @@ const PRICING_PLANS = [
   {
     name: 'Solo',
     price: '\u20ac79',
-    period: '/maand',
-    desc: 'Voor zelfstandige praktijken',
-    features: ['1 behandelaar', 'AI-notities', 'ROM', 'Agenda', 'Facturatie'],
+    period: '/month',
+    desc: 'For independent practices',
+    features: ['1 practitioner', 'AI notes', 'ROM', 'Calendar', 'Billing'],
     featured: false,
   },
   {
     name: 'Pro',
     price: '\u20ac149',
-    period: '/maand',
-    desc: 'Voor groepspraktijken',
-    features: ['Tot 5 behandelaars', 'Alles in Solo', 'Team dashboard', 'Rapportages', 'Prioriteit support'],
+    period: '/month',
+    desc: 'For group practices',
+    features: ['Up to 5 practitioners', 'Everything in Solo', 'Team dashboard', 'Reports', 'Priority support'],
     featured: true,
   },
   {
-    name: 'Kliniek',
-    price: 'Op maat',
+    name: 'Clinic',
+    price: 'Custom',
     period: '',
-    desc: 'Voor grote instellingen',
-    features: ['Onbeperkt behandelaars', 'Alles in Pro', 'SSO / SAML', 'Dedicated support', 'Custom integraties'],
+    desc: 'For large organizations',
+    features: ['Unlimited practitioners', 'Everything in Pro', 'SSO / SAML', 'Dedicated support', 'Custom integrations'],
     featured: false,
   },
 ]
@@ -305,16 +305,29 @@ function ContinuousLine({ progress }: { progress: number }) {
 
   return (
     <svg className={styles.lineSvg} viewBox="0 0 1200 8000" preserveAspectRatio="none">
+      {/* Glow behind main line */}
+      <path
+        d={MAIN_PATH}
+        stroke="#423C38"
+        strokeWidth="6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+        opacity="0.06"
+        filter="blur(3px)"
+        strokeDasharray={totalLength || undefined}
+        strokeDashoffset={dashOffset}
+      />
       {/* Main continuous line */}
       <path
         ref={pathRef}
         d={MAIN_PATH}
         stroke="#423C38"
-        strokeWidth="1.5"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
         fill="none"
-        opacity="0.6"
+        opacity="0.8"
         strokeDasharray={totalLength || undefined}
         strokeDashoffset={dashOffset}
       />
@@ -482,11 +495,11 @@ export default function Design12() {
             <em>Not to type reports.</em>
           </h1>
           <p className={styles.heroSub}>
-            AI-powered practice management for Dutch mental healthcare.
+            AI-powered practice management for mental healthcare.
             Less admin. More therapy.
           </p>
           <a href="#" className={styles.ctaButton}>
-            Start gratis proefperiode
+            Start free trial
           </a>
         </div>
       </section>
@@ -495,15 +508,15 @@ export default function Design12() {
       <section id="problem-section" className={`${styles.section} ${styles.problem}`}>
         <div className={styles.sectionInner}>
           <div className={revealClass(0.1)}>
-            <div className={styles.sectionLabel}>Het probleem</div>
+            <div className={styles.sectionLabel}>The problem</div>
             <h2 className={styles.sectionHeading}>
-              De helft van je werkweek gaat op aan administratie
+              Half your work week is spent on administration
             </h2>
           </div>
           <div className={styles.splitGrid}>
             <div className={`${styles.splitColumn} ${styles.without}`}>
               <div className={revealClass(0.12)}>
-                <h3>Zonder Moods</h3>
+                <h3>Without Moods</h3>
                 {WITHOUT_TASKS.map((task, i) => (
                   <div key={i} className={styles.taskItem}>
                     <span className={styles.icon}>{task.icon}</span>
@@ -514,7 +527,7 @@ export default function Design12() {
             </div>
             <div className={`${styles.splitColumn} ${styles.with}`}>
               <div className={revealClass(0.14)}>
-                <h3>Met Moods</h3>
+                <h3>With Moods</h3>
                 {WITH_TASKS.map((task, i) => (
                   <div key={i} className={styles.taskItem}>
                     <span className={styles.icon}>{task.icon}</span>
@@ -531,9 +544,9 @@ export default function Design12() {
       <section id="solution-section" className={`${styles.section} ${styles.solution}`}>
         <div className={styles.sectionInner}>
           <div className={revealClass(0.2)}>
-            <div className={styles.sectionLabel}>De oplossing</div>
+            <div className={styles.sectionLabel}>The solution</div>
             <h2 className={styles.sectionHeading}>
-              Eén platform. Niet tien.
+              One platform. Not ten.
             </h2>
           </div>
           <div className={`${styles.convergenceContainer} ${revealClass(0.22)}`}>
@@ -551,8 +564,8 @@ export default function Design12() {
       <section id="tour-section" className={`${styles.section} ${styles.productTour}`}>
         <div className={styles.sectionInner}>
           <div className={revealClass(0.3)}>
-            <div className={styles.sectionLabel}>Hoe het werkt</div>
-            <h2 className={styles.sectionHeading}>Van intake tot factuur</h2>
+            <div className={styles.sectionLabel}>How it works</div>
+            <h2 className={styles.sectionHeading}>From intake to invoice</h2>
           </div>
           <div className={styles.timeline}>
             {TOUR_STEPS.map((step, i) => {
@@ -587,9 +600,9 @@ export default function Design12() {
       <section id="ai-section" className={`${styles.section} ${styles.aiSection}`}>
         <div className={styles.sectionInner}>
           <div className={revealClass(0.5)}>
-            <div className={styles.sectionLabel}>AI in actie</div>
+            <div className={styles.sectionLabel}>AI in action</div>
             <h2 className={styles.sectionHeading}>
-              Luisteren. Verwerken. Vastleggen.
+              Listen. Process. Document.
             </h2>
           </div>
           <div className={`${styles.waveformContainer} ${revealClass(0.52)}`}>
@@ -608,17 +621,17 @@ export default function Design12() {
             <div className={styles.aiFlow}>
               <div className={styles.aiFlowStep}>
                 <div className={styles.stepIcon}>{'\uD83C\uDFA4'}</div>
-                <div className={styles.stepLabel}>Gesprek</div>
+                <div className={styles.stepLabel}>Conversation</div>
               </div>
               <div className={styles.aiFlowArrow}>{'\u2192'}</div>
               <div className={styles.aiFlowStep}>
                 <div className={styles.stepIcon}>{'\uD83E\uDDE0'}</div>
-                <div className={styles.stepLabel}>AI verwerking</div>
+                <div className={styles.stepLabel}>AI processing</div>
               </div>
               <div className={styles.aiFlowArrow}>{'\u2192'}</div>
               <div className={styles.aiFlowStep}>
                 <div className={styles.stepIcon}>{'\uD83D\uDCCB'}</div>
-                <div className={styles.stepLabel}>Notities</div>
+                <div className={styles.stepLabel}>Notes</div>
               </div>
             </div>
           </div>
@@ -629,9 +642,9 @@ export default function Design12() {
       <section id="security-section" className={`${styles.section} ${styles.security}`}>
         <div className={styles.sectionInner}>
           <div className={revealClass(0.6)}>
-            <div className={styles.sectionLabel}>Beveiliging</div>
+            <div className={styles.sectionLabel}>Security</div>
             <h2 className={styles.sectionHeading}>
-              Gebouwd voor de strengste eisen
+              Built for the strictest requirements
             </h2>
           </div>
           <div className={styles.securityGrid}>
@@ -652,9 +665,9 @@ export default function Design12() {
       <section id="quotes-section" className={`${styles.section} ${styles.socialProof}`}>
         <div className={styles.sectionInner}>
           <div className={revealClass(0.7)}>
-            <div className={styles.sectionLabel}>Ervaringen</div>
+            <div className={styles.sectionLabel}>Testimonials</div>
             <h2 className={styles.sectionHeading}>
-              Wat behandelaars zeggen
+              What practitioners say
             </h2>
           </div>
           <div className={styles.quotesGrid}>
@@ -672,9 +685,9 @@ export default function Design12() {
       <section id="pricing-section" className={`${styles.section} ${styles.pricing}`}>
         <div className={styles.sectionInner}>
           <div className={revealClass(0.78)}>
-            <div className={styles.sectionLabel}>Prijzen</div>
+            <div className={styles.sectionLabel}>Pricing</div>
             <h2 className={styles.sectionHeading}>
-              Eerlijk en transparant
+              Fair and transparent
             </h2>
           </div>
           <div className={styles.pricingGrid}>
@@ -702,16 +715,16 @@ export default function Design12() {
       <section id="cta-section" className={styles.ctaSection}>
         <div className={revealClass(0.92)}>
           <h2 className={styles.ctaHeadline}>
-            Klaar om je praktijk te transformeren?
+            Ready to transform your practice?
           </h2>
           <p className={styles.ctaSub}>
-            Probeer Moods 14 dagen gratis. Geen creditcard nodig.
+            Try Moods free for 14 days. No credit card required.
           </p>
           <a href="#" className={styles.ctaButtonLight}>
-            Start gratis
+            Start free
           </a>
           <p className={styles.ctaNote}>
-            Gemiddelde tijdsbesparing: 12 uur per week per behandelaar
+            Average time saved: 12 hours per week per practitioner
           </p>
         </div>
       </section>
