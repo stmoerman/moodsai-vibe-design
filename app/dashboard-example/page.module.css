@@ -792,6 +792,11 @@
   gap: 16px;
 }
 
+/* AskMoody stretches to push Mijn kamer to bottom */
+.rightCol .askMoody {
+  flex: 1;
+}
+
 /* ── AskMoody Widget ── */
 .askMoody {
   background: #f5f2ec;
