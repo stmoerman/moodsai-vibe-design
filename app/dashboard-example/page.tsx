@@ -85,9 +85,15 @@ export default function DashboardExample() {
         </div>
       </header>
 
-      {/* Welcome Strip */}
-      <div className={s.welcomeStrip}>
-        <span className={s.greeting}>{greeting}, Jaime</span>
+      {/* Welcome Hero */}
+      <div className={s.welcomeHero}>
+        <h1 className={s.greeting}>{greeting}, Jaime</h1>
+        <svg className={s.greetingUnderline} width="280" height="12" viewBox="0 0 280 12" aria-hidden="true">
+          <path
+            d="M0,6 C23,1 46,11 70,5 C93,0 116,10 140,4 C163,-1 186,9 210,5 C233,1 256,9 280,6"
+            className={s.greetingUnderlinePath}
+          />
+        </svg>
         <span className={s.dateTime}>{dateStr} &middot; {timeStr}</span>
       </div>
 
