@@ -1,0 +1,926 @@
+/* ===================================================================
+   Dashboard Example 3 — Interactive BI Dashboard
+   Paper-first Design 10 aesthetic + rich data widgets
+   =================================================================== */
+
+/* ── Keyframes ── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes staggerIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Root ── */
+.root {
+  position: relative;
+  background: #eeeae3;
+  min-height: 100vh;
+  font-family: 'Crimson Pro', 'Georgia', serif;
+  color: #3a3a3a;
+  overflow-x: hidden;
+  padding-bottom: 64px;
+}
+
+/* ── Dot-grid ── */
+.dotGrid {
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, #d0cdc6 0.6px, transparent 0.6px);
+  background-size: 20px 20px;
+  pointer-events: none;
+  z-index: 0;
+  animation: fadeIn 0.3s ease both;
+}
+
+/* ── Top Bar (48px) ── */
+.topBar {
+  position: relative;
+  z-index: 10;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  border-bottom: 1px solid #d0cdc6;
+  background: #eeeae3;
+}
+
+.topBarLeft {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #3a3a3a;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+
+.topBarCenter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.liveClock {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  color: #3a3a3a;
+  letter-spacing: 0.04em;
+}
+
+.liveDate {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  color: #7a746e;
+  letter-spacing: 0.04em;
+}
+
+.topBarRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.orgName {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  color: #7a746e;
+  letter-spacing: 0.04em;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #d0cdc6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  color: #3a3a3a;
+  letter-spacing: 0.04em;
+}
+
+/* ── Welcome + Filters Row ── */
+.welcomeRow {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 32px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  animation: slideDown 0.4s ease 0.1s both;
+}
+
+.greeting {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: #8b6d4f;
+  letter-spacing: -0.01em;
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filterPill {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+  padding: 5px 14px;
+  border: 1px solid #d0cdc6;
+  background: transparent;
+  color: #3a3a3a;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  line-height: 1.4;
+}
+
+.filterPill:hover {
+  border-color: #3a3a3a;
+}
+
+.filterPillActive {
+  background: #3a3a3a;
+  color: #eeeae3;
+  border-color: #3a3a3a;
+}
+
+/* ── Widget Grid Area ── */
+.widgetGridArea {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.customizeRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
+.customizeBtn {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border: 1px solid #d0cdc6;
+  background: transparent;
+  color: #7a746e;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.customizeBtn:hover {
+  border-color: #3a3a3a;
+  color: #3a3a3a;
+}
+
+.customizeBtnActive {
+  background: #3a3a3a;
+  color: #eeeae3;
+  border-color: #3a3a3a;
+}
+
+/* ── Widget Grid ── */
+.widgetGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+/* ── Widget Card ── */
+.widget {
+  background: #f5f2ec;
+  border: 1px solid #d0cdc6;
+  padding: 16px 20px;
+  position: relative;
+  animation: staggerIn 0.4s ease both;
+}
+
+.widgetSpan2 {
+  grid-column: span 2;
+}
+
+.widgetSpan3 {
+  grid-column: span 3;
+}
+
+.widgetSpan4 {
+  grid-column: span 4;
+}
+
+.widgetHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.widgetTitle {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #7a746e;
+  margin: 0;
+}
+
+.widgetActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dragHandle {
+  font-size: 0.85rem;
+  color: #d0cdc6;
+  cursor: grab;
+  line-height: 1;
+  user-select: none;
+}
+
+.toggleIcon {
+  font-size: 0.75rem;
+  color: #d0cdc6;
+  cursor: pointer;
+  line-height: 1;
+  user-select: none;
+  transition: color 0.15s;
+}
+
+.toggleIcon:hover {
+  color: #3a3a3a;
+}
+
+.aiButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  font-size: 0.7rem;
+  color: #d0cdc6;
+  cursor: pointer;
+  transition: color 0.15s;
+  line-height: 1;
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+.aiButton:hover {
+  color: #3a3a3a;
+}
+
+.aiTooltip {
+  position: absolute;
+  top: -32px;
+  right: 0;
+  background: #3a3a3a;
+  color: #eeeae3;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+  z-index: 20;
+}
+
+.aiButton:hover .aiTooltip {
+  opacity: 1;
+}
+
+/* ── Stat Widget ── */
+.statValue {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1815;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.statLabel {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7a746e;
+  margin-bottom: 6px;
+}
+
+.statTrend {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  line-height: 1.4;
+}
+
+.trendPositive {
+  color: #5a7268;
+}
+
+.trendWarning {
+  color: #8a6318;
+}
+
+.trendNegative {
+  color: #a33636;
+}
+
+.sparkline {
+  display: block;
+  margin-top: 8px;
+  width: 100%;
+  height: 24px;
+}
+
+.sparklinePath {
+  fill: none;
+  stroke: #3a3a3a;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.4;
+}
+
+/* ── Revenue Chart ── */
+.chartArea {
+  display: flex;
+  flex-direction: column;
+}
+
+.chartContainer {
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  height: 180px;
+  border-bottom: 1px solid #d0cdc6;
+  border-left: 1px solid #d0cdc6;
+  padding: 0 0 0 32px;
+  position: relative;
+}
+
+.yAxis {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0 6px 0 0;
+}
+
+.yLabel {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  color: #7a746e;
+  text-align: right;
+}
+
+.barGroup {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  height: 100%;
+}
+
+.stackedBar {
+  width: 60%;
+  max-width: 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.barSegment {
+  width: 100%;
+  min-height: 2px;
+}
+
+.xLabels {
+  display: flex;
+  padding: 6px 0 0 32px;
+}
+
+.xLabel {
+  flex: 1;
+  text-align: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  color: #7a746e;
+}
+
+.chartLegend {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legendSwatch {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+}
+
+.legendLabel {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  color: #7a746e;
+  letter-spacing: 0.04em;
+}
+
+/* ── Revenue Summary ── */
+.revSummary {
+  display: flex;
+  flex-direction: column;
+}
+
+.revLargeValue {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a1815;
+  margin-bottom: 12px;
+}
+
+.revBreakdownRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 6px 0;
+  border-bottom: 1px solid #e8e4dd;
+}
+
+.revBreakdownRow:last-child {
+  border-bottom: none;
+}
+
+.revBreakdownLabel {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: #3a3a3a;
+}
+
+.revBreakdownValues {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.revBreakdownAmount {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: #3a3a3a;
+  font-weight: 700;
+}
+
+.revBreakdownPct {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.55rem;
+  color: #7a746e;
+}
+
+/* ── Declaration Control ── */
+.declLargeValue {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a1815;
+  margin-bottom: 4px;
+}
+
+.declDeviation {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  color: #8a6318;
+  margin-bottom: 12px;
+}
+
+.declRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  border-bottom: 1px solid #e8e4dd;
+}
+
+.declRow:last-child {
+  border-bottom: none;
+}
+
+.declLabel {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: #7a746e;
+}
+
+.declValue {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: #3a3a3a;
+}
+
+.declFootnote {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.58rem;
+  color: #7a746e;
+  margin-top: 10px;
+  line-height: 1.6;
+}
+
+/* ── Client Flow ── */
+.flowToggles {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+
+.flowToggle {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.04em;
+  padding: 3px 10px;
+  border: 1px solid #d0cdc6;
+  background: transparent;
+  color: #7a746e;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.flowToggleActive {
+  background: #3a3a3a;
+  color: #eeeae3;
+  border-color: #3a3a3a;
+}
+
+.flowChartContainer {
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  height: 120px;
+  border-bottom: 1px solid #d0cdc6;
+  padding-bottom: 0;
+}
+
+.flowBarGroup {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+  height: 100%;
+}
+
+.flowBar {
+  width: 12px;
+  min-height: 4px;
+  transition: height 0.3s ease;
+}
+
+.flowBarInflow {
+  background: #3a3a3a;
+}
+
+.flowBarOutflow {
+  background: #d0cdc6;
+}
+
+.flowXLabels {
+  display: flex;
+  padding: 6px 0 0;
+}
+
+.flowXLabel {
+  flex: 1;
+  text-align: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.55rem;
+  color: #7a746e;
+}
+
+.flowLegend {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+/* ── Data Table ── */
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dataTable thead th {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7a746e;
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid #3a3a3a;
+  font-weight: 400;
+}
+
+.dataTable thead th:not(:first-child) {
+  text-align: right;
+}
+
+.dataTable tbody td {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  color: #3a3a3a;
+  padding: 8px 12px;
+  border-bottom: 1px solid #e8e4dd;
+  text-align: left;
+}
+
+.dataTable tbody td:not(:first-child) {
+  text-align: right;
+}
+
+.dataTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ── Module Cards (Bottom) ── */
+.modulesRow {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 24px auto 0;
+  padding: 0 32px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0;
+  animation: slideUp 0.4s ease 0.4s both;
+}
+
+.moduleTile {
+  border: 1px solid #d0cdc6;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  margin-left: -1px;
+}
+
+.moduleTile:first-child {
+  margin-left: 0;
+}
+
+.moduleTile:hover {
+  background: #f5f2ec;
+  border-color: #b8b4ad;
+  position: relative;
+  z-index: 1;
+}
+
+.moduleTileInactive {
+  opacity: 0.35;
+}
+
+.moduleName {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #3a3a3a;
+  margin-bottom: 4px;
+}
+
+.moduleMetric {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.9rem;
+  color: #1a1815;
+  margin-bottom: 2px;
+}
+
+.moduleTrend {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.58rem;
+  color: #5a7268;
+}
+
+.moduleTrendNeg {
+  color: #a33636;
+}
+
+.moduleIndicator {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  margin-top: 4px;
+}
+
+.moduleActive {
+  background: #5a7268;
+}
+
+.moduleInactive {
+  background: #d0cdc6;
+}
+
+/* ── AskMoody Bottom Bar ── */
+.askMoodyBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background: #f5f2ec;
+  border-top: 1px solid #d0cdc6;
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  z-index: 50;
+  gap: 16px;
+}
+
+.askMoodyLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.askMoodyDot {
+  font-size: 0.8rem;
+  color: #8b6d4f;
+  line-height: 1;
+}
+
+.askMoodyLabel {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: #3a3a3a;
+}
+
+.askMoodyInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.85rem;
+  color: #3a3a3a;
+  outline: none;
+  padding: 0 12px;
+}
+
+.askMoodyInput::placeholder {
+  color: #a09890;
+}
+
+.askMoodyShortcut {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  color: #a09890;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+/* ── Customize mode highlight on widgets ── */
+.widgetCustomizing {
+  box-shadow: inset 0 0 0 1px #b8a898;
+}
+
+/* ── Reveal (IntersectionObserver) ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.revealVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .topBar {
+    padding: 0 16px;
+  }
+
+  .topBarCenter {
+    display: none;
+  }
+
+  .welcomeRow {
+    padding: 16px 16px 8px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .filters {
+    flex-wrap: wrap;
+  }
+
+  .widgetGridArea {
+    padding: 0 16px;
+  }
+
+  .widgetGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .widgetSpan2,
+  .widgetSpan3,
+  .widgetSpan4 {
+    grid-column: span 2;
+  }
+
+  .modulesRow {
+    padding: 0 16px;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .moduleTile:nth-child(n+4) {
+    margin-top: -1px;
+  }
+
+  .askMoodyBar {
+    display: none;
+  }
+
+  .chartContainer {
+    height: 140px;
+  }
+
+  .flowChartContainer {
+    height: 90px;
+  }
+}
+
+@media (max-width: 480px) {
+  .widgetGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .widgetSpan2,
+  .widgetSpan3,
+  .widgetSpan4 {
+    grid-column: span 1;
+  }
+
+  .modulesRow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .dotGrid,
+  .welcomeRow,
+  .widget,
+  .modulesRow,
+  .reveal {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
