@@ -4,3 +4,5 @@ out/
 .env*
 .vercel
 *.log
+.claude/
+tsconfig.tsbuildinfo
