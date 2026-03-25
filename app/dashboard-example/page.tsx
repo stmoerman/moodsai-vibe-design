@@ -240,12 +240,27 @@ export default function DashboardExample() {
             <div className={s.statSub}>2 chats, 1 rapport</div>
           </div>
 
-          <div className={s.quickActions}>
-            <button className={`${s.quickAction} ${s.quickActionAccent}`}>&#10022; Vraag Moody</button>
-            <button className={s.quickAction}>Start videogesprek</button>
-            <button className={s.quickAction}>Mijn cli&euml;nten</button>
-            <button className={s.quickAction}>Dictaat opnemen</button>
-          </div>
+          <section className={s.messagesSection}>
+            <div className={s.messagesHeader}>
+              <h3 className={s.sectionHeading}>Berichten</h3>
+              <span className={s.messageBadge}>2</span>
+            </div>
+            {messages.map((msg, i) => (
+              <div key={i} className={s.messageRow}>
+                <span className={s.messageName}>{msg.name}</span>
+                <span className={s.messagePreview}>{msg.preview}</span>
+                <span className={s.messageTime}>{msg.time}</span>
+              </div>
+            ))}
+            <a href="#" target="_blank" rel="noopener noreferrer" className={s.roomLink}>
+              Mijn kamer
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4.5 1.5H2a.5.5 0 0 0-.5.5v8a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5V7.5" />
+                <path d="M7 1.5h3.5V5" />
+                <path d="M5 7L10.5 1.5" />
+              </svg>
+            </a>
+          </section>
         </div>
 
         {/* Center Column — Interactive Agenda */}
@@ -405,27 +420,6 @@ export default function DashboardExample() {
             ))}
           </section>
 
-          <section className={s.messagesSection}>
-            <div className={s.messagesHeader}>
-              <h3 className={s.sectionHeading}>Berichten</h3>
-              <span className={s.messageBadge}>2</span>
-            </div>
-            {messages.map((msg, i) => (
-              <div key={i} className={s.messageRow}>
-                <span className={s.messageName}>{msg.name}</span>
-                <span className={s.messagePreview}>{msg.preview}</span>
-                <span className={s.messageTime}>{msg.time}</span>
-              </div>
-            ))}
-            <a href="#" target="_blank" rel="noopener noreferrer" className={s.roomLink}>
-              Mijn kamer
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4.5 1.5H2a.5.5 0 0 0-.5.5v8a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5V7.5" />
-                <path d="M7 1.5h3.5V5" />
-                <path d="M5 7L10.5 1.5" />
-              </svg>
-            </a>
-          </section>
         </div>
       </main>
     </div>
