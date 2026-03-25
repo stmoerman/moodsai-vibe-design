@@ -11,131 +11,152 @@ export const metadata: Metadata = {
 export default function DashboardExample2() {
   return (
     <div className={s.root}>
-      <div className={s.container}>
+      {/* Dot-grid background */}
+      <div className={s.dotGrid} aria-hidden="true" />
 
-        {/* ─── Header ─── */}
-        <header className={s.header}>
-          <div className={s.headerBreadcrumb}>
-            <Link href="/">moods.ai</Link> / dashboard
-          </div>
-          <h1 className={s.headerTitle}>Practice Overview</h1>
-          <p className={s.headerSubtitle}>
-            GGZ Horizon &middot; Dr. de Groot &middot; Wednesday, 25 March 2026
+      {/* Scroll progress bar */}
+      <div className={s.progressBar} aria-hidden="true" />
+
+      {/* ── Navigation ── */}
+      <nav className={s.nav}>
+        <Link href="/" className={s.navLogo}>Moods.ai</Link>
+        <ul className={s.navLinks}>
+          <li><Link href="#" className={s.navLink}>Overview</Link></li>
+          <li><Link href="#" className={s.navLink}>Schedule</Link></li>
+          <li><Link href="#" className={s.navLink}>Team</Link></li>
+          <li><Link href="#" className={s.navLink}>Analytics</Link></li>
+          <li><Link href="#" className={s.navLink}>Settings</Link></li>
+        </ul>
+      </nav>
+
+      <div className={s.page}>
+
+        {/* ════════════════════════════════════════════
+            Hero
+        ════════════════════════════════════════════ */}
+        <section className={s.hero}>
+          <p className={s.heroEyebrow}>Practice Overview</p>
+
+          <h1 className={s.heroHeadline}>
+            Good morning, Dr. de Groot
+            <svg
+              className={s.heroUnderline}
+              width="360"
+              height="16"
+              viewBox="0 0 360 16"
+              aria-hidden="true"
+            >
+              <path
+                d="M0,8 C30,2 60,14 90,6 C120,0 150,12 180,4 C210,-2 240,10 270,6 C300,2 330,10 360,8"
+                className={s.underlinePath}
+              />
+            </svg>
+          </h1>
+
+          <p className={s.heroSub}>
+            GGZ Horizon &middot; Wednesday, 25 March 2026
           </p>
-          <p className={s.headerMeta}>2 of 6 modules active</p>
-        </header>
+          <p className={s.heroMeta}>2 of 6 modules active</p>
+        </section>
 
-        {/* ═══════════════════════════════════════════════════════
-            1. GETTING STARTED CHECKLIST
-            ═══════════════════════════════════════════════════════ */}
+        <div className={s.sectionDivider} />
+
+        {/* ════════════════════════════════════════════
+            01 — Begin
+        ════════════════════════════════════════════ */}
         <section className={s.section}>
-          <div className={s.checklistCard}>
-            <div className={s.checklistLabel}>Getting Started</div>
+          <p className={s.sectionLabel}>01 &mdash; Begin</p>
 
-            <div className={s.checklistItem}>
-              <span className={s.checklistIconDone}>&#10003;</span>
-              <div className={s.checklistContent}>
-                <div className={s.checklistTitleDone}>Create your organization</div>
-              </div>
-            </div>
+          <div className={s.checklistDone}>
+            <svg className={s.checkmarkSvg} viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3,12 L9,18 L21,6" className={s.checkPath} />
+            </svg>
+            <span className={s.checklistTextDone}>Create your organization</span>
+          </div>
 
-            <div className={s.checklistItem}>
-              <span className={s.checklistIconDone}>&#10003;</span>
-              <div className={s.checklistContent}>
-                <div className={s.checklistTitleDone}>Invite your first team member</div>
-              </div>
-            </div>
+          <div className={s.checklistDone}>
+            <svg className={s.checkmarkSvg} viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3,12 L9,18 L21,6" className={s.checkPath} />
+            </svg>
+            <span className={s.checklistTextDone}>Invite your first team member</span>
+          </div>
 
-            <div className={s.checklistItemCurrent}>
-              <span className={s.checklistIconCurrent}>&rarr;</span>
-              <div className={s.checklistContent}>
-                <div className={s.checklistTitleCurrent}>Set up a video room</div>
-              </div>
-            </div>
+          <div className={s.checklistCurrent}>
+            <span className={s.checklistIcon}>&rarr;</span>
+            <span className={s.checklistText}>Set up a video room</span>
+          </div>
 
-            <div className={s.checklistItem}>
-              <span className={s.checklistIconUpcoming}>&#9675;</span>
-              <div className={s.checklistContent}>
-                <div className={s.checklistTitleUpcoming}>Try AI chat with AskMoody</div>
-              </div>
-            </div>
+          <div className={s.checklistUpcoming}>
+            <span className={s.checklistIcon}>&#9675;</span>
+            <span className={s.checklistText}>Try AI chat with AskMoody</span>
+          </div>
 
-            <div className={s.checklistItem}>
-              <span className={s.checklistIconUpcoming}>&#9675;</span>
-              <div className={s.checklistContent}>
-                <div className={s.checklistTitleUpcoming}>Explore available modules</div>
-              </div>
-            </div>
-
-            <button className={s.checklistDismiss}>Dismiss</button>
+          <div className={s.checklistUpcoming}>
+            <span className={s.checklistIcon}>&#9675;</span>
+            <span className={s.checklistText}>Explore available modules</span>
           </div>
         </section>
 
-        {/* ═══════════════════════════════════════════════════════
-            2. ACTIVE MODULE CARDS
-            ═══════════════════════════════════════════════════════ */}
+        <div className={s.sectionDivider} />
+
+        {/* ════════════════════════════════════════════
+            02 — Active
+        ════════════════════════════════════════════ */}
         <section className={s.section}>
+          <p className={s.sectionLabel}>02 &mdash; Active</p>
+
           <div className={s.activeModuleGrid}>
             <div className={s.activeModuleCard}>
-              <div className={s.activeModuleLabel}>Core</div>
+              <div className={s.activeModuleName}>Core</div>
               <div className={s.activeModuleStat}>3 team members</div>
               <div className={s.activeModuleTrend}>1 online now</div>
-              <div className={s.activeModuleLinks}>
-                <Link href="#" className={s.activeModuleLink}>AI Chat</Link>
-                <Link href="#" className={s.activeModuleLink}>Members</Link>
-                <Link href="#" className={s.activeModuleLink}>Settings</Link>
-              </div>
             </div>
 
             <div className={s.activeModuleCard}>
-              <div className={s.activeModuleLabel}>Video</div>
+              <div className={s.activeModuleName}>Video</div>
               <div className={s.activeModuleStat}>2 rooms</div>
               <div className={s.activeModuleTrend}>0 active sessions</div>
-              <div className={s.activeModuleLinks}>
-                <Link href="#" className={s.activeModuleLink}>Rooms</Link>
-                <Link href="#" className={s.activeModuleLink}>Start call</Link>
-                <Link href="#" className={s.activeModuleLink}>Transcripts</Link>
-              </div>
             </div>
           </div>
         </section>
 
-        {/* ═══════════════════════════════════════════════════════
-            3. RECENT ACTIVITY
-            ═══════════════════════════════════════════════════════ */}
-        <section className={s.section}>
-          <h2 className={s.sectionTitle}>Activity</h2>
+        <div className={s.sectionDivider} />
 
-          <div className={s.activityList}>
-            <div className={s.activityRow}>
-              <span className={s.activityText}>Organization created</span>
-              <span className={s.activityTime}>1d ago</span>
-            </div>
-            <div className={s.activityRow}>
-              <span className={s.activityText}>Dr. de Groot joined as owner</span>
-              <span className={s.activityTime}>1d ago</span>
-            </div>
-            <div className={s.activityRow}>
-              <span className={s.activityText}>Video room &lsquo;Therapy A&rsquo; created</span>
-              <span className={s.activityTime}>5h ago</span>
-            </div>
-            <div className={s.activityRow}>
-              <span className={s.activityText}>M. Bakker invited to team</span>
-              <span className={s.activityTime}>3h ago</span>
-            </div>
-            <div className={s.activityRow}>
-              <span className={s.activityText}>AskMoody: first conversation</span>
-              <span className={s.activityTime}>1h ago</span>
-            </div>
+        {/* ════════════════════════════════════════════
+            03 — Recent
+        ════════════════════════════════════════════ */}
+        <section className={s.section}>
+          <p className={s.sectionLabel}>03 &mdash; Recent</p>
+
+          <div className={s.activityRow}>
+            <span className={s.activityText}>Organization created</span>
+            <span className={s.activityTime}>1d ago</span>
+          </div>
+          <div className={s.activityRow}>
+            <span className={s.activityText}>Dr. de Groot joined as owner</span>
+            <span className={s.activityTime}>1d ago</span>
+          </div>
+          <div className={s.activityRow}>
+            <span className={s.activityText}>Video room &lsquo;Therapy A&rsquo; created</span>
+            <span className={s.activityTime}>5h ago</span>
+          </div>
+          <div className={s.activityRow}>
+            <span className={s.activityText}>M. Bakker invited to team</span>
+            <span className={s.activityTime}>3h ago</span>
+          </div>
+          <div className={s.activityRow}>
+            <span className={s.activityText}>AskMoody: first conversation</span>
+            <span className={s.activityTime}>1h ago</span>
           </div>
         </section>
 
-        {/* ═══════════════════════════════════════════════════════
-            4. ASKMOODY
-            ═══════════════════════════════════════════════════════ */}
+        <div className={s.sectionDivider} />
+
+        {/* ════════════════════════════════════════════
+            04 — Ask
+        ════════════════════════════════════════════ */}
         <section className={s.section}>
-          <h2 className={s.sectionTitle}>AskMoody</h2>
-          <p className={s.sectionDesc}>Ask anything about your practice</p>
+          <p className={s.sectionLabel}>04 &mdash; Ask</p>
 
           <input
             type="text"
@@ -146,58 +167,61 @@ export default function DashboardExample2() {
           <div className={s.askMeta}>Powered by AI</div>
         </section>
 
-        {/* ═══════════════════════════════════════════════════════
-            5. AVAILABLE MODULES
-            ═══════════════════════════════════════════════════════ */}
+        <div className={s.sectionDivider} />
+
+        {/* ════════════════════════════════════════════
+            05 — Discover
+        ════════════════════════════════════════════ */}
         <section className={s.section}>
-          <h2 className={s.sectionTitle}>Available Modules</h2>
-          <p className={s.sectionDesc}>
-            Activate additional modules to unlock more features for your practice.
-          </p>
+          <p className={s.sectionLabel}>05 &mdash; Discover</p>
 
           <div className={s.availableModuleGrid}>
             <div className={s.availableModuleCard}>
-              <div className={s.availableModuleLabel}>HCI</div>
+              <div className={s.availableModuleName}>HCI</div>
               <div className={s.availableModuleTitle}>Practice management &amp; HR</div>
               <p className={s.availableModuleDesc}>
                 Connect your HCI system for employee data, declarability tracking, leave management, and HR features.
               </p>
-              <Link href="#" className={s.availableModuleActivate}>Activate module &rarr;</Link>
+              <Link href="#" className={s.availableModuleActivate}>Activate &rarr;</Link>
             </div>
 
             <div className={s.availableModuleCard}>
-              <div className={s.availableModuleLabel}>BI</div>
+              <div className={s.availableModuleName}>BI</div>
               <div className={s.availableModuleTitle}>Dashboards &amp; analytics</div>
               <p className={s.availableModuleDesc}>
                 Revenue insights, custom KPI dashboards, reports, and financial control for your practice.
               </p>
-              <Link href="#" className={s.availableModuleActivate}>Activate module &rarr;</Link>
+              <Link href="#" className={s.availableModuleActivate}>Activate &rarr;</Link>
             </div>
 
             <div className={s.availableModuleCard}>
-              <div className={s.availableModuleLabel}>Care</div>
+              <div className={s.availableModuleName}>Care</div>
               <div className={s.availableModuleTitle}>Client communication</div>
               <p className={s.availableModuleDesc}>
                 Encrypted care chat, eHealth content, client onboarding pipeline, and referral processing.
               </p>
-              <Link href="#" className={s.availableModuleActivate}>Activate module &rarr;</Link>
+              <Link href="#" className={s.availableModuleActivate}>Activate &rarr;</Link>
             </div>
 
             <div className={s.availableModuleCard}>
-              <div className={s.availableModuleLabel}>Newsletter</div>
+              <div className={s.availableModuleName}>Newsletter</div>
               <div className={s.availableModuleTitle}>Team communication</div>
               <p className={s.availableModuleDesc}>
                 Create and distribute internal newsletters with approval workflows and read tracking.
               </p>
-              <Link href="#" className={s.availableModuleActivate}>Activate module &rarr;</Link>
+              <Link href="#" className={s.availableModuleActivate}>Activate &rarr;</Link>
             </div>
           </div>
         </section>
 
-        {/* ═══════════════════════════════════════════════════════
-            6. ENABLED MODULES SUMMARY
-            ═══════════════════════════════════════════════════════ */}
+        <div className={s.sectionDivider} />
+
+        {/* ════════════════════════════════════════════
+            06 — Status
+        ════════════════════════════════════════════ */}
         <section className={s.section}>
+          <p className={s.sectionLabel}>06 &mdash; Status</p>
+
           <div className={s.moduleSummary}>
             <div className={s.moduleSummaryItem}>
               <span className={s.moduleDotActive} />
@@ -226,8 +250,12 @@ export default function DashboardExample2() {
           </div>
         </section>
 
-        {/* ─── Footer ─── */}
-        <div className={s.footer}>Moods AI &middot; Amsterdam</div>
+        <div className={s.sectionDivider} />
+
+        {/* ── Footer ── */}
+        <footer className={s.footer}>
+          <p className={s.footerText}>Moods AI &middot; Amsterdam</p>
+        </footer>
 
       </div>
     </div>

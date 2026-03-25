@@ -1,226 +1,277 @@
 /* ===================================================================
-   Moods AI Dashboard — CSS Module
-   Matched to DesignSystem.module.css: same palette, fonts, rhythm
+   Dashboard Example 1 — Design 10 "The Remarkable"
+   Dot-grid paper, pencil-grey, Crimson Pro serif
    =================================================================== */
 
-/* ===== Layout ===== */
+/* ── Root & dot-grid ── */
 .root {
-  background-color: #E7E1D5;
+  position: relative;
+  background: #eeeae3;
   min-height: 100vh;
-  padding: 64px 24px 128px;
+  font-family: 'Crimson Pro', 'Georgia', serif;
+  color: #3a3a3a;
+  overflow-x: hidden;
 }
 
-.container {
-  max-width: 960px;
+.dotGrid {
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, #d0cdc6 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Scroll progress bar ── */
+.progressBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 0%;
+  background: #3a3a3a;
+  z-index: 101;
+}
+
+/* ── Navigation ── */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  height: 56px;
+  background: #eeeae3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 48px;
+  border-bottom: 1px solid #d0cdc6;
+}
+
+.navLogo {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: #3a3a3a;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+
+.navLinks {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navLink {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: #3a3a3a;
+  text-decoration: none;
+  opacity: 0.65;
+  transition: opacity 0.15s;
+}
+
+.navLink:hover {
+  opacity: 1;
+}
+
+/* ── Page wrapper ── */
+.page {
+  position: relative;
+  z-index: 1;
+  padding-top: 56px;
+}
+
+/* ── Hero ── */
+.hero {
+  padding: 22vh 72px 16vh;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
-/* ===== Header ===== */
-.header {
-  margin-bottom: 80px;
-  padding-bottom: 48px;
-  border-bottom: 1px solid #CBBDB9;
-}
-
-.headerBreadcrumb {
+.heroEyebrow {
   font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  color: #6b625c;
-  letter-spacing: 0.05em;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #3a3a3a;
+  opacity: 0.5;
   margin-bottom: 32px;
 }
 
-.headerBreadcrumb a {
-  color: #6b625c;
-  text-decoration: none;
-  transition: color 0.15s;
-}
-
-.headerBreadcrumb a:hover {
-  color: #423C38;
-}
-
-.headerTitle {
-  font-family: 'EB Garamond', serif;
-  font-size: clamp(2.5rem, 5vw, 3.5rem);
-  font-weight: 400;
-  font-style: italic;
-  color: #423C38;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-  margin-bottom: 16px;
-}
-
-.headerSubtitle {
+.heroHeadline {
   font-family: 'Crimson Pro', serif;
-  font-size: 1.125rem;
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
   font-weight: 400;
-  color: #4e565e;
-  line-height: 1.6;
-  max-width: 640px;
-}
-
-.headerMeta {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  color: #6b625c;
-  margin-top: 24px;
-  letter-spacing: 0.03em;
-}
-
-/* ===== Sections ===== */
-.section {
-  margin-bottom: 80px;
-  padding-top: 48px;
-  border-top: 1px solid #CBBDB9;
-}
-
-.sectionTitle {
-  font-family: 'EB Garamond', serif;
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  font-weight: 400;
-  font-style: italic;
-  color: #423C38;
+  line-height: 1.15;
+  color: #3a3a3a;
   letter-spacing: -0.01em;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
+  position: relative;
+  display: inline-block;
 }
 
-.sectionDesc {
-  font-family: 'Crimson Pro', serif;
-  font-size: 1rem;
-  color: #4e565e;
-  line-height: 1.6;
-  margin-bottom: 24px;
+.heroUnderline {
+  display: block;
+  margin-top: 4px;
+  overflow: visible;
 }
 
-/* ===== Key Metrics ===== */
-.statsGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+.underlinePath {
+  fill: none;
+  stroke: #3a3a3a;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.statCard {
-  background: #f2eee9;
-  border: 1px solid #CBBDB9;
-  padding: 24px;
+.heroSub {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.78rem;
+  line-height: 1.85;
+  color: #3a3a3a;
+  opacity: 0.5;
+  margin-top: 24px;
+}
+
+/* ── Section divider ── */
+.sectionDivider {
+  width: 100%;
+  height: 1px;
+  background: #d0cdc6;
+  margin: 0;
+}
+
+/* ── Section label ("01 — Name") ── */
+.sectionLabel {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #3a3a3a;
+  opacity: 0.5;
+  margin-bottom: 48px;
+}
+
+/* ── Generic section ── */
+.section {
+  padding: 96px 72px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ── Key Metrics ── */
+.statsRow {
+  display: flex;
+  align-items: flex-start;
+}
+
+.stat {
+  flex: 1;
+  padding: 0 32px;
+}
+
+.stat:first-child {
+  padding-left: 0;
+}
+
+.stat:last-child {
+  padding-right: 0;
+}
+
+.statDivider {
+  width: 1px;
+  align-self: stretch;
+  background: #d0cdc6;
+  flex-shrink: 0;
 }
 
 .statLabel {
   font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: #6b625c;
+  font-size: 0.65rem;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
-  margin-bottom: 8px;
+  letter-spacing: 0.18em;
+  color: #3a3a3a;
+  opacity: 0.5;
+  margin-bottom: 12px;
 }
 
 .statValue {
-  font-family: 'Space Mono', monospace;
-  font-size: 2rem;
-  font-weight: 700;
-  color: #423C38;
-  margin-bottom: 4px;
+  font-family: 'Crimson Pro', serif;
+  font-size: 2.5rem;
+  font-weight: 400;
+  color: #3a3a3a;
+  line-height: 1.1;
+  margin-bottom: 8px;
 }
 
 .statTrend {
   font-family: 'Space Mono', monospace;
   font-size: 0.75rem;
-  font-weight: 500;
+  color: #3a3a3a;
+  opacity: 0.5;
 }
 
-.statTrendUp {
-  composes: statTrend;
-  color: #3d5c4f;
-}
-
-.statTrendWarning {
-  composes: statTrend;
-  color: #8a6318;
-}
-
-/* ===== Schedule Table ===== */
-.tableWrap {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.dataTable {
+/* ── Schedule Table ── */
+.scheduleTable {
   width: 100%;
   border-collapse: collapse;
 }
 
-.dataTable th {
+.scheduleTable th {
   font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: #6b625c;
+  font-size: 0.65rem;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.18em;
+  color: #3a3a3a;
+  opacity: 0.5;
   text-align: left;
-  padding: 12px 16px;
-  border-bottom: 1px solid #CBBDB9;
+  padding: 14px 16px;
+  border-bottom: 1px solid #d0cdc6;
+  font-weight: 400;
 }
 
-.dataTable td {
+.scheduleTable td {
   font-family: 'Crimson Pro', serif;
-  font-size: 0.9375rem;
-  color: #423C38;
-  padding: 12px 16px;
-  border-bottom: 1px solid #CBBDB9;
+  font-size: 1rem;
+  color: #3a3a3a;
+  padding: 14px 16px;
+  border-bottom: 1px solid #d0cdc6;
 }
 
-.dataTable tr:last-child td {
+.scheduleTable tr:last-child td {
   border-bottom: none;
 }
 
+.statusConfirmed {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  color: #3a3a3a;
+  opacity: 0.5;
+}
+
+.statusPending {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  color: #3a3a3a;
+  opacity: 1;
+}
+
 .tdMuted {
-  color: #CBBDB9 !important;
+  opacity: 0.3;
 }
 
-/* Badges */
-.badgeSuccess {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.75rem;
-  font-weight: 500;
-  padding: 4px 10px;
-  display: inline-block;
-  background: rgba(90, 114, 104, 0.12);
-  color: #3d5c4f;
-}
-
-.badgeWarning {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.75rem;
-  font-weight: 500;
-  padding: 4px 10px;
-  display: inline-block;
-  background: rgba(196, 140, 40, 0.1);
-  color: #8a6318;
-}
-
-.badgeDefault {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.75rem;
-  font-weight: 500;
-  padding: 4px 10px;
-  display: inline-block;
-  background: #E7E1D5;
-  color: #4e565e;
-}
-
-/* ===== Activity ===== */
-.activityList {
-  width: 100%;
-  border-collapse: collapse;
-}
-
+/* ── Activity ── */
 .activityRow {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
-  border-bottom: 1px solid #CBBDB9;
+  padding: 14px 0;
+  border-bottom: 1px solid #d0cdc6;
 }
 
 .activityRow:last-child {
@@ -230,51 +281,49 @@
 .activityText {
   flex: 1;
   font-family: 'Crimson Pro', serif;
-  font-size: 0.9375rem;
-  color: #423C38;
+  font-size: 1rem;
+  color: #3a3a3a;
 }
 
 .activityTime {
   font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  color: #6b625c;
+  font-size: 0.65rem;
+  color: #3a3a3a;
+  opacity: 0.5;
   flex-shrink: 0;
   margin-left: 24px;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.08em;
 }
 
-/* ===== AskMoody ===== */
+/* ── AskMoody ── */
 .askInput {
   width: 100%;
-  background: #E7E1D5;
-  border: 1px solid #CBBDB9;
+  background: transparent;
+  border: 1px solid #d0cdc6;
   border-radius: 0;
-  padding: 10px 14px;
+  padding: 14px 18px;
   font-family: 'Crimson Pro', serif;
   font-size: 1rem;
-  color: #423C38;
+  color: #3a3a3a;
   outline: none;
-  transition: border-color 0.15s;
   box-sizing: border-box;
 }
 
-.askInput:focus {
-  border-color: #2559F4;
-}
-
 .askInput::placeholder {
-  color: #7a7873;
+  color: #3a3a3a;
+  opacity: 0.4;
 }
 
 .askMeta {
   font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  color: #6b625c;
+  font-size: 0.62rem;
+  color: #3a3a3a;
+  opacity: 0.3;
   margin-top: 12px;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.08em;
 }
 
-/* ===== Modules ===== */
+/* ── Modules ── */
 .moduleGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -282,96 +331,96 @@
 }
 
 .moduleCard {
-  background: #f2eee9;
-  border: 1px solid #CBBDB9;
-  padding: 24px;
+  border: 1px solid #d0cdc6;
+  background: transparent;
+  padding: 28px 24px;
 }
 
-.moduleCardActive {
+.moduleCardInactive {
   composes: moduleCard;
-  border-left: 2px solid #2559F4;
+  opacity: 0.4;
 }
 
 .moduleHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .moduleName {
   font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: #6b625c;
+  font-size: 0.65rem;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.18em;
+  color: #3a3a3a;
+  font-weight: 400;
+}
+
+.moduleStatus {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  color: #3a3a3a;
+  opacity: 0.5;
+  letter-spacing: 0.08em;
 }
 
 .moduleDesc {
   font-family: 'Crimson Pro', serif;
-  font-size: 0.875rem;
-  color: #4e565e;
+  font-size: 1rem;
+  color: #3a3a3a;
+  opacity: 0.65;
   line-height: 1.5;
 }
 
-.moduleStatusActive {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: #3d5c4f;
-  letter-spacing: 0.03em;
-}
-
-.moduleStatusInactive {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: #6b625c;
-  letter-spacing: 0.03em;
-}
-
-/* ===== Footer ===== */
+/* ── Footer ── */
 .footer {
-  padding: 80px 0 0;
+  position: relative;
+  padding: 48px 72px 40px;
   text-align: center;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  color: #6b625c;
-  letter-spacing: 0.03em;
 }
 
-/* ===== Mobile ===== */
+.footerText {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  color: #3a3a3a;
+  opacity: 0.3;
+  text-transform: uppercase;
+}
+
+/* ── Mobile ── */
 @media (max-width: 768px) {
-  .root {
-    padding: 32px 16px 64px;
+  .nav {
+    padding: 0 24px;
   }
 
-  .header {
-    margin-bottom: 64px;
-  }
-
-  .headerTitle {
-    font-size: 2.5rem;
+  .hero {
+    padding: 14vh 24px 10vh;
   }
 
   .section {
-    margin-bottom: 64px;
+    padding: 64px 24px;
   }
 
-  .statsGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
+  .statsRow {
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .stat {
+    padding: 0;
+  }
+
+  .statDivider {
+    display: none;
   }
 
   .moduleGrid {
     grid-template-columns: 1fr;
   }
 
-  .tableWrap {
-    margin-left: -16px;
-    margin-right: -16px;
-    padding-left: 16px;
-    padding-right: 16px;
+  .footer {
+    padding: 48px 24px 40px;
   }
 }

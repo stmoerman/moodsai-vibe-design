@@ -1,202 +1,243 @@
 /* ===================================================================
-   Moods AI Dashboard 2 — Modular Dashboard for New Orgs
-   Matched to DesignSystem.module.css: same palette, fonts, rhythm
+   Dashboard Example 2 — Design 10 "The Remarkable"
+   New org, minimal modules. Dot-grid paper, pencil-grey, Crimson Pro.
    =================================================================== */
 
-/* ===== Layout ===== */
+/* ── Root & dot-grid ── */
 .root {
-  background-color: #E7E1D5;
+  position: relative;
+  background: #eeeae3;
   min-height: 100vh;
-  padding: 64px 24px 128px;
+  font-family: 'Crimson Pro', 'Georgia', serif;
+  color: #3a3a3a;
+  overflow-x: hidden;
 }
 
-.container {
-  max-width: 960px;
-  margin: 0 auto;
+.dotGrid {
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, #d0cdc6 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: 0;
 }
 
-/* ===== Header ===== */
-.header {
-  margin-bottom: 80px;
-  padding-bottom: 48px;
-  border-bottom: 1px solid #CBBDB9;
+/* ── Scroll progress bar ── */
+.progressBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 0%;
+  background: #3a3a3a;
+  z-index: 101;
 }
 
-.headerBreadcrumb {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  color: #6b625c;
-  letter-spacing: 0.05em;
-  margin-bottom: 32px;
-}
-
-.headerBreadcrumb a {
-  color: #6b625c;
-  text-decoration: none;
-  transition: color 0.15s;
-}
-
-.headerBreadcrumb a:hover {
-  color: #423C38;
-}
-
-.headerTitle {
-  font-family: 'EB Garamond', serif;
-  font-size: clamp(2.5rem, 5vw, 3.5rem);
-  font-weight: 400;
-  font-style: italic;
-  color: #423C38;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-  margin-bottom: 16px;
-}
-
-.headerSubtitle {
-  font-family: 'Crimson Pro', serif;
-  font-size: 1.125rem;
-  font-weight: 400;
-  color: #4e565e;
-  line-height: 1.6;
-  max-width: 640px;
-}
-
-.headerMeta {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  color: #6b625c;
-  margin-top: 24px;
-  letter-spacing: 0.03em;
-}
-
-/* ===== Sections ===== */
-.section {
-  margin-bottom: 80px;
-  padding-top: 48px;
-  border-top: 1px solid #CBBDB9;
-}
-
-.sectionTitle {
-  font-family: 'EB Garamond', serif;
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  font-weight: 400;
-  font-style: italic;
-  color: #423C38;
-  letter-spacing: -0.01em;
-  margin-bottom: 12px;
-}
-
-.sectionDesc {
-  font-family: 'Crimson Pro', serif;
-  font-size: 1rem;
-  color: #4e565e;
-  line-height: 1.6;
-  margin-bottom: 24px;
-}
-
-/* ===== Getting Started Checklist ===== */
-.checklistCard {
-  background: #f2eee9;
-  border: 1px solid #CBBDB9;
-  padding: 32px;
-}
-
-.checklistLabel {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: #6b625c;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  margin-bottom: 24px;
-}
-
-.checklistItem {
+/* ── Navigation ── */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  height: 56px;
+  background: #eeeae3;
   display: flex;
-  align-items: flex-start;
-  padding: 14px 16px;
-  border-bottom: 1px solid #CBBDB9;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 48px;
+  border-bottom: 1px solid #d0cdc6;
 }
 
-.checklistItem:last-of-type {
-  border-bottom: none;
-}
-
-.checklistIcon {
-  flex-shrink: 0;
-  width: 20px;
-  margin-right: 16px;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.8rem;
-  line-height: 1.5;
-}
-
-.checklistIconDone {
-  composes: checklistIcon;
-  color: #3d5c4f;
-}
-
-.checklistIconCurrent {
-  composes: checklistIcon;
-  color: #2559F4;
-}
-
-.checklistIconUpcoming {
-  composes: checklistIcon;
-  color: #CBBDB9;
-}
-
-.checklistContent {
-  flex: 1;
-}
-
-.checklistTitle {
+.navLogo {
   font-family: 'Crimson Pro', serif;
-  font-size: 0.9375rem;
-  color: #423C38;
-  line-height: 1.5;
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: #3a3a3a;
+  letter-spacing: 0.02em;
+  text-decoration: none;
 }
 
-.checklistTitleDone {
-  composes: checklistTitle;
-  color: #6b625c;
-  text-decoration: line-through;
-}
-
-.checklistTitleCurrent {
-  composes: checklistTitle;
-  color: #423C38;
-  font-weight: 500;
-}
-
-.checklistTitleUpcoming {
-  composes: checklistTitle;
-  color: #6b625c;
-}
-
-.checklistItemCurrent {
-  composes: checklistItem;
-  border-left: 3px solid #2559F4;
-  margin-left: -16px;
-  padding-left: 29px;
-}
-
-.checklistDismiss {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  color: #6b625c;
-  letter-spacing: 0.03em;
-  margin-top: 20px;
-  cursor: pointer;
-  background: none;
-  border: none;
+.navLinks {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+  margin: 0;
   padding: 0;
 }
 
-.checklistDismiss:hover {
-  color: #423C38;
+.navLink {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: #3a3a3a;
+  text-decoration: none;
+  opacity: 0.65;
+  transition: opacity 0.15s;
 }
 
-/* ===== Active Module Stat Cards ===== */
+.navLink:hover {
+  opacity: 1;
+}
+
+/* ── Page wrapper ── */
+.page {
+  position: relative;
+  z-index: 1;
+  padding-top: 56px;
+}
+
+/* ── Hero ── */
+.hero {
+  padding: 22vh 72px 16vh;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.heroEyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #3a3a3a;
+  opacity: 0.5;
+  margin-bottom: 32px;
+}
+
+.heroHeadline {
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  font-weight: 400;
+  line-height: 1.15;
+  color: #3a3a3a;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+  position: relative;
+  display: inline-block;
+}
+
+.heroUnderline {
+  display: block;
+  margin-top: 4px;
+  overflow: visible;
+}
+
+.underlinePath {
+  fill: none;
+  stroke: #3a3a3a;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.heroSub {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.78rem;
+  line-height: 1.85;
+  color: #3a3a3a;
+  opacity: 0.5;
+  margin-top: 24px;
+}
+
+.heroMeta {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  color: #3a3a3a;
+  opacity: 0.65;
+  margin-top: 12px;
+  letter-spacing: 0.04em;
+}
+
+/* ── Section divider ── */
+.sectionDivider {
+  width: 100%;
+  height: 1px;
+  background: #d0cdc6;
+  margin: 0;
+}
+
+/* ── Section label ── */
+.sectionLabel {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #3a3a3a;
+  opacity: 0.5;
+  margin-bottom: 48px;
+}
+
+/* ── Generic section ── */
+.section {
+  padding: 96px 72px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ── Checklist ── */
+.checklistItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid #d0cdc6;
+}
+
+.checklistItem:last-child {
+  border-bottom: none;
+}
+
+.checklistDone {
+  composes: checklistItem;
+  opacity: 0.4;
+}
+
+.checklistCurrent {
+  composes: checklistItem;
+  opacity: 1;
+}
+
+.checklistUpcoming {
+  composes: checklistItem;
+  opacity: 0.5;
+}
+
+.checklistIcon {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+  width: 20px;
+  color: #3a3a3a;
+}
+
+.checklistText {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1rem;
+  color: #3a3a3a;
+  line-height: 1.5;
+}
+
+.checklistTextDone {
+  composes: checklistText;
+  text-decoration: line-through;
+}
+
+/* Hand-drawn SVG checkmark */
+.checkmarkSvg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.checkPath {
+  fill: none;
+  stroke: #3a3a3a;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ── Active Module Cards ── */
 .activeModuleGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -204,68 +245,42 @@
 }
 
 .activeModuleCard {
-  background: #f2eee9;
-  border: 1px solid #CBBDB9;
-  border-left: 2px solid #2559F4;
-  padding: 24px;
+  border: 1px solid #d0cdc6;
+  background: transparent;
+  padding: 28px 24px;
 }
 
-.activeModuleLabel {
+.activeModuleName {
   font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: #6b625c;
+  font-size: 0.65rem;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.18em;
+  color: #3a3a3a;
   margin-bottom: 12px;
 }
 
 .activeModuleStat {
-  font-family: 'Space Mono', monospace;
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #423C38;
-  margin-bottom: 4px;
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: #3a3a3a;
+  line-height: 1.1;
+  margin-bottom: 8px;
 }
 
 .activeModuleTrend {
   font-family: 'Space Mono', monospace;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #3d5c4f;
-  margin-bottom: 16px;
+  font-size: 0.72rem;
+  color: #3a3a3a;
+  opacity: 0.5;
 }
 
-.activeModuleLinks {
-  display: flex;
-  gap: 20px;
-  padding-top: 12px;
-  border-top: 1px solid #CBBDB9;
-}
-
-.activeModuleLink {
-  font-family: 'Crimson Pro', serif;
-  font-size: 0.875rem;
-  color: #6b625c;
-  text-decoration: none;
-  transition: color 0.15s;
-}
-
-.activeModuleLink:hover {
-  color: #423C38;
-}
-
-/* ===== Activity ===== */
-.activityList {
-  width: 100%;
-  border-collapse: collapse;
-}
-
+/* ── Activity ── */
 .activityRow {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
-  border-bottom: 1px solid #CBBDB9;
+  padding: 14px 0;
+  border-bottom: 1px solid #d0cdc6;
 }
 
 .activityRow:last-child {
@@ -275,51 +290,49 @@
 .activityText {
   flex: 1;
   font-family: 'Crimson Pro', serif;
-  font-size: 0.9375rem;
-  color: #423C38;
+  font-size: 1rem;
+  color: #3a3a3a;
 }
 
 .activityTime {
   font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  color: #6b625c;
+  font-size: 0.65rem;
+  color: #3a3a3a;
+  opacity: 0.5;
   flex-shrink: 0;
   margin-left: 24px;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.08em;
 }
 
-/* ===== AskMoody ===== */
+/* ── AskMoody ── */
 .askInput {
   width: 100%;
-  background: #E7E1D5;
-  border: 1px solid #CBBDB9;
+  background: transparent;
+  border: 1px solid #d0cdc6;
   border-radius: 0;
-  padding: 10px 14px;
+  padding: 14px 18px;
   font-family: 'Crimson Pro', serif;
   font-size: 1rem;
-  color: #423C38;
+  color: #3a3a3a;
   outline: none;
-  transition: border-color 0.15s;
   box-sizing: border-box;
 }
 
-.askInput:focus {
-  border-color: #2559F4;
-}
-
 .askInput::placeholder {
-  color: #7a7873;
+  color: #3a3a3a;
+  opacity: 0.4;
 }
 
 .askMeta {
   font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  color: #6b625c;
+  font-size: 0.62rem;
+  color: #3a3a3a;
+  opacity: 0.3;
   margin-top: 12px;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.08em;
 }
 
-/* ===== Available Modules (Disabled) ===== */
+/* ── Available Modules (dashed border) ── */
 .availableModuleGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -327,70 +340,70 @@
 }
 
 .availableModuleCard {
-  background: #E7E1D5;
-  border: 1px dashed #CBBDB9;
-  padding: 24px;
+  border: 1px dashed #d0cdc6;
+  background: transparent;
+  padding: 28px 24px;
 }
 
-.availableModuleLabel {
+.availableModuleName {
   font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: #6b625c;
+  font-size: 0.65rem;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.18em;
+  color: #3a3a3a;
   margin-bottom: 8px;
 }
 
 .availableModuleTitle {
-  font-family: 'EB Garamond', serif;
-  font-size: 1.25rem;
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.2rem;
   font-weight: 400;
-  font-style: italic;
-  color: #423C38;
+  color: #3a3a3a;
   margin-bottom: 8px;
 }
 
 .availableModuleDesc {
   font-family: 'Crimson Pro', serif;
-  font-size: 0.875rem;
-  color: #4e565e;
+  font-size: 1rem;
+  color: #3a3a3a;
+  opacity: 0.6;
   line-height: 1.5;
   margin-bottom: 16px;
 }
 
 .availableModuleActivate {
   font-family: 'Space Mono', monospace;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #2559F4;
+  font-size: 0.72rem;
+  color: #3a3a3a;
   text-decoration: none;
-  letter-spacing: 0.03em;
-  transition: color 0.15s;
+  letter-spacing: 0.08em;
+  opacity: 1;
+  transition: opacity 0.15s;
 }
 
 .availableModuleActivate:hover {
-  color: #1a3fb0;
+  opacity: 0.65;
 }
 
-/* ===== Enabled Modules Summary ===== */
+/* ── Module Status (dots row) ── */
 .moduleSummary {
   display: flex;
   flex-wrap: wrap;
-  gap: 24px;
-  padding: 20px 0;
+  gap: 32px;
+  padding: 8px 0;
 }
 
 .moduleSummaryItem {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .moduleDotActive {
   width: 8px;
   height: 8px;
-  background: #3d5c4f;
+  border-radius: 50%;
+  background: #3a3a3a;
   display: inline-block;
   flex-shrink: 0;
 }
@@ -398,7 +411,8 @@
 .moduleDotInactive {
   width: 8px;
   height: 8px;
-  border: 1px solid #CBBDB9;
+  border-radius: 50%;
+  border: 1px solid #d0cdc6;
   display: inline-block;
   flex-shrink: 0;
   box-sizing: border-box;
@@ -406,43 +420,44 @@
 
 .moduleSummaryName {
   font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: #423C38;
-  letter-spacing: 0.05em;
+  font-size: 0.65rem;
+  color: #3a3a3a;
+  letter-spacing: 0.08em;
 }
 
 .moduleSummaryNameMuted {
   composes: moduleSummaryName;
-  color: #CBBDB9;
+  opacity: 0.4;
 }
 
-/* ===== Footer ===== */
+/* ── Footer ── */
 .footer {
-  padding: 80px 0 0;
+  position: relative;
+  padding: 48px 72px 40px;
   text-align: center;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  color: #6b625c;
-  letter-spacing: 0.03em;
 }
 
-/* ===== Mobile ===== */
+.footerText {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  color: #3a3a3a;
+  opacity: 0.3;
+  text-transform: uppercase;
+}
+
+/* ── Mobile ── */
 @media (max-width: 768px) {
-  .root {
-    padding: 32px 16px 64px;
+  .nav {
+    padding: 0 24px;
   }
 
-  .header {
-    margin-bottom: 64px;
-  }
-
-  .headerTitle {
-    font-size: 2.5rem;
+  .hero {
+    padding: 14vh 24px 10vh;
   }
 
   .section {
-    margin-bottom: 64px;
+    padding: 64px 24px;
   }
 
   .activeModuleGrid {
@@ -454,10 +469,10 @@
   }
 
   .moduleSummary {
-    gap: 16px;
+    gap: 20px;
   }
 
-  .checklistCard {
-    padding: 24px 16px;
+  .footer {
+    padding: 48px 24px 40px;
   }
 }
