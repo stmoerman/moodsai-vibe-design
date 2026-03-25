@@ -1,0 +1,546 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&display=swap');
+
+/* ═══════════════════════════════════════════
+   Design 01 — The Manifesto
+   Snap-scroll, story-first SaaS homepage
+   ═══════════════════════════════════════════ */
+
+.container {
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+}
+
+.section {
+  min-height: 100vh;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 4rem 2rem;
+  background: #f5f2ed;
+  color: #1a1a1a;
+  overflow: hidden;
+}
+
+/* Paper grain texture overlay */
+.grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.04;
+  z-index: 0;
+}
+
+.sectionInner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ── Typography ──────────────────────────── */
+
+.headline {
+  font-family: 'EB Garamond', serif;
+  font-weight: 500;
+  font-size: clamp(2.4rem, 5vw, 4.2rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #1a1a1a;
+}
+
+.body {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 300;
+  font-size: clamp(0.85rem, 1.2vw, 1rem);
+  line-height: 1.7;
+  color: #444;
+}
+
+.mono {
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.accent {
+  color: #c44;
+}
+
+.accentGreen {
+  color: #6a8a6a;
+}
+
+/* ── Animations ─────────────────────────── */
+
+.fadeInUp {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.fadeInUp.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Character stagger for hero headline */
+.charSpan {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(40px);
+  animation: charReveal 0.6s ease forwards;
+}
+
+@keyframes charReveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ══════════════════════════════════════════
+   Section 1: HERO
+   ══════════════════════════════════════════ */
+
+.hero {
+  text-align: center;
+}
+
+.heroHeadline {
+  font-family: 'EB Garamond', serif;
+  font-weight: 500;
+  font-size: clamp(2.6rem, 6vw, 5rem);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  margin-bottom: 2rem;
+  color: #1a1a1a;
+}
+
+.heroSubline {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 300;
+  font-size: clamp(0.85rem, 1.1vw, 1rem);
+  color: #666;
+  margin-bottom: 3rem;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.counterBlock {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.counterNumber {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 500;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  color: #c44;
+  font-variant-numeric: tabular-nums;
+}
+
+.counterLabel {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 300;
+  font-size: 0.85rem;
+  color: #888;
+}
+
+/* ══════════════════════════════════════════
+   Section 2: THE PROBLEM (split timeline)
+   ══════════════════════════════════════════ */
+
+.splitScreen {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  width: 100%;
+}
+
+.splitColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.splitTitle {
+  font-family: 'EB Garamond', serif;
+  font-weight: 500;
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.timeSlot {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 300;
+  font-size: 0.82rem;
+}
+
+.timeLabel {
+  flex-shrink: 0;
+  width: 4.5rem;
+  color: #888;
+}
+
+.taskLabel {
+  color: #1a1a1a;
+}
+
+.taskAdmin {
+  color: #c44;
+  font-weight: 400;
+}
+
+.taskClient {
+  color: #6a8a6a;
+  font-weight: 400;
+}
+
+/* ══════════════════════════════════════════
+   Section 3: THE SOLUTION
+   ══════════════════════════════════════════ */
+
+.solutionCenter {
+  text-align: center;
+}
+
+.solutionHeadline {
+  font-family: 'EB Garamond', serif;
+  font-weight: 500;
+  font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+  margin-bottom: 0.5rem;
+}
+
+.solutionSubline {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 300;
+  font-size: 0.9rem;
+  color: #888;
+  margin-bottom: 3rem;
+}
+
+.toolGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+  max-width: 700px;
+  margin: 0 auto 2.5rem;
+}
+
+.toolLabel {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 400;
+  font-size: 0.75rem;
+  padding: 0.65rem 0.5rem;
+  border: 1px solid #d0ccc5;
+  border-radius: 4px;
+  text-align: center;
+  background: transparent;
+  color: #666;
+  transition: all 0.6s ease;
+}
+
+.toolLabel.converged {
+  border-color: #c44;
+  color: #c44;
+  background: rgba(204, 68, 68, 0.04);
+}
+
+.convergeTarget {
+  display: inline-block;
+  font-family: 'EB Garamond', serif;
+  font-weight: 600;
+  font-size: 1.6rem;
+  color: #c44;
+  margin-top: 0.5rem;
+}
+
+/* ══════════════════════════════════════════
+   Section 4: AI DOCUMENTATION
+   ══════════════════════════════════════════ */
+
+.aiDocSection {
+  text-align: center;
+}
+
+.waveformContainer {
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  gap: 3px;
+  height: 80px;
+  margin: 2.5rem auto;
+}
+
+.waveBar {
+  width: 3px;
+  background: #c44;
+  border-radius: 2px;
+  animation: waveAnim 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes waveAnim {
+  0% { height: 15%; }
+  100% { height: 90%; }
+}
+
+.reportBlock {
+  max-width: 550px;
+  margin: 0 auto 2rem;
+  text-align: left;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 300;
+  font-size: 0.82rem;
+  line-height: 1.8;
+  color: #555;
+  padding: 1.5rem;
+  border: 1px solid #e0dcd5;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.reportLine {
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.reportLine.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.statBig {
+  font-family: 'EB Garamond', serif;
+  font-weight: 500;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  color: #c44;
+  margin-top: 1rem;
+}
+
+.statCaption {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 300;
+  font-size: 0.8rem;
+  color: #888;
+}
+
+/* ══════════════════════════════════════════
+   Section 5: SECURITY
+   ══════════════════════════════════════════ */
+
+.securityGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  max-width: 750px;
+  margin: 2.5rem auto 0;
+}
+
+.complianceCard {
+  padding: 1.5rem;
+  border: 1px solid #d0ccc5;
+  border-radius: 6px;
+  text-align: center;
+  background: transparent;
+  transition: border-color 0.3s ease;
+}
+
+.complianceCard:hover {
+  border-color: #c44;
+}
+
+.complianceTitle {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: #1a1a1a;
+  margin-bottom: 0.4rem;
+}
+
+.complianceDesc {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 300;
+  font-size: 0.72rem;
+  color: #888;
+  line-height: 1.5;
+}
+
+/* ══════════════════════════════════════════
+   Section 6: PRICING
+   ══════════════════════════════════════════ */
+
+.pricingGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  max-width: 850px;
+  margin: 2.5rem auto 0;
+}
+
+.pricingCard {
+  padding: 2rem 1.5rem;
+  border: 1px solid #d0ccc5;
+  border-radius: 8px;
+  text-align: center;
+  background: transparent;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.pricingCard:hover {
+  border-color: #1a1a1a;
+  transform: translateY(-3px);
+}
+
+.pricingCardFeatured {
+  border-color: #c44;
+}
+
+.pricingName {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 500;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #888;
+  margin-bottom: 1rem;
+}
+
+.pricingPrice {
+  font-family: 'EB Garamond', serif;
+  font-weight: 500;
+  font-size: 2.8rem;
+  color: #1a1a1a;
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+
+.pricingUnit {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 300;
+  font-size: 0.75rem;
+  color: #888;
+  margin-bottom: 1.5rem;
+}
+
+.pricingFeature {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 300;
+  font-size: 0.78rem;
+  color: #666;
+  padding: 0.3rem 0;
+}
+
+/* ══════════════════════════════════════════
+   Section 7: CTA
+   ══════════════════════════════════════════ */
+
+.ctaSection {
+  text-align: center;
+}
+
+.ctaHeadline {
+  font-family: 'EB Garamond', serif;
+  font-weight: 500;
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  margin-bottom: 2rem;
+  color: #1a1a1a;
+}
+
+.ctaButton {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 500;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  padding: 1rem 2.5rem;
+  background: #1a1a1a;
+  color: #f5f2ed;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  text-decoration: none;
+}
+
+.ctaButton:hover {
+  background: #c44;
+  transform: translateY(-2px);
+}
+
+/* ══════════════════════════════════════════
+   MOBILE (< 768px)
+   ══════════════════════════════════════════ */
+
+@media (max-width: 767px) {
+  .container {
+    scroll-snap-type: none;
+  }
+
+  .section {
+    min-height: 100vh;
+    height: auto;
+    padding: 3rem 1.25rem;
+  }
+
+  .heroHeadline {
+    font-size: 2.2rem;
+  }
+
+  .splitScreen {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .toolGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .securityGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .pricingGrid {
+    grid-template-columns: 1fr;
+    max-width: 340px;
+  }
+}
+
+/* ══════════════════════════════════════════
+   Reduced motion
+   ══════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .charSpan {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  .fadeInUp {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .waveBar {
+    animation: none !important;
+    height: 50% !important;
+  }
+
+  .reportLine {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
