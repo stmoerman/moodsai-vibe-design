@@ -26,7 +26,7 @@
 }
 
 .welcomeBarText {
-  font-size: 11.5px;
+  font-size: 11px;
   color: #4e565e;
   font-weight: 400;
   letter-spacing: 0.01em;
@@ -49,7 +49,7 @@
   border: none;
   padding: 5px 14px;
   border-radius: 0;
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 500;
   cursor: pointer;
   font-family: inherit;
@@ -64,7 +64,7 @@
   border: 1px solid #c5c9d0;
   padding: 5px 14px;
   border-radius: 0;
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 400;
   cursor: pointer;
   font-family: inherit;
@@ -81,7 +81,7 @@
 
 /* ── Sidebar ── */
 .sidebar {
-  width: 240px;
+  width: 220px;
   background: #1f1c16;
   flex-shrink: 0;
   display: flex;
@@ -190,16 +190,16 @@
 
 /* ── Dashboard header ── */
 .dashHeader {
-  padding: 24px 28px 0;
+  padding: 28px 24px 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .dashTitle {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 500;
   color: #454647;
   letter-spacing: -0.02em;
 }
@@ -256,7 +256,7 @@
   background: #5a7268;
   color: #fff;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -267,15 +267,15 @@
 .dashGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  padding: 0 28px 24px;
+  gap: 12px;
+  padding: 0 24px 24px;
 }
 
 .widgetCard {
   background: #fff;
   border-radius: 0;
   border: 1px solid #e2ded8;
-  padding: 18px 20px;
+  padding: 16px 18px;
   position: relative;
   overflow: hidden;
 }
@@ -291,8 +291,8 @@
 }
 
 .widgetTitle {
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 10px;
+  font-weight: 500;
   color: #959ead;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -301,7 +301,7 @@
 
 .widgetValue {
   font-family: 'Space Mono', monospace;
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 700;
   color: #454647;
   line-height: 1;
@@ -417,6 +417,15 @@
 .apptStatusConfirmed { color: #5a7268; }
 .apptStatusPending { color: #c48c28; }
 
+/* ── Appointments count ── */
+.apptCount {
+  font-family: 'Space Mono', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: #454647;
+  margin-bottom: 8px;
+}
+
 /* ── AskMoody chat ── */
 .chatPanel {
   display: flex;
@@ -427,7 +436,7 @@
 .chatBubble {
   background: #f0f8f3;
   border: 1px solid rgba(90,114,104,0.2);
-  border-radius: 10px 10px 10px 2px;
+  border-radius: 0;
   padding: 10px 12px;
   font-size: 12.5px;
   color: #2a4a35;
@@ -543,7 +552,7 @@
   align-items: center;
   justify-content: center;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   color: #fff;
 }
 
@@ -617,18 +626,18 @@
 .gaugeTargetNum {
   font-family: 'Space Mono', monospace;
   color: #c48c28;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 /* ── Feature tabs ── */
 .featureTabs {
-  padding: 0 28px 0;
+  padding: 0 24px 0;
   margin-bottom: 0;
 }
 
 .tabList {
   display: flex;
-  gap: 4px;
+  gap: 2px;
   border-bottom: 1px solid #ddd9d3;
   padding-bottom: 0;
   overflow-x: auto;
@@ -637,9 +646,9 @@
 .tabList::-webkit-scrollbar { display: none; }
 
 .tab {
-  padding: 9px 16px;
-  font-size: 12.5px;
-  font-weight: 500;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 400;
   color: #959ead;
   cursor: pointer;
   border: none;
@@ -656,22 +665,23 @@
 .tabActive {
   composes: tab;
   color: #5a7268;
+  font-weight: 500;
   border-bottom-color: #5a7268;
 }
 
 .tabContent {
-  padding-top: 20px;
+  padding-top: 24px;
 }
 
 /* ── Settings / Under the Hood ── */
 .section {
-  padding: 28px 28px;
+  padding: 24px 24px;
   border-top: 1px solid #ddd9d3;
 }
 
 .sectionTitle {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   color: #454647;
   margin-bottom: 4px;
   letter-spacing: -0.01em;
@@ -681,6 +691,23 @@
   font-size: 11.5px;
   color: #959ead;
   margin-bottom: 20px;
+}
+
+/* Under the Hood grid */
+.hoodGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.auditLogTitle {
+  font-size: 12px;
+  font-weight: 500;
+  color: #959ead;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
 }
 
 .settingsPanel {
@@ -709,6 +736,7 @@
   font-size: 13px;
   width: 20px;
   text-align: center;
+  color: #959ead;
 }
 
 .settingsName {
@@ -752,7 +780,7 @@
 .toggleCheck {
   font-size: 11px;
   color: #5a7268;
-  font-weight: 600;
+  font-weight: 500;
   font-family: 'Space Mono', monospace;
 }
 
@@ -776,6 +804,10 @@
   display: grid;
   grid-template-columns: 140px 1fr 100px;
   gap: 12px;
+}
+
+.auditHeaderRight {
+  text-align: right;
 }
 
 .auditRow {
@@ -803,7 +835,7 @@
 .pricingGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 12px;
 }
 
 .planCard {
@@ -857,7 +889,7 @@
 
 .planBadge {
   font-size: 9.5px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   padding: 3px 8px;
@@ -878,7 +910,7 @@
 
 .planName {
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
   color: #454647;
   margin-bottom: 4px;
 }
@@ -956,14 +988,14 @@
 /* ── CTA ── */
 .ctaSection {
   background: #1f1c16;
-  padding: 56px 28px;
+  padding: 44px 24px;
   text-align: center;
   margin-top: 0;
 }
 
 .ctaHeadline {
   font-size: clamp(1.6rem, 3.5vw, 2.4rem);
-  font-weight: 600;
+  font-weight: 500;
   color: #fff;
   letter-spacing: -0.03em;
   margin-bottom: 8px;
@@ -991,6 +1023,556 @@
   transition: background 0.15s;
 }
 .ctaBtn:hover { background: #4a6258; }
+
+/* ── AI Docs Panel ── */
+.docTagRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.docTag {
+  background: #f0f8f3;
+  border: 1px solid rgba(90,114,104,0.2);
+  border-radius: 0;
+  padding: 4px 10px;
+  font-size: 11.5px;
+  color: #5a7268;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.docListItem {
+  padding: 8px 0;
+  font-size: 12px;
+  color: #4e565e;
+  display: flex;
+  justify-content: space-between;
+}
+
+.docListItemBorder {
+  composes: docListItem;
+  border-bottom: 1px solid #ebe7e1;
+}
+
+.docViewLink {
+  color: #5a7268;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.insightsText {
+  font-size: 12.5px;
+  color: #4e565e;
+  line-height: 1.6;
+}
+
+.insightsHighlight {
+  color: #5a7268;
+  font-family: 'Space Mono', monospace;
+}
+
+/* ── Scheduling Panel ── */
+.scheduleWrap {
+  padding: 0 24px 24px;
+}
+
+.scheduleTable {
+  background: #fff;
+  border-radius: 0;
+  border: 1px solid #e2ded8;
+  overflow: hidden;
+}
+
+.scheduleHeaderRow {
+  display: grid;
+  grid-template-columns: 60px repeat(5, 1fr);
+  border-bottom: 1px solid #ebe7e1;
+}
+
+.scheduleHeaderEmpty {
+  padding: 10px 12px;
+  font-size: 10px;
+  color: #b0b7c1;
+}
+
+.scheduleHeaderDay {
+  padding: 10px 12px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #4e565e;
+  border-left: 1px solid #ebe7e1;
+  text-align: center;
+  font-family: 'Space Mono', monospace;
+}
+
+.scheduleSlotRow {
+  display: grid;
+  grid-template-columns: 60px repeat(5, 1fr);
+  border-bottom: 1px solid #f5f1ec;
+}
+
+.scheduleTimeLabel {
+  padding: 8px 12px;
+  font-size: 10.5px;
+  color: #b0b7c1;
+  font-family: 'Space Mono', monospace;
+  display: flex;
+  align-items: center;
+}
+
+.scheduleCell {
+  border-left: 1px solid #f5f1ec;
+  padding: 4px 8px;
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+}
+
+.scheduleApptConfirmed {
+  background: rgba(74,124,89,0.1);
+  border: 1px solid rgba(74,124,89,0.25);
+  border-radius: 0;
+  padding: 3px 7px;
+  font-size: 10.5px;
+  color: #5a7268;
+  font-weight: 500;
+  width: 100%;
+}
+
+.scheduleApptPending {
+  background: rgba(196,140,40,0.1);
+  border: 1px solid rgba(196,140,40,0.28);
+  border-radius: 0;
+  padding: 3px 7px;
+  font-size: 10.5px;
+  color: #c48c28;
+  font-weight: 500;
+  width: 100%;
+}
+
+/* ── HR Leave Panel ── */
+.leaveList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.leaveRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #f5f1ec;
+  border-radius: 0;
+  border: 1px solid #e8e4de;
+}
+
+.leaveName {
+  font-size: 13px;
+  font-weight: 500;
+  color: #454647;
+}
+
+.leaveDetail {
+  font-size: 11.5px;
+  color: #959ead;
+  margin-top: 2px;
+}
+
+.leaveActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.statusBadgePending {
+  font-size: 10.5px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 0;
+  background: rgba(196,140,40,0.1);
+  color: #c48c28;
+}
+
+.statusBadgeApproved {
+  font-size: 10.5px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 0;
+  background: rgba(90,114,104,0.1);
+  color: #5a7268;
+}
+
+.btnApprove {
+  background: #5a7268;
+  color: #fff;
+  border: none;
+  border-radius: 0;
+  padding: 4px 10px;
+  font-size: 11px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.btnDeny {
+  background: transparent;
+  color: #9c4040;
+  border: 1px solid #f0c0c0;
+  border-radius: 0;
+  padding: 4px 10px;
+  font-size: 11px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.availabilityList {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 4px;
+}
+
+.availabilityRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.availabilityName {
+  font-size: 12px;
+  color: #4e565e;
+  width: 100px;
+  flex-shrink: 0;
+}
+
+.availabilityBarTrack {
+  flex: 1;
+  height: 6px;
+  background: #ebe7e1;
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.availabilityBarFill {
+  height: 100%;
+  border-radius: 0;
+}
+
+.availabilityDays {
+  width: 30px;
+  font-size: 10.5px;
+  font-family: 'Space Mono', monospace;
+  text-align: right;
+}
+
+.headcountBreakdown {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.headcountRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #4e565e;
+}
+
+.headcountValue {
+  font-family: 'Space Mono', monospace;
+  font-weight: 500;
+  color: #454647;
+}
+
+/* ── Analytics Panel ── */
+.analyticsBigValue {
+  font-family: 'Space Mono', monospace;
+  font-size: 24px;
+  font-weight: 700;
+  color: #5a7268;
+  margin-bottom: 2px;
+}
+
+.analyticsTrend {
+  font-size: 11.5px;
+  color: #5a7268;
+  margin-bottom: 12px;
+}
+
+.analyticsSvg {
+  width: 100%;
+  height: 60px;
+}
+
+.analyticsChartLabels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: #b0b7c1;
+}
+
+.declarabilityValue {
+  font-family: 'Space Mono', monospace;
+  font-size: 24px;
+  font-weight: 700;
+  color: #c48c28;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.declarabilityTarget {
+  text-align: center;
+  font-size: 11px;
+  color: #959ead;
+  margin-top: 2px;
+}
+
+.declarabilityList {
+  margin: 12px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.declarabilityRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.declarabilityLabel {
+  width: 28px;
+  font-size: 10px;
+  color: #b0b7c1;
+  font-family: 'Space Mono', monospace;
+}
+
+.declarabilityBarTrack {
+  flex: 1;
+  height: 5px;
+  background: #ebe7e1;
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.declarabilityBarFill {
+  height: 100%;
+  border-radius: 0;
+}
+
+.declarabilityPercent {
+  width: 30px;
+  font-size: 10px;
+  color: #4e565e;
+  font-family: 'Space Mono', monospace;
+  text-align: right;
+}
+
+.sessionsDetail {
+  margin-top: 14px;
+  font-size: 12px;
+  color: #4e565e;
+  line-height: 1.7;
+}
+
+.sessionsHighlightGreen {
+  color: #5a7268;
+  font-family: 'Space Mono', monospace;
+}
+
+.sessionsHighlightRed {
+  color: #9c4040;
+  font-family: 'Space Mono', monospace;
+}
+
+.sessionsHighlightDefault {
+  font-family: 'Space Mono', monospace;
+}
+
+.outcomesDetail {
+  margin-top: 10px;
+  font-size: 11px;
+  color: #959ead;
+  line-height: 1.6;
+}
+
+.outcomesHighlight {
+  color: #5a7268;
+  font-family: 'Space Mono', monospace;
+  font-weight: 500;
+}
+
+.timeSavingsDetail {
+  margin-top: 10px;
+  font-size: 11px;
+  color: #959ead;
+  line-height: 1.6;
+}
+
+.timeSavingsHighlight {
+  color: #5a7268;
+  font-family: 'Space Mono', monospace;
+  font-weight: 500;
+}
+
+/* ── Communication Panel ── */
+.chatMessages {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.chatMessageRow {
+  display: flex;
+  gap: 10px;
+}
+
+.chatMsgAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.chatMsgAvatarText {
+  font-size: 11px;
+}
+
+.chatMsgAvatarBot {
+  font-size: 13px;
+}
+
+.chatMsgHeader {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin-bottom: 3px;
+}
+
+.chatMsgFrom {
+  font-size: 12px;
+  font-weight: 500;
+  color: #454647;
+}
+
+.chatMsgTime {
+  font-size: 10px;
+  color: #b0b7c1;
+  font-family: 'Space Mono', monospace;
+}
+
+.chatMsgBubble {
+  font-size: 12.5px;
+  padding: 8px 11px;
+  border-radius: 0;
+  line-height: 1.5;
+}
+
+.chatMsgBubbleUser {
+  composes: chatMsgBubble;
+  color: #4e565e;
+  background: #f5f1ec;
+}
+
+.chatMsgBubbleBot {
+  composes: chatMsgBubble;
+  color: #5a7268;
+  background: rgba(90,114,104,0.07);
+}
+
+.videoRoomList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.videoRoomItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  background: #f5f1ec;
+  border-radius: 0;
+  border: 1px solid #e8e4de;
+}
+
+.videoRoomName {
+  font-size: 12px;
+  font-weight: 500;
+  color: #454647;
+}
+
+.videoRoomWho {
+  font-size: 11px;
+  color: #959ead;
+  margin-top: 1px;
+}
+
+.statusActive {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 0;
+  background: rgba(90,114,104,0.1);
+  color: #5a7268;
+}
+
+.statusWaiting {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 0;
+  background: rgba(196,140,40,0.1);
+  color: #c48c28;
+}
+
+.statusIdle {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 0;
+  background: #ebe7e1;
+  color: #b0b7c1;
+}
+
+.channelItem {
+  padding: 7px 0;
+  font-size: 12px;
+  color: #4e565e;
+  font-weight: 400;
+  display: flex;
+  justify-content: space-between;
+}
+
+.channelItemBorder {
+  composes: channelItem;
+  border-bottom: 1px solid #ebe7e1;
+}
+
+.channelItemActive {
+  color: #5a7268;
+  font-weight: 500;
+}
+
+.channelBadge {
+  background: #9c4040;
+  color: #fff;
+  font-size: 9px;
+  border-radius: 0;
+  padding: 1px 6px;
+  font-weight: 500;
+}
 
 /* ── Mobile ── */
 @media (max-width: 768px) {
@@ -1068,6 +1650,10 @@
 
   .apptGrid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hoodGrid {
+    grid-template-columns: 1fr;
   }
 }
 
