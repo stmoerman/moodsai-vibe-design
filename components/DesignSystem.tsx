@@ -106,12 +106,15 @@ export default function DesignSystem() {
 
         {/* ─── Header ─── */}
         <header className={s.header}>
-          <Link href="/" className={s.headerBackLink}>&larr; Back to Gallery</Link>
-          <h1 className={s.headerTitle}>Moods AI Design System</h1>
+          <div className={s.headerBreadcrumb}>
+            <Link href="/">moods.ai</Link> / design-system
+          </div>
+          <h1 className={s.headerTitle}>Design System</h1>
           <p className={s.headerSubtitle}>
             Visual guidelines for the Moods AI platform. Derived from reMarkable&apos;s paper-first
             philosophy. Sharp corners, generous whitespace, restrained color.
           </p>
+          <p className={s.headerMeta}>Last updated March 2026 · v1.0</p>
         </header>
 
         {/* ═══════════════════════════════════════════════════════

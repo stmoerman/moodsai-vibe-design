@@ -17,30 +17,34 @@
 
 /* ===== Header ===== */
 .header {
-  margin-bottom: 96px;
+  margin-bottom: 80px;
+  padding-bottom: 48px;
+  border-bottom: 1px solid #CBBDB9;
 }
 
-.headerBackLink {
-  display: inline-block;
+.headerBreadcrumb {
   font-family: 'Space Mono', monospace;
   font-size: 0.7rem;
-  font-weight: 500;
+  color: #8a7e79;
+  letter-spacing: 0.05em;
+  margin-bottom: 32px;
+}
+
+.headerBreadcrumb a {
   color: #8a7e79;
   text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  margin-bottom: 32px;
   transition: color 0.15s;
 }
 
-.headerBackLink:hover {
+.headerBreadcrumb a:hover {
   color: #423C38;
 }
 
 .headerTitle {
   font-family: 'EB Garamond', serif;
-  font-size: 3.5rem;
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
   font-weight: 400;
+  font-style: italic;
   color: #423C38;
   letter-spacing: -0.02em;
   line-height: 1.1;
@@ -56,20 +60,29 @@
   max-width: 640px;
 }
 
+.headerMeta {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  color: #8a7e79;
+  margin-top: 24px;
+  letter-spacing: 0.03em;
+}
+
 /* ===== Sections ===== */
 .section {
-  margin-bottom: 96px;
+  margin-bottom: 80px;
+  padding-top: 48px;
+  border-top: 1px solid #CBBDB9;
 }
 
 .sectionTitle {
   font-family: 'EB Garamond', serif;
-  font-size: 1.8rem;
+  font-size: clamp(1.5rem, 3vw, 2rem);
   font-weight: 400;
+  font-style: italic;
   color: #423C38;
   letter-spacing: -0.01em;
-  margin-bottom: 32px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #CBBDB9;
+  margin-bottom: 12px;
 }
 
 .sectionSubtitle {
