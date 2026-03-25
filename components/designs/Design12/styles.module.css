@@ -42,7 +42,7 @@
   font-size: 0.7rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #CBBDB9;
+  color: #8a7e79;
   margin-bottom: 16px;
 }
 
@@ -156,7 +156,7 @@
 .heroSub {
   font-family: 'Space Mono', monospace;
   font-size: 0.9rem;
-  color: #CBBDB9;
+  color: #8a7e79;
   line-height: 1.7;
   margin: 0 auto 48px;
   max-width: 500px;
@@ -266,7 +266,7 @@
   letter-spacing: 0.15em;
   text-transform: uppercase;
   margin-bottom: 24px;
-  color: #CBBDB9;
+  color: #8a7e79;
 }
 
 .xMark {
@@ -312,7 +312,7 @@
 
 .collapseHeading em {
   font-style: italic;
-  color: #CBBDB9;
+  color: #8a7e79;
 }
 
 .toolScatter {
@@ -342,7 +342,7 @@
 /* When parent gets .visible, children collapse to grid */
 .toolScatter.visible .toolLabel {
   transform: translate(0, 0) rotate(0deg);
-  color: #CBBDB9;
+  color: #8a7e79;
 }
 
 /* Strikethrough ::after animates in */
@@ -468,7 +468,7 @@
 
 .cardBullets li::before {
   content: '\2013\00a0';
-  color: #CBBDB9;
+  color: #8a7e79;
 }
 
 /* ======================================
@@ -514,12 +514,12 @@
 .statArrow {
   font-size: 0.6em;
   margin: 0 4px;
-  color: #CBBDB9;
+  color: #8a7e79;
 }
 
 .statSuffix {
   font-size: 0.5em;
-  color: #CBBDB9;
+  color: #8a7e79;
 }
 
 .statLabel {
@@ -642,7 +642,7 @@
 .cursor::after {
   content: '\2588';
   animation: blink 0.6s steps(2) infinite;
-  color: #CBBDB9;
+  color: #8a7e79;
   font-size: 0.85em;
 }
 
@@ -833,7 +833,7 @@
   font-size: 0.7rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #CBBDB9;
+  color: #8a7e79;
 }
 
 /* ======================================
@@ -908,7 +908,7 @@
 
 .planPeriod {
   font-size: 1rem;
-  color: #CBBDB9;
+  color: #8a7e79;
 }
 
 .planDesc {
