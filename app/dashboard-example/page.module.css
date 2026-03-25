@@ -8,8 +8,8 @@
   right: 0;
   z-index: 100;
   height: 48px;
-  background: #ffffff;
-  border-bottom: 1px solid #e8e6e3;
+  background: #f2eee9;
+  border-bottom: 1px solid #CBBDB9;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -20,7 +20,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 16px;
   font-weight: 500;
-  color: #000000;
+  color: #423C38;
 }
 
 .navRight {
@@ -33,25 +33,25 @@
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #999;
+  color: #6b625c;
 }
 
 .navAvatar {
   width: 32px;
   height: 32px;
-  background: #f5f5f3;
+  background: #f2eee9;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Inter', sans-serif;
   font-size: 12px;
   font-weight: 500;
-  color: #000000;
+  color: #423C38;
 }
 
 /* ===== Main ===== */
 .main {
-  background: #ffffff;
+  background: #E7E1D5;
   min-height: 100vh;
   padding-top: 48px;
 }
@@ -67,7 +67,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #999;
+  color: #6b625c;
   margin-bottom: 8px;
 }
 
@@ -75,7 +75,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 32px;
   font-weight: 400;
-  color: #000000;
+  color: #423C38;
   letter-spacing: -0.02em;
 }
 
@@ -105,7 +105,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 12px;
   font-weight: 400;
-  color: #999;
+  color: #6b625c;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   margin-bottom: 12px;
@@ -115,7 +115,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 40px;
   font-weight: 600;
-  color: #000000;
+  color: #423C38;
   font-variant-numeric: tabular-nums;
   line-height: 1.1;
   margin-bottom: 8px;
@@ -125,7 +125,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 13px;
   font-weight: 400;
-  color: #999;
+  color: #6b625c;
 }
 
 .statTrendPositive {
@@ -138,7 +138,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 24px;
   font-weight: 400;
-  color: #000000;
+  color: #423C38;
   margin-bottom: 4px;
 }
 
@@ -146,7 +146,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #999;
+  color: #6b625c;
 }
 
 .spacer24 {
@@ -162,7 +162,7 @@
   display: flex;
   align-items: center;
   padding: 14px 0;
-  border-bottom: 1px solid #f5f5f3;
+  border-bottom: 1px solid #f2eee9;
 }
 
 .scheduleTime {
@@ -171,7 +171,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #999;
+  color: #6b625c;
 }
 
 .scheduleClient {
@@ -179,12 +179,12 @@
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #000000;
+  color: #423C38;
 }
 
 .scheduleClientMuted {
   composes: scheduleClient;
-  color: #e8e6e3;
+  color: #CBBDB9;
 }
 
 .scheduleTherapist {
@@ -193,7 +193,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #999;
+  color: #6b625c;
 }
 
 .scheduleStatus {
@@ -203,7 +203,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 13px;
   font-weight: 400;
-  color: #999;
+  color: #6b625c;
 }
 
 .scheduleStatusPending {
@@ -213,7 +213,7 @@
 
 .scheduleStatusAvailable {
   composes: scheduleStatus;
-  color: #e8e6e3;
+  color: #CBBDB9;
 }
 
 /* ===== Activity ===== */
@@ -221,7 +221,7 @@
   display: flex;
   align-items: center;
   padding: 12px 0;
-  border-bottom: 1px solid #f5f5f3;
+  border-bottom: 1px solid #f2eee9;
 }
 
 .activityText {
@@ -229,14 +229,14 @@
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #000000;
+  color: #423C38;
 }
 
 .activityTime {
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #999;
+  color: #6b625c;
   flex-shrink: 0;
   margin-left: 24px;
 }
@@ -245,19 +245,19 @@
 .askInput {
   width: 100%;
   height: 48px;
-  border: 1px solid #e8e6e3;
-  background: #ffffff;
+  border: 1px solid #CBBDB9;
+  background: #f2eee9;
   padding: 0 16px;
   font-family: 'Inter', sans-serif;
   font-size: 15px;
   font-weight: 400;
-  color: #000000;
+  color: #423C38;
   outline: none;
   box-sizing: border-box;
 }
 
 .askInput::placeholder {
-  color: #ccc;
+  color: #CBBDB9;
 }
 
 .askInput:focus {
@@ -268,7 +268,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 12px;
   font-weight: 400;
-  color: #ccc;
+  color: #CBBDB9;
   text-align: right;
   margin-top: 8px;
 }
@@ -281,9 +281,9 @@
 }
 
 .moduleCard {
-  border: 1px solid #e8e6e3;
+  border: 1px solid #CBBDB9;
   padding: 24px;
-  background: #ffffff;
+  background: #f2eee9;
 }
 
 .moduleCardActive {
@@ -301,14 +301,14 @@
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #000000;
+  color: #423C38;
 }
 
 .moduleDesc {
   font-family: 'Inter', sans-serif;
   font-size: 13px;
   font-weight: 400;
-  color: #999;
+  color: #6b625c;
   margin-top: 4px;
   line-height: 1.5;
 }
@@ -324,7 +324,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 13px;
   font-weight: 400;
-  color: #ccc;
+  color: #CBBDB9;
 }
 
 /* ===== Footer ===== */
@@ -334,7 +334,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 12px;
   font-weight: 400;
-  color: #ccc;
+  color: #CBBDB9;
 }
 
 /* ===== Mobile ===== */
