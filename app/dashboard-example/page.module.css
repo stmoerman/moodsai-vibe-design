@@ -991,21 +991,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  background: #f5f2ec;
-  border: 1px solid #d0cdc6;
-  padding: 14px 20px;
+  gap: 10px;
+  background: #3a3a3a;
+  border: 1px solid #3a3a3a;
+  padding: 24px 20px;
   font-family: 'Space Mono', monospace;
-  font-size: 0.8rem;
-  color: #3a3a3a;
+  font-size: 1rem;
+  color: #eeeae3;
   text-decoration: none;
-  letter-spacing: 0.02em;
-  transition: background 0.15s ease, color 0.15s ease;
+  letter-spacing: 0.04em;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
 .roomLinkCard:hover {
-  background: #3a3a3a;
-  color: #eeeae3;
+  background: #8b6d4f;
+  border-color: #8b6d4f;
 }
 
 /* ── Mobile ── */
