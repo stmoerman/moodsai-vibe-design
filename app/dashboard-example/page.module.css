@@ -1804,6 +1804,15 @@
     order: 3;
   }
 
+  /* Directe Tijd: single column on mobile */
+  .directeTijdGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .tabContent {
+    padding: 16px 16px 32px;
+  }
+
   /* Chat views: stack vertically on mobile */
   .teamchatsView {
     grid-template-columns: 1fr;
