@@ -221,7 +221,7 @@ export default function Design06() {
       `}</style>
       <div className="d06">
         <header className="d06-header">
-          <div className="d06-logo">Moots.ai</div>
+          <div className="d06-logo">Moods.ai</div>
           <div className="d06-header-center">Transcription</div>
           <div className="d06-header-right">
             <a href="#">Features</a>
@@ -257,7 +257,7 @@ export default function Design06() {
         </main>
         <footer className="d06-footer">
           <span>Design 06 — Nordic</span>
-          <span>moots.ai</span>
+          <span>moods.ai</span>
           <span style={{textAlign:'right'}}>Live · Offline · Private</span>
         </footer>
       </div>

@@ -218,7 +218,7 @@ export default function Design05() {
       `}</style>
       <div className="d05">
         <nav className="d05-nav">
-          <div className="d05-logo">moots.ai</div>
+          <div className="d05-logo">moods.ai</div>
           <div className="d05-nav-links">
             <a href="#">Product</a>
             <a href="#">Pricing</a>

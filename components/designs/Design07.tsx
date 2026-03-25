@@ -210,10 +210,10 @@ export default function Design07() {
             <span className="d07-title">Product · Transcription</span>
             <span className="d07-date">V. 0.1 · 2025</span>
           </div>
-          <div className="d07-wordmark">Moots<span>.ai</span></div>
+          <div className="d07-wordmark">Moods<span>.ai</span></div>
           <div className="d07-tagline">The art of transcription, quietly perfected.</div>
           <p className="d07-body-text">
-            Some conversations deserve to be remembered exactly as they happened. <strong>Moots</strong> transcribes live during your video calls and offline when you record on your phone — no setup, no noise, no compromise.
+            Some conversations deserve to be remembered exactly as they happened. <strong>Moods</strong> transcribes live during your video calls and offline when you record on your phone — no setup, no noise, no compromise.
           </p>
           <div className="d07-divider">
             <span className="d07-divider-sym">✦</span>
@@ -234,7 +234,7 @@ export default function Design07() {
           </div>
           <div className="d07-footer">
             <span>Design 07 — Manuscript</span>
-            <span>moots.ai</span>
+            <span>moods.ai</span>
           </div>
         </div>
       </div>

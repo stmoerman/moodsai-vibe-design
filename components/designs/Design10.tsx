@@ -363,7 +363,7 @@ export default function Design10() {
 
         <header className="d10-header">
           <div className="d10-header-inner">
-            <div className="d10-logo">Moots<span>.ai</span></div>
+            <div className="d10-logo">Moods<span>.ai</span></div>
             <nav className="d10-nav">
               <a href="#">Product</a>
               <a href="#">Pricing</a>
@@ -394,7 +394,7 @@ export default function Design10() {
           <div className="d10-panel">
             <div className="d10-page-mock">
               <div className="d10-page-meta">
-                <span>moots.ai</span>
+                <span>moods.ai</span>
                 <span>Live · 00:04:32</span>
               </div>
 

@@ -156,7 +156,7 @@ export default function Design01() {
       <div className="d01">
         <div className="d01-inner">
           <div className="d01-eyebrow">Transcription reimagined</div>
-          <div className="d01-wordmark">Moots<span>.</span>ai</div>
+          <div className="d01-wordmark">Moods<span>.</span>ai</div>
           <div className="d01-rule" />
           <div className="d01-headline">
             Every word deserves to be remembered.<br />

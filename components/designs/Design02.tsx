@@ -259,7 +259,7 @@ export default function Design02() {
       <div className="d02">
         <div className="d02-left">
           <div className="d02-topbar">
-            <div className="d02-logo">moots<span>.ai</span></div>
+            <div className="d02-logo">moods<span>.ai</span></div>
             <div className="d02-tagline">Transcription</div>
           </div>
           <div className="d02-main-content">

@@ -177,7 +177,7 @@ export default function Design03() {
           <div className="d03-mark">
             <div className="d03-mark-dot" />
           </div>
-          <div className="d03-logo">moots · ai</div>
+          <div className="d03-logo">moods · ai</div>
           <h1 className="d03-headline">
             Transcription<br />as <em>quiet</em> as<br />candlelight.
           </h1>
@@ -190,7 +190,7 @@ export default function Design03() {
             <span className="d03-pill">Phone recording</span>
             <span className="d03-pill">Offline upload</span>
           </div>
-          <a href="#" className="d03-cta">Try Moots free</a>
+          <a href="#" className="d03-cta">Try Moods free</a>
         </div>
         <div className="d03-footer">Design 03 — Candlelight</div>
       </div>

@@ -226,7 +226,7 @@ export default function Design08() {
       <div className="d08">
         <div className="d08-band-top" />
         <header className="d08-band-header">
-          <div className="d08-logo">Moots<span>.ai</span></div>
+          <div className="d08-logo">Moods<span>.ai</span></div>
           <nav className="d08-nav">
             <a href="#">Product</a>
             <a href="#">Pricing</a>
@@ -243,7 +243,7 @@ export default function Design08() {
             </h1>
             <div className="d08-lower">
               <p className="d08-col-desc">
-                Moots transcribes your conversations with the care and precision they deserve. Live during video calls, or from recordings made on your phone — later, when the time is right.
+                Moods transcribes your conversations with the care and precision they deserve. Live during video calls, or from recordings made on your phone — later, when the time is right.
               </p>
               <div className="d08-col-action">
                 <div className="d08-mode">
@@ -257,7 +257,7 @@ export default function Design08() {
                   <span className="d08-mode-num">二</span>
                   <div>
                     <div className="d08-mode-title">Offline recording</div>
-                    <div className="d08-mode-desc">Record on phone, upload to Moots</div>
+                    <div className="d08-mode-desc">Record on phone, upload to Moods</div>
                   </div>
                 </div>
               </div>
@@ -271,7 +271,7 @@ export default function Design08() {
         <div className="d08-band-bottom" />
         <div className="d08-band-foot">
           <span>Design 08 — Washi</span>
-          <span>moots.ai</span>
+          <span>moods.ai</span>
         </div>
       </div>
     </>

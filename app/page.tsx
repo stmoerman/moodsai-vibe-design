@@ -94,7 +94,7 @@ export default function Home() {
         }
       `}</style>
       <div className="gallery-root">
-        <div className="gallery-title">Moots.ai</div>
+        <div className="gallery-title">Moods.ai</div>
         <div className="gallery-sub">10 Design Explorations</div>
         <div className="gallery-grid">
           {designs.map(d => (

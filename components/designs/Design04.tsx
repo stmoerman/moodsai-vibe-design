@@ -184,7 +184,7 @@ export default function Design04() {
         <div className="d04-blob2" />
         <div className="d04-blob3" />
         <div className="d04-inner">
-          <div className="d04-logo">moots.ai</div>
+          <div className="d04-logo">moods.ai</div>
           <h1 className="d04-headline">
             Hear everything.<br /><span>Miss nothing.</span>
           </h1>

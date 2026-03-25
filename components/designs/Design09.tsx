@@ -300,14 +300,14 @@ export default function Design09() {
         <div className="d09-left">
           <div className="d09-logo">
             <span className="d09-logo-dot" />
-            Moots.ai
+            Moods.ai
           </div>
           <div className="d09-kicker">Transcription · Early access</div>
           <h1 className="d09-headline">
             Words worth<br />keeping,<br />kept faithfully.
           </h1>
           <p className="d09-body">
-            Live transcription during your video calls. Record offline on your phone and upload to Moots when you're back. Everything captured, nothing lost.
+            Live transcription during your video calls. Record offline on your phone and upload to Moods when you're back. Everything captured, nothing lost.
           </p>
           <div className="d09-actions">
             <a href="#" className="d09-btn">Get early access</a>
