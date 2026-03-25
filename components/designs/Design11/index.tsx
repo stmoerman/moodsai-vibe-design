@@ -4,9 +4,8 @@ import { useRef, useEffect, useState, useCallback } from 'react'
 import s from './styles.module.css'
 
 /* ═══════════════════════════════════════════════════════
-   Design 11 — "The Synthesis"
-   Blends Manifesto (01) emotional storytelling with
-   Remarkable (10) dot-grid precision into one cohesive page.
+   Design 11 — "The Synthesis" (Polished)
+   reMarkable-inspired premium homepage for Moods AI.
    ═══════════════════════════════════════════════════════ */
 
 // ── Types ───────────────────────────────────────────────
@@ -160,6 +159,8 @@ const PRICING = [
 const MOODY_RESPONSE =
   'Your practice average is 79.2% across 24 therapists. That\u2019s 1.2% above your 78% target. 3 therapists are below individual targets.'
 
+const SECTION_IDS = ['hero', 'problem', 'solution', 'tour', 'ai', 'security', 'social', 'pricing', 'cta']
+
 // ── Helpers ─────────────────────────────────────────────
 
 function useReducedMotion(): boolean {
@@ -174,6 +175,17 @@ function useReducedMotion(): boolean {
   return reduced
 }
 
+function useIsMobile(): boolean {
+  const [mobile, setMobile] = useState(false)
+  useEffect(() => {
+    const check = () => setMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
+  return mobile
+}
+
 // SVG paper grain overlay (feTurbulence)
 function GrainOverlay() {
   return (
@@ -183,6 +195,49 @@ function GrainOverlay() {
       </filter>
       <rect width="100%" height="100%" filter="url(#grain11)" />
     </svg>
+  )
+}
+
+// Animated number counter
+function AnimatedCounter({
+  end,
+  prefix = '',
+  suffix = '',
+  duration = 1200,
+  decimals = 0,
+  inView,
+}: {
+  end: number
+  prefix?: string
+  suffix?: string
+  duration?: number
+  decimals?: number
+  inView: boolean
+}) {
+  const [value, setValue] = useState(0)
+  const hasAnimated = useRef(false)
+
+  useEffect(() => {
+    if (!inView || hasAnimated.current) return
+    hasAnimated.current = true
+    const start = performance.now()
+    const animate = (now: number) => {
+      const elapsed = now - start
+      const progress = Math.min(elapsed / duration, 1)
+      // cubic ease-out
+      const eased = 1 - Math.pow(1 - progress, 3)
+      setValue(eased * end)
+      if (progress < 1) requestAnimationFrame(animate)
+    }
+    requestAnimationFrame(animate)
+  }, [inView, end, duration])
+
+  return (
+    <span>
+      {prefix}
+      {decimals > 0 ? value.toFixed(decimals) : Math.round(value)}
+      {suffix}
+    </span>
   )
 }
 
@@ -201,7 +256,21 @@ export default function Design11() {
   const chatCursorRef = useRef<HTMLSpanElement>(null)
   const chatStartedRef = useRef(false)
   const arrowIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const sliderRef = useRef<HTMLDivElement>(null)
+  const timelineLineRef = useRef<HTMLDivElement>(null)
+  const timelineContainerRef = useRef<HTMLDivElement>(null)
+  const waveformRef = useRef<HTMLDivElement>(null)
+  const waveformRafRef = useRef<number>(0)
+  const thinkingRef = useRef<HTMLDivElement>(null)
+  const sectionRefs = useRef<(HTMLElement | null)[]>([])
+  const dividerRefs = useRef<(HTMLDivElement | null)[]>([])
+  const convergePulseRef = useRef<SVGCircleElement>(null)
+
   const reducedMotion = useReducedMotion()
+  const isMobile = useIsMobile()
+  const [sliderPos, setSliderPos] = useState(50)
+  const [activeSection, setActiveSection] = useState(0)
+  const [statsInView, setStatsInView] = useState(false)
 
   // ── Character stagger helper ──
   function staggerChars(text: string, baseDelay: number) {
@@ -231,43 +300,69 @@ export default function Design11() {
     )
   }
 
-  // ── Waveform bars ──
-  function WaveformBars() {
-    const bars = 40
-    return (
-      <div className={s.waveformContainer}>
-        {Array.from({ length: bars }, (_, i) => (
-          <div
-            key={i}
-            className={s.waveBar}
-            style={{
-              animationDelay: `${i * 0.05}s`,
-              height: `${15 + Math.random() * 60}%`,
-            }}
-          />
-        ))}
-      </div>
-    )
-  }
+  // ── Organic waveform (rAF-driven) ──
+  const startWaveform = useCallback(() => {
+    if (reducedMotion) return
+    const container = waveformRef.current
+    if (!container) return
+    const bars = container.children
+    const barCount = bars.length
 
-  // ── Chat streaming ──
+    // Seed phases for organic look
+    const phases = Array.from({ length: barCount }, () => Math.random() * Math.PI * 2)
+    const speeds = Array.from({ length: barCount }, () => 0.8 + Math.random() * 1.5)
+
+    const animate = (time: number) => {
+      const t = time / 1000
+      for (let i = 0; i < barCount; i++) {
+        const bar = bars[i] as HTMLElement
+        if (!bar) continue
+        const base = Math.sin(t * speeds[i] + phases[i]) * 0.5 + 0.5
+        const neighbor = Math.sin(t * 0.7 + i * 0.3) * 0.2 + 0.2
+        const height = 10 + (base + neighbor) * 55
+        bar.style.height = `${height}%`
+      }
+      waveformRafRef.current = requestAnimationFrame(animate)
+    }
+    waveformRafRef.current = requestAnimationFrame(animate)
+  }, [reducedMotion])
+
+  // ── Chat streaming with variable speed ──
   const streamChat = useCallback(() => {
     if (chatStartedRef.current) return
     chatStartedRef.current = true
     const el = chatResponseRef.current
     const cursor = chatCursorRef.current
+    const thinking = thinkingRef.current
     if (!el || !cursor) return
+
     el.textContent = ''
-    cursor.style.display = 'inline-block'
-    let i = 0
-    const interval = setInterval(() => {
-      if (i < MOODY_RESPONSE.length) {
-        el.textContent = MOODY_RESPONSE.slice(0, i + 1)
-        i++
-      } else {
-        clearInterval(interval)
+    cursor.style.display = 'none'
+
+    // Show thinking dots first
+    if (thinking) thinking.style.display = 'inline-flex'
+
+    const thinkDelay = 1200
+    setTimeout(() => {
+      if (thinking) thinking.style.display = 'none'
+      cursor.style.display = 'inline-block'
+
+      let i = 0
+      const type = () => {
+        if (i < MOODY_RESPONSE.length) {
+          el.textContent = MOODY_RESPONSE.slice(0, i + 1)
+          const char = MOODY_RESPONSE[i]
+          // Variable speed: slow on punctuation, faster on common chars
+          let delay = 18
+          if (char === '.' || char === ',') delay = 90 + Math.random() * 60
+          else if (char === ' ') delay = 12
+          else delay = 14 + Math.random() * 12
+          i++
+          setTimeout(type, delay)
+        }
       }
-    }, 20)
+      type()
+    }, thinkDelay)
   }, [])
 
   // ── Arrow draw + redraw ──
@@ -286,6 +381,65 @@ export default function Design11() {
     h.style.strokeDashoffset = '0'
   }, [])
 
+  // ── Magnetic cursor effect ──
+  const handleMagnetic = useCallback((e: React.MouseEvent<HTMLDivElement>, maxDist: number = 6) => {
+    if (reducedMotion || isMobile) return
+    const el = e.currentTarget
+    const rect = el.getBoundingClientRect()
+    const x = e.clientX - rect.left - rect.width / 2
+    const y = e.clientY - rect.top - rect.height / 2
+    const dist = Math.sqrt(x * x + y * y)
+    const maxRadius = Math.max(rect.width, rect.height)
+    if (dist < maxRadius) {
+      const pull = Math.min(dist / maxRadius, 1) * maxDist
+      const angle = Math.atan2(y, x)
+      el.style.transform = `translate(${Math.cos(angle) * pull}px, ${Math.sin(angle) * pull}px)`
+    }
+  }, [reducedMotion, isMobile])
+
+  const resetMagnetic = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    e.currentTarget.style.transform = 'translate(0, 0)'
+  }, [])
+
+  // ── Before/After slider drag ──
+  const handleSliderDrag = useCallback((clientX: number) => {
+    const container = sliderRef.current
+    if (!container) return
+    const rect = container.getBoundingClientRect()
+    const x = clientX - rect.left
+    const pct = Math.max(5, Math.min(95, (x / rect.width) * 100))
+    setSliderPos(pct)
+  }, [])
+
+  const onSliderMouseDown = useCallback(() => {
+    const onMove = (e: MouseEvent) => handleSliderDrag(e.clientX)
+    const onUp = () => {
+      window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('mouseup', onUp)
+    }
+    window.addEventListener('mousemove', onMove)
+    window.addEventListener('mouseup', onUp)
+  }, [handleSliderDrag])
+
+  const onSliderTouchStart = useCallback(() => {
+    const onMove = (e: TouchEvent) => {
+      if (e.touches[0]) handleSliderDrag(e.touches[0].clientX)
+    }
+    const onEnd = () => {
+      window.removeEventListener('touchmove', onMove)
+      window.removeEventListener('touchend', onEnd)
+    }
+    window.addEventListener('touchmove', onMove)
+    window.addEventListener('touchend', onEnd)
+  }, [handleSliderDrag])
+
+  // ── Nav dot click ──
+  const scrollToSection = useCallback((idx: number) => {
+    const el = sectionRefs.current[idx]
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [])
+
+  // ── Main effect ──
   useEffect(() => {
     if (reducedMotion) {
       // Draw everything immediately
@@ -301,10 +455,12 @@ export default function Design11() {
       chatStartedRef.current = true
       const cr = chatResponseRef.current
       if (cr) cr.textContent = MOODY_RESPONSE
+      dividerRefs.current.forEach((div) => { if (div) div.classList.add(s.dividerVisible) })
+      setStatsInView(true)
       return
     }
 
-    // ── Scroll progress bar ──
+    // ── Scroll progress bar + dot-grid parallax + section tracking ──
     const handleScroll = () => {
       const el = progressRef.current
       if (!el) return
@@ -312,21 +468,41 @@ export default function Design11() {
       const docHeight = document.documentElement.scrollHeight - window.innerHeight
       const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0
       el.style.width = `${pct}%`
+
+      // Dot-grid parallax
+      if (!isMobile) {
+        const dg = dotGridRef.current
+        if (dg) {
+          const y = scrollTop * 0.12
+          const x = scrollTop * 0.03
+          dg.style.backgroundPosition = `${x}px ${y}px`
+        }
+      }
+
+      // Timeline line progress
+      const tlContainer = timelineContainerRef.current
+      const tlLine = timelineLineRef.current
+      if (tlContainer && tlLine) {
+        const rect = tlContainer.getBoundingClientRect()
+        const viewH = window.innerHeight
+        if (rect.top < viewH && rect.bottom > 0) {
+          const progress = Math.max(0, Math.min(1, (viewH - rect.top) / (rect.height + viewH * 0.5)))
+          tlLine.style.height = `${progress * 100}%`
+        }
+      }
+
+      // Active section tracking
+      let current = 0
+      sectionRefs.current.forEach((sec, i) => {
+        if (sec) {
+          const rect = sec.getBoundingClientRect()
+          if (rect.top < window.innerHeight * 0.5) current = i
+        }
+      })
+      setActiveSection(current)
     }
 
-    // ── Dot-grid parallax ──
-    const handleParallax = () => {
-      const dg = dotGridRef.current
-      if (!dg) return
-      const y = window.scrollY * 0.15
-      dg.style.backgroundPosition = `0px ${y}px`
-    }
-
-    const onScroll = () => {
-      handleScroll()
-      handleParallax()
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('scroll', handleScroll, { passive: true })
 
     // ── Underline draw ──
     const underlineTimer = setTimeout(() => {
@@ -348,13 +524,27 @@ export default function Design11() {
           }
         })
       },
-      { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
     )
 
     const revealEls = document.querySelectorAll(
       `.${s.reveal}, .${s.revealLeft}, .${s.revealRight}`
     )
     revealEls.forEach((el) => observer.observe(el))
+
+    // ── Section divider draw-on ──
+    const dividerObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            (entry.target as HTMLElement).classList.add(s.dividerVisible)
+            dividerObserver.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.5 }
+    )
+    dividerRefs.current.forEach((div) => { if (div) dividerObserver.observe(div) })
 
     // ── Tool strikethroughs ──
     const strikeObserver = new IntersectionObserver(
@@ -363,9 +553,14 @@ export default function Design11() {
           if (entry.isIntersecting) {
             toolItemRefs.current.forEach((item, i) => {
               if (item) {
-                setTimeout(() => { item.classList.add(s.struck) }, i * 100)
+                setTimeout(() => { item.classList.add(s.struck) }, i * 120)
               }
             })
+            // Pulse the converge node after all tools struck
+            setTimeout(() => {
+              const pulse = convergePulseRef.current
+              if (pulse) pulse.classList.add(s.convergePulse)
+            }, TOOLS.length * 120 + 200)
             strikeObserver.disconnect()
           }
         })
@@ -381,7 +576,7 @@ export default function Design11() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             checkRefs.current.forEach((path, i) => {
-              if (path) setTimeout(() => { path.classList.add(s.drawn) }, i * 120)
+              if (path) setTimeout(() => { path.classList.add(s.drawn) }, i * 150)
             })
             checkObserver.disconnect()
           }
@@ -414,6 +609,7 @@ export default function Design11() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
+            startWaveform()
             streamChat()
             chatObserver.disconnect()
           }
@@ -424,13 +620,28 @@ export default function Design11() {
     const chatWindow = document.querySelector(`.${s.chatWindow}`)
     if (chatWindow) chatObserver.observe(chatWindow)
 
+    // ── Stats counter trigger ──
+    const statsObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setStatsInView(true)
+            statsObserver.disconnect()
+          }
+        })
+      },
+      { threshold: 0.3 }
+    )
+    const statsEl = document.querySelector(`.${s.aiStats}`)
+    if (statsEl) statsObserver.observe(statsEl)
+
     // ── CTA arrow ──
     const ctaObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             drawArrow()
-            arrowIntervalRef.current = setInterval(drawArrow, 4000)
+            arrowIntervalRef.current = setInterval(drawArrow, 5000)
             ctaObserver.disconnect()
           }
         })
@@ -441,20 +652,32 @@ export default function Design11() {
     if (ctaSection) ctaObserver.observe(ctaSection)
 
     return () => {
-      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('scroll', handleScroll)
       clearTimeout(underlineTimer)
       observer.disconnect()
+      dividerObserver.disconnect()
       strikeObserver.disconnect()
       checkObserver.disconnect()
       priceCheckObserver.disconnect()
       chatObserver.disconnect()
+      statsObserver.disconnect()
       ctaObserver.disconnect()
       if (arrowIntervalRef.current) clearInterval(arrowIntervalRef.current)
+      if (waveformRafRef.current) cancelAnimationFrame(waveformRafRef.current)
     }
-  }, [reducedMotion, streamChat, drawArrow])
+  }, [reducedMotion, isMobile, streamChat, drawArrow, startWaveform])
 
   // Pricing check ref collector
   let priceCheckIdx = 0
+  // Divider ref collector
+  let dividerIdx = 0
+
+  // Helper to register divider refs
+  const dividerRef = (el: HTMLDivElement | null) => {
+    const idx = dividerIdx
+    dividerRefs.current[idx] = el
+    dividerIdx++
+  }
 
   return (
     <div className={s.root}>
@@ -464,15 +687,51 @@ export default function Design11() {
       {/* Paper grain overlay */}
       <GrainOverlay />
 
-      {/* Scroll progress bar */}
+      {/* Floating particles */}
+      {!reducedMotion && !isMobile && (
+        <div className={s.particles} aria-hidden="true">
+          {Array.from({ length: 12 }, (_, i) => (
+            <div
+              key={i}
+              className={s.particle}
+              style={{
+                left: `${8 + Math.random() * 84}%`,
+                top: `${Math.random() * 100}%`,
+                animationDuration: `${12 + Math.random() * 18}s`,
+                animationDelay: `${Math.random() * 10}s`,
+              }}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Scroll progress bar — reMarkable blue */}
       <div className={s.progressBar} ref={progressRef} role="progressbar" aria-hidden="true" />
+
+      {/* Floating navigation dots */}
+      {!isMobile && (
+        <nav className={s.navDots} aria-label="Section navigation">
+          {SECTION_IDS.map((id, i) => (
+            <button
+              key={id}
+              className={`${s.navDot} ${activeSection === i ? s.navDotActive : ''}`}
+              onClick={() => scrollToSection(i)}
+              aria-label={`Go to section ${id}`}
+            />
+          ))}
+        </nav>
+      )}
 
       <div className={s.page}>
 
         {/* ════════════════════════════════════════════
             Section 1: Hero
         ════════════════════════════════════════════ */}
-        <section className={s.hero}>
+        <section
+          className={s.hero}
+          ref={(el) => { sectionRefs.current[0] = el }}
+          id="hero"
+        >
           <h1 className={s.heroHeadline}>
             {staggerChars('Therapists became therapists to help people.', 0.2)}
             <br />
@@ -502,24 +761,92 @@ export default function Design11() {
             so they can do what they were trained to do.
           </p>
 
-          <a href="#" className={`${s.heroCta} ${s.reveal}`} data-delay="2800">
-            Start free trial
-          </a>
+          <div
+            className={`${s.magneticWrap} ${s.reveal}`}
+            data-delay="2800"
+            onMouseMove={(e) => handleMagnetic(e, 7)}
+            onMouseLeave={resetMagnetic}
+          >
+            <a href="#" className={s.heroCta}>
+              <span className={s.heroCtaText}>Start free trial</span>
+            </a>
+          </div>
         </section>
 
-        <div className={s.sectionDivider} />
+        <div className={s.sectionDivider} ref={dividerRef} />
 
         {/* ════════════════════════════════════════════
-            Section 2: The Problem (split comparison)
+            Section 2: The Problem (interactive slider)
         ════════════════════════════════════════════ */}
-        <section className={s.comparisonSection}>
+        <section
+          className={s.comparisonSection}
+          ref={(el) => { sectionRefs.current[1] = el }}
+          id="problem"
+        >
           <p className={`${s.sectionLabel} ${s.reveal}`}>
             01 — The problem
           </p>
           <h2 className={`${s.sectionHeadline} ${s.reveal}`} data-delay="100">
             A therapist&apos;s day: before &amp; after
           </h2>
-          <div className={`${s.splitScreen} ${s.reveal}`} data-delay="200">
+
+          {/* Desktop: interactive draggable slider */}
+          <div
+            className={`${s.sliderContainer} ${s.reveal}`}
+            data-delay="200"
+            ref={sliderRef}
+          >
+            {/* After (background, full width) */}
+            <div className={s.sliderSide}>
+              <div className={s.splitTitle}>
+                With Moods <span className={s.accentGreen}>(your future)</span>
+              </div>
+              {WITH_MOODS.map((slot, i) => (
+                <div className={s.timeSlot} key={i}>
+                  <span className={s.timeLabel}>{slot.time}</span>
+                  <span className={s.taskClient}>{slot.task}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Before (overlay, clipped) */}
+            <div
+              className={s.sliderBefore}
+              style={{ width: `${sliderPos}%` }}
+            >
+              <div className={s.sliderSide} style={{ width: sliderRef.current?.offsetWidth || '100%' }}>
+                <div className={s.splitTitle}>
+                  Without Moods <span className={s.accent}>(today)</span>
+                </div>
+                {WITHOUT_MOODS.map((slot, i) => (
+                  <div className={s.timeSlot} key={i}>
+                    <span className={s.timeLabel}>{slot.time}</span>
+                    <span className={slot.type === 'admin' ? s.taskAdmin : s.taskClient}>
+                      {slot.task}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Drag handle */}
+            <div
+              className={s.sliderHandle}
+              style={{ left: `${sliderPos}%` }}
+              onMouseDown={onSliderMouseDown}
+              onTouchStart={onSliderTouchStart}
+            >
+              <div className={s.sliderHandleGrip}>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                  <line x1="4" y1="3" x2="4" y2="11" />
+                  <line x1="10" y1="3" x2="10" y2="11" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile: stacked side by side */}
+          <div className={s.splitScreenMobile}>
             <div className={s.splitColumn}>
               <div className={s.splitTitle}>
                 Without Moods <span className={s.accent}>(today)</span>
@@ -547,12 +874,16 @@ export default function Design11() {
           </div>
         </section>
 
-        <div className={s.sectionDivider} />
+        <div className={s.sectionDivider} ref={dividerRef} />
 
         {/* ════════════════════════════════════════════
-            Section 3: The Solution (strikethrough → Moods)
+            Section 3: The Solution (strikethrough -> Moods)
         ════════════════════════════════════════════ */}
-        <section className={s.solutionSection}>
+        <section
+          className={s.solutionSection}
+          ref={(el) => { sectionRefs.current[2] = el }}
+          id="solution"
+        >
           <p className={`${s.sectionLabel} ${s.reveal}`}>
             02 — The solution
           </p>
@@ -583,7 +914,7 @@ export default function Design11() {
                 className={s.convergeSvg}
                 viewBox="0 0 120 340"
                 fill="none"
-                stroke="#d0cdc6"
+                stroke="#CBBDB9"
                 strokeWidth="1"
                 aria-hidden="true"
               >
@@ -591,13 +922,21 @@ export default function Design11() {
                   const y = 16 + i * 32
                   return (
                     <g key={i}>
-                      <circle cx="8" cy={y} r="2.5" fill="#d0cdc6" stroke="none" />
+                      <circle cx="8" cy={y} r="2.5" fill="#CBBDB9" stroke="none" />
                       <path d={`M11,${y} C40,${y} 80,170 112,170`} />
                     </g>
                   )
                 })}
-                <circle cx="112" cy="170" r="6" fill="#3a3a3a" stroke="none" />
-                <circle cx="112" cy="170" r="11" fill="none" stroke="#3a3a3a" strokeWidth="1" />
+                <circle cx="112" cy="170" r="6" fill="#423C38" stroke="none" />
+                <circle
+                  ref={convergePulseRef}
+                  cx="112"
+                  cy="170"
+                  r="11"
+                  fill="none"
+                  stroke="#423C38"
+                  strokeWidth="1"
+                />
               </svg>
             </div>
             {/* After: single Moods node */}
@@ -607,17 +946,23 @@ export default function Design11() {
           </div>
         </section>
 
-        <div className={s.sectionDivider} />
+        <div className={s.sectionDivider} ref={dividerRef} />
 
         {/* ════════════════════════════════════════════
             Section 4: Product Tour (vertical timeline)
         ════════════════════════════════════════════ */}
-        <section className={s.tourSection}>
+        <section
+          className={s.tourSection}
+          ref={(el) => { sectionRefs.current[3] = el }}
+          id="tour"
+        >
           <p className={`${s.sectionLabel} ${s.sectionLabelWide} ${s.reveal}`}>
             03 — Product tour
           </p>
-          <div className={s.timelineContainer}>
-            <div className={s.timelineLine} aria-hidden="true" />
+          <div className={s.timelineContainer} ref={timelineContainerRef}>
+            <div className={s.timelineLine} aria-hidden="true">
+              <div className={s.timelineLineProgress} ref={timelineLineRef} />
+            </div>
             {TIMELINE_NODES.map((node, i) => {
               const isLeft = node.side === 'left'
               const cardClass = isLeft
@@ -654,12 +999,16 @@ export default function Design11() {
           </div>
         </section>
 
-        <div className={s.sectionDivider} />
+        <div className={s.sectionDivider} ref={dividerRef} />
 
         {/* ════════════════════════════════════════════
             Section 5: AI in Action
         ════════════════════════════════════════════ */}
-        <section className={s.aiSection}>
+        <section
+          className={s.aiSection}
+          ref={(el) => { sectionRefs.current[4] = el }}
+          id="ai"
+        >
           <p className={`${s.sectionLabel} ${s.reveal}`}>
             04 — AI in action
           </p>
@@ -668,10 +1017,18 @@ export default function Design11() {
           </h2>
 
           <div className={`${s.aiFlow} ${s.reveal}`} data-delay="200">
-            {/* Left: waveform */}
+            {/* Left: organic waveform */}
             <div className={s.aiFlowPanel}>
               <div className={s.aiFlowLabel}>Recording</div>
-              <WaveformBars />
+              <div className={s.waveformContainer} ref={waveformRef}>
+                {Array.from({ length: 40 }, (_, i) => (
+                  <div
+                    key={i}
+                    className={s.waveBar}
+                    style={{ height: '15%' }}
+                  />
+                ))}
+              </div>
             </div>
 
             {/* Center: processing dots */}
@@ -688,33 +1045,63 @@ export default function Design11() {
               <div className={s.aiFlowLabel}>AskMoody</div>
               <div className={s.chatWindow}>
                 <div className={s.chatHeader}>
-                  AskMoody · Intelligence layer
+                  AskMoody &middot; Intelligence layer
                 </div>
                 <div className={s.chatBody}>
                   <div className={`${s.chatMsg} ${s.chatMsgUser}`}>
                     What&rsquo;s our declarability average this week?
                   </div>
                   <div className={`${s.chatMsg} ${s.chatMsgMoody}`}>
+                    <div
+                      ref={thinkingRef}
+                      className={s.thinkingDots}
+                      style={{ display: 'none' }}
+                    >
+                      <span className={s.thinkingDot} />
+                      <span className={s.thinkingDot} />
+                      <span className={s.thinkingDot} />
+                    </div>
                     <span ref={chatResponseRef} />
-                    <span ref={chatCursorRef} className={s.chatCursor} />
+                    <span ref={chatCursorRef} className={s.chatCursor} style={{ display: 'none' }} />
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className={`${s.aiStat} ${s.reveal}`} data-delay="400">
-            <div className={s.statBig}>30 min → 5 min</div>
-            <div className={s.statCaption}>Average documentation time per session</div>
+          {/* Animated stat counters */}
+          <div className={`${s.aiStats} ${s.reveal}`} data-delay="400">
+            <div className={s.aiStat}>
+              <div className={s.statBig}>
+                <AnimatedCounter end={25} suffix=" min" inView={statsInView} />
+              </div>
+              <div className={s.statCaption}>Saved per session</div>
+            </div>
+            <div className={s.aiStat}>
+              <div className={s.statBig}>
+                <AnimatedCounter end={500} suffix="K" inView={statsInView} />
+              </div>
+              <div className={s.statCaption}>AI tokens processed daily</div>
+            </div>
+            <div className={s.aiStat}>
+              <div className={s.statBig}>
+                <AnimatedCounter end={29} prefix={'\u20AC'} suffix="/seat" inView={statsInView} />
+              </div>
+              <div className={s.statCaption}>Starting price</div>
+            </div>
           </div>
         </section>
 
-        <div className={s.sectionDivider} />
+        <div className={s.sectionDivider} ref={dividerRef} />
 
         {/* ════════════════════════════════════════════
             Section 6: Security
         ════════════════════════════════════════════ */}
-        <section className={s.securitySection}>
+        <section
+          className={s.securitySection}
+          ref={(el) => { sectionRefs.current[5] = el }}
+          id="security"
+        >
           <p className={`${s.sectionLabel} ${s.reveal}`}>
             05 — Security &amp; compliance
           </p>
@@ -751,12 +1138,16 @@ export default function Design11() {
           </div>
         </section>
 
-        <div className={s.sectionDivider} />
+        <div className={s.sectionDivider} ref={dividerRef} />
 
         {/* ════════════════════════════════════════════
             Section 7: Social Proof
         ════════════════════════════════════════════ */}
-        <section className={s.socialSection}>
+        <section
+          className={s.socialSection}
+          ref={(el) => { sectionRefs.current[6] = el }}
+          id="social"
+        >
           <p className={`${s.sectionLabel} ${s.reveal}`}>
             06 — From practitioners
           </p>
@@ -767,6 +1158,7 @@ export default function Design11() {
                 className={`${s.quoteCard} ${s.reveal}`}
                 data-delay={String(i * 120)}
               >
+                <span className={s.quoteMark} aria-hidden="true">{'\u201C'}</span>
                 <p className={s.quoteText}>{q.text}</p>
                 <p className={s.quoteAttrib}>{q.attrib}</p>
               </div>
@@ -774,12 +1166,16 @@ export default function Design11() {
           </div>
         </section>
 
-        <div className={s.sectionDivider} />
+        <div className={s.sectionDivider} ref={dividerRef} />
 
         {/* ════════════════════════════════════════════
             Section 8: Pricing
         ════════════════════════════════════════════ */}
-        <section className={s.pricingSection}>
+        <section
+          className={s.pricingSection}
+          ref={(el) => { sectionRefs.current[7] = el }}
+          id="pricing"
+        >
           <p className={`${s.sectionLabel} ${s.reveal}`}>
             07 — Pricing
           </p>
@@ -819,17 +1215,35 @@ export default function Design11() {
                     <span>{f}</span>
                   </div>
                 ))}
+                <div
+                  className={s.magneticWrap}
+                  onMouseMove={(e) => handleMagnetic(e, 5)}
+                  onMouseLeave={resetMagnetic}
+                >
+                  <a
+                    href="#"
+                    className={`${s.pricingCta} ${plan.featured ? s.pricingCtaFeatured : ''}`}
+                  >
+                    <span className={s.pricingCtaText}>
+                      {plan.featured ? 'Start free trial' : 'Get started'}
+                    </span>
+                  </a>
+                </div>
               </div>
             ))}
           </div>
         </section>
 
-        <div className={s.sectionDivider} />
+        <div className={s.sectionDivider} ref={dividerRef} />
 
         {/* ════════════════════════════════════════════
-            Section 9: CTA
+            Section 9: CTA (dark section)
         ════════════════════════════════════════════ */}
-        <section className={s.ctaSection}>
+        <section
+          className={s.ctaSection}
+          ref={(el) => { sectionRefs.current[8] = el }}
+          id="cta"
+        >
           <div className={`${s.ctaArrowWrapper} ${s.reveal}`}>
             <svg
               width="100"
@@ -854,13 +1268,16 @@ export default function Design11() {
           <h2 className={`${s.ctaHeadline} ${s.reveal}`} data-delay="100">
             Your practice deserves better.
           </h2>
-          <a
-            href="#"
-            className={`${s.ctaButton} ${s.reveal}`}
+          <div
+            className={`${s.magneticWrap} ${s.reveal}`}
             data-delay="200"
+            onMouseMove={(e) => handleMagnetic(e, 8)}
+            onMouseLeave={resetMagnetic}
           >
-            Start for free
-          </a>
+            <a href="#" className={s.ctaButton}>
+              <span className={s.ctaButtonText}>Start for free</span>
+            </a>
+          </div>
           <p className={`${s.ctaNote} ${s.reveal}`} data-delay="300">
             14 days free. No credit card.
           </p>
@@ -868,7 +1285,6 @@ export default function Design11() {
 
         {/* ── Footer ── */}
         <footer className={s.footer}>
-          <div className={s.footerFade} aria-hidden="true" />
           <p className={s.footerText}>
             Moods AI &middot; Amsterdam &middot;{' '}
             <a href="mailto:info@ohmymood.com">info@ohmymood.com</a>
