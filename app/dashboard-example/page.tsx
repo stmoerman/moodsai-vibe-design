@@ -154,35 +154,16 @@ const weekDates = ['Ma 24', 'Di 25', 'Wo 26', 'Do 27', 'Vr 28'];
 
 export default function DashboardExample() {
   const [now, setNow] = useState<Date | null>(null);
-  const [bootPhase, setBootPhase] = useState<'visible' | 'fading' | 'done'>('done');
   const [expandedAppointment, setExpandedAppointment] = useState<number | null>(null);
   const [selectedWeekApt, setSelectedWeekApt] = useState<{ day: string; idx: number } | null>(null);
-  const [dateIndex, setDateIndex] = useState(1); // 1 = today (Wo 25 maart)
-  const [weekIndex, setWeekIndex] = useState(1); // 1 = current week (Week 13)
+  const [dateIndex, setDateIndex] = useState(1);
+  const [weekIndex, setWeekIndex] = useState(1);
   const [viewMode, setViewMode] = useState<'dag' | 'week'>('dag');
   const [isAgendaExpanded, setIsAgendaExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState('agenda');
 
   useEffect(() => {
     setNow(new Date());
-
-    const lastSplash = document.cookie
-      .split('; ')
-      .find((c) => c.startsWith('moods_splash='));
-    const alreadyShown = !!lastSplash;
-
-    if (alreadyShown || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setBootPhase('done');
-      return;
-    }
-
-    setBootPhase('visible');
-    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000).toUTCString();
-    document.cookie = `moods_splash=1; expires=${expires}; path=/`;
-
-    const fadeTimer = setTimeout(() => setBootPhase('fading'), 3000);
-    const doneTimer = setTimeout(() => setBootPhase('done'), 3800);
-    return () => { clearTimeout(fadeTimer); clearTimeout(doneTimer); };
   }, []);
 
   // Close dialogs on Escape
@@ -416,30 +397,6 @@ export default function DashboardExample() {
   return (
     <div className={s.root}>
       <div className={s.dotGrid} aria-hidden="true" />
-
-      {/* Boot Screen */}
-      {bootPhase !== 'done' && (
-        <div className={`${s.bootScreen} ${bootPhase === 'fading' ? s.bootFading : ''}`}>
-          <div className={s.bootContent}>
-            <h1 className={s.bootGreeting}>
-              {now ? `${getGreeting(now.getHours())}, Jaime` : 'Goedemorgen, Jaime'}
-            </h1>
-            <svg className={s.bootUnderline} width="480" height="14" viewBox="0 0 480 14" aria-hidden="true">
-              <path
-                d="M0,7 C40,1 80,13 120,6 C160,0 200,12 240,5 C280,-1 320,11 360,6 C400,1 440,11 480,7"
-                className={`${s.bootUnderlinePath} ${s.bootUnderlineDrawn}`}
-              />
-            </svg>
-            <div className={s.bootStats}>
-              <span className={s.bootStat}>6 sessies vandaag</span>
-              <span className={s.bootStatDot}>&middot;</span>
-              <span className={s.bootStat}>1% boven je declarabiliteit target</span>
-              <span className={s.bootStatDot}>&middot;</span>
-              <span className={s.bootStat}>3 ongelezen berichten</span>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Top Bar */}
       <header className={s.topBar}>
