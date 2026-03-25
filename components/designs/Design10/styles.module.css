@@ -1,0 +1,1004 @@
+/* ============================================================
+   Design 10 — The Remarkable
+   Paper-perfect dot-grid, pencil-grey, e-ink precision.
+   ============================================================ */
+
+/* ── Root & body ── */
+.root {
+  position: relative;
+  background: #eeeae3;
+  min-height: 100vh;
+  font-family: 'Crimson Pro', 'Georgia', serif;
+  color: #3a3a3a;
+  overflow-x: hidden;
+}
+
+/* Dot-grid paper texture (parallax via inline style) */
+.dotGrid {
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, #d0cdc6 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: 0;
+  will-change: background-position;
+}
+
+/* ── E-ink flash overlay ── */
+.einkFlash {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  opacity: 0;
+  background: #000;
+}
+
+/* ── Scroll progress bar ── */
+.progressBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 0%;
+  background: #3a3a3a;
+  z-index: 101;
+  transition: none;
+}
+
+/* ── Navigation ── */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  height: 56px;
+  background: #eeeae3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 48px;
+  border-bottom: 1px solid #d0cdc6;
+}
+
+.navLogo {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: #3a3a3a;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+
+.navLinks {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navLinks a {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: #3a3a3a;
+  text-decoration: none;
+  opacity: 0.65;
+  transition: opacity 0.15s;
+}
+
+.navLinks a:hover {
+  opacity: 1;
+}
+
+/* ── Page wrapper (below fixed nav) ── */
+.page {
+  position: relative;
+  z-index: 1;
+  padding-top: 56px;
+}
+
+/* ─────────────────────────────────────────────
+   Section 1: Hero
+───────────────────────────────────────────── */
+.hero {
+  padding: 22vh 72px 16vh;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.heroEyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #3a3a3a;
+  opacity: 0.5;
+  margin-bottom: 32px;
+}
+
+.heroHeadline {
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  font-weight: 400;
+  line-height: 1.15;
+  color: #3a3a3a;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+
+.heroProduct {
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  font-weight: 400;
+  line-height: 1.15;
+  color: #3a3a3a;
+  letter-spacing: -0.01em;
+  margin-bottom: 0;
+  display: inline-block;
+  position: relative;
+}
+
+.heroUnderline {
+  display: block;
+  margin-top: 4px;
+  overflow: visible;
+}
+
+.underlinePath {
+  fill: none;
+  stroke: #3a3a3a;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 260;
+  stroke-dashoffset: 260;
+  transition: stroke-dashoffset 1s ease-out;
+}
+
+.underlinePath.drawn {
+  stroke-dashoffset: 0;
+}
+
+.heroSub {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.78rem;
+  line-height: 1.85;
+  color: #3a3a3a;
+  opacity: 0.65;
+  max-width: 540px;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  letter-spacing: 0.01em;
+}
+
+.heroCta {
+  display: inline-block;
+  background: #5a5a5a;
+  color: #eeeae3;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 14px 32px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.heroCta:hover {
+  background: #2a2a2a;
+}
+
+/* ─────────────────────────────────────────────
+   Reveal animations (IntersectionObserver)
+───────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.revealLeft {
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.revealLeft.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.revealRight {
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.revealRight.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ─────────────────────────────────────────────
+   Section divider
+───────────────────────────────────────────── */
+.sectionDivider {
+  width: 100%;
+  height: 1px;
+  background: #d0cdc6;
+  margin: 0;
+}
+
+/* ─────────────────────────────────────────────
+   Section 2: What We Replace
+───────────────────────────────────────────── */
+.replaceSection {
+  padding: 96px 72px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.sectionLabel {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #3a3a3a;
+  opacity: 0.4;
+  margin-bottom: 48px;
+}
+
+.replaceGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 72px;
+  align-items: start;
+}
+
+.replaceCol h3 {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #3a3a3a;
+  opacity: 0.5;
+  margin-bottom: 32px;
+  font-weight: 400;
+}
+
+.toolList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.toolItem {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.2rem;
+  color: #3a3a3a;
+  padding: 10px 0;
+  border-bottom: 1px solid #d0cdc6;
+  position: relative;
+  overflow: hidden;
+}
+
+.toolItem::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 1px;
+  background: #3a3a3a;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.toolItem.struck::after {
+  transform: scaleX(1);
+}
+
+/* After column — SVG convergence */
+.afterCol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.afterTitle {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: #3a3a3a;
+  margin-bottom: 16px;
+}
+
+.convergeSvg {
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+}
+
+/* ─────────────────────────────────────────────
+   Section 3: Product Tour (vertical timeline)
+───────────────────────────────────────────── */
+.tourSection {
+  padding: 96px 0;
+  position: relative;
+}
+
+.tourLabel {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #3a3a3a;
+  opacity: 0.4;
+  margin-bottom: 64px;
+  padding: 0 72px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.timelineContainer {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 72px;
+}
+
+/* Vertical center line */
+.timelineLine {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: #d0cdc6;
+  transform: translateX(-50%);
+}
+
+.timelineItem {
+  display: grid;
+  grid-template-columns: 1fr 40px 1fr;
+  gap: 0;
+  margin-bottom: 64px;
+  align-items: start;
+  position: relative;
+}
+
+/* Node on the center line */
+.timelineNode {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid #3a3a3a;
+  background: #eeeae3;
+  margin: 0 auto;
+  margin-top: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+/* Cards */
+.timelineCard {
+  background: #f5f2eb;
+  border: 1px solid #d0cdc6;
+  padding: 28px 28px;
+  position: relative;
+}
+
+.timelineCard.left {
+  grid-column: 1;
+  margin-right: 32px;
+}
+
+.timelineCard.right {
+  grid-column: 3;
+  margin-left: 32px;
+}
+
+.timelineCard.empty {
+  background: transparent;
+  border: none;
+}
+
+.timelineCardIcon {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 16px;
+  opacity: 0.7;
+}
+
+.timelineCardTitle {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: #3a3a3a;
+  margin-bottom: 8px;
+}
+
+.timelineCardDesc {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  line-height: 1.75;
+  color: #3a3a3a;
+  opacity: 0.6;
+  letter-spacing: 0.01em;
+}
+
+/* ─────────────────────────────────────────────
+   Section 4: AskMoody
+───────────────────────────────────────────── */
+.askSection {
+  padding: 96px 72px;
+  background: #f2efe8;
+  position: relative;
+}
+
+.askInner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.askLabel {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #3a3a3a;
+  opacity: 0.4;
+  margin-bottom: 48px;
+}
+
+.chatWindow {
+  border: 1px solid #d0cdc6;
+  background: #f2efe8;
+}
+
+.chatHeader {
+  border-bottom: 1px solid #d0cdc6;
+  padding: 12px 20px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  color: #3a3a3a;
+  opacity: 0.4;
+  text-transform: uppercase;
+}
+
+.chatBody {
+  padding: 28px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 160px;
+}
+
+.chatMsg {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  line-height: 1.75;
+  letter-spacing: 0.01em;
+}
+
+.chatMsgUser {
+  color: #3a3a3a;
+  opacity: 0.55;
+}
+
+.chatMsgUser::before {
+  content: '> ';
+  opacity: 0.5;
+}
+
+.chatMsgMoody {
+  color: #3a3a3a;
+}
+
+.chatMsgMoody::before {
+  content: 'Moody  ';
+  opacity: 0.35;
+  font-weight: 700;
+}
+
+.chatCursor {
+  display: inline-block;
+  width: 7px;
+  height: 1em;
+  background: #3a3a3a;
+  vertical-align: text-bottom;
+  margin-left: 2px;
+  animation: blink 0.85s step-end infinite;
+}
+
+.chatCursorHidden {
+  display: inline-block;
+  width: 7px;
+  height: 1em;
+  background: #3a3a3a;
+  vertical-align: text-bottom;
+  margin-left: 2px;
+  opacity: 0;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ─────────────────────────────────────────────
+   Section 5: Security Spec Sheet
+───────────────────────────────────────────── */
+.securitySection {
+  padding: 96px 72px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.securityLabel {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #3a3a3a;
+  opacity: 0.4;
+  margin-bottom: 48px;
+}
+
+.securityGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid #d0cdc6;
+  border-left: 1px solid #d0cdc6;
+}
+
+.securityItem {
+  border-right: 1px solid #d0cdc6;
+  border-bottom: 1px solid #d0cdc6;
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.checkmarkSvg {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.checkPath {
+  fill: none;
+  stroke: #3a3a3a;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 28;
+  stroke-dashoffset: 28;
+  transition: stroke-dashoffset 0.5s ease-out;
+}
+
+.checkPath.drawn {
+  stroke-dashoffset: 0;
+}
+
+.securityItemTitle {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #3a3a3a;
+}
+
+.securityItemDesc {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1rem;
+  color: #3a3a3a;
+  opacity: 0.6;
+  line-height: 1.5;
+}
+
+/* ─────────────────────────────────────────────
+   Section 6: Social Proof
+───────────────────────────────────────────── */
+.socialSection {
+  padding: 96px 72px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.socialLabel {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #3a3a3a;
+  opacity: 0.4;
+  margin-bottom: 48px;
+}
+
+.socialGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.quoteCard {
+  background: #f5f2eb;
+  border: 1px solid #d0cdc6;
+  padding: 32px 28px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 6px 16px rgba(0,0,0,0.03);
+  position: relative;
+}
+
+.quoteText {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.15rem;
+  font-style: italic;
+  line-height: 1.6;
+  color: #3a3a3a;
+  margin-bottom: 24px;
+}
+
+.quoteText::before {
+  content: '\201C';
+  font-size: 1.5rem;
+  line-height: 0;
+  vertical-align: -0.4rem;
+  margin-right: 2px;
+  opacity: 0.4;
+}
+
+.quoteAttrib {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #3a3a3a;
+  opacity: 0.45;
+}
+
+/* ─────────────────────────────────────────────
+   Section 7: Pricing
+───────────────────────────────────────────── */
+.pricingSection {
+  padding: 96px 72px;
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow-x: auto;
+}
+
+.pricingLabel {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #3a3a3a;
+  opacity: 0.4;
+  margin-bottom: 48px;
+}
+
+.pricingTable {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+}
+
+.pricingTable th {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: #3a3a3a;
+  padding: 16px 24px;
+  text-align: left;
+  border-bottom: 1px solid #3a3a3a;
+}
+
+.pricingTable th:first-child {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.4;
+}
+
+.pricingTable td {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  color: #3a3a3a;
+  padding: 14px 24px;
+  border-bottom: 1px solid #d0cdc6;
+  vertical-align: middle;
+}
+
+.pricingTable td:first-child {
+  opacity: 0.55;
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+}
+
+.pricingCheck {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.pricingCheckPath {
+  fill: none;
+  stroke: #3a3a3a;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 28;
+  stroke-dashoffset: 28;
+  transition: stroke-dashoffset 0.5s ease-out;
+}
+
+.pricingCheckPath.drawn {
+  stroke-dashoffset: 0;
+}
+
+.dash {
+  opacity: 0.25;
+}
+
+/* ─────────────────────────────────────────────
+   Section 8: CTA
+───────────────────────────────────────────── */
+.ctaSection {
+  padding: 120px 72px;
+  text-align: center;
+  position: relative;
+}
+
+.ctaArrowWrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.ctaArrowSvg {
+  overflow: visible;
+}
+
+.arrowPath {
+  fill: none;
+  stroke: #3a3a3a;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 120;
+  stroke-dashoffset: 120;
+  transition: stroke-dashoffset 1s ease-out;
+  opacity: 0.55;
+}
+
+.arrowPath.drawn {
+  stroke-dashoffset: 0;
+}
+
+.arrowHeadPath {
+  fill: none;
+  stroke: #3a3a3a;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+  transition: stroke-dashoffset 0.4s ease-out 0.8s;
+  opacity: 0.55;
+}
+
+.arrowHeadPath.drawn {
+  stroke-dashoffset: 0;
+}
+
+.ctaHeadline {
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 400;
+  color: #3a3a3a;
+  margin-bottom: 32px;
+  letter-spacing: -0.01em;
+}
+
+.ctaButton {
+  display: inline-block;
+  background: #5a5a5a;
+  color: #eeeae3;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 18px 48px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.ctaButton:hover {
+  background: #2a2a2a;
+}
+
+.ctaNote {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  color: #3a3a3a;
+  opacity: 0.4;
+  margin-top: 16px;
+  letter-spacing: 0.08em;
+}
+
+/* ─────────────────────────────────────────────
+   Section 9: Footer
+───────────────────────────────────────────── */
+.footer {
+  position: relative;
+  padding: 48px 72px 40px;
+  text-align: center;
+}
+
+/* Dot-grid fade at bottom */
+.footerFade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 0%, #eeeae3 60%);
+  pointer-events: none;
+}
+
+.footerText {
+  position: relative;
+  z-index: 1;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  color: #3a3a3a;
+  opacity: 0.4;
+  text-transform: uppercase;
+}
+
+.footerText a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.footerText a:hover {
+  opacity: 0.8;
+}
+
+/* ─────────────────────────────────────────────
+   Mobile
+───────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .nav {
+    padding: 0 24px;
+  }
+
+  .hero,
+  .replaceSection,
+  .socialSection,
+  .ctaSection {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .securitySection {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .replaceGrid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .timelineContainer {
+    padding: 0 24px;
+  }
+
+  .timelineLine {
+    left: 20px;
+    transform: none;
+  }
+
+  .timelineItem {
+    grid-template-columns: 40px 1fr;
+    grid-template-rows: auto;
+  }
+
+  .timelineCard.left,
+  .timelineCard.right {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0 0 0 16px;
+  }
+
+  .timelineNode {
+    grid-column: 1;
+    grid-row: 1;
+    margin: 20px 0 0;
+  }
+
+  /* Hide empty placeholder cards on mobile */
+  .timelineCard.empty {
+    display: none;
+  }
+
+  .securityGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .socialGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .pricingSection {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .footer {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .askSection {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .tourLabel {
+    padding: 0 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .securityGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   Reduced motion
+───────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .revealLeft,
+  .revealRight {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .underlinePath,
+  .checkPath,
+  .arrowPath,
+  .arrowHeadPath,
+  .pricingCheckPath {
+    stroke-dashoffset: 0;
+    transition: none;
+  }
+
+  .toolItem::after {
+    transform: scaleX(1);
+    transition: none;
+  }
+
+  .einkFlash {
+    display: none;
+  }
+}

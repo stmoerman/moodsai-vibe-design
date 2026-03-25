@@ -1,0 +1,625 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
+
+/* ---------------------------------------------------------------
+   Design 07 — The Whitepaper
+   Academic layout: sticky TOC sidebar + two-column main content
+--------------------------------------------------------------- */
+
+/* Root wrapper */
+.root {
+  min-height: 100vh;
+  background: #fff;
+  color: #333;
+  font-family: 'EB Garamond', 'Garamond', Georgia, serif;
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+/* ---------------------------------------------------------------
+   Outer layout: sidebar + content
+--------------------------------------------------------------- */
+.layout {
+  display: flex;
+  align-items: flex-start;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 40px;
+  gap: 0;
+}
+
+/* ---------------------------------------------------------------
+   Sidebar / Table of Contents
+--------------------------------------------------------------- */
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 120px;
+  padding-top: 80px;
+  padding-right: 32px;
+  align-self: flex-start;
+}
+
+.sidebarTitle {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #888;
+  margin-bottom: 16px;
+}
+
+.tocList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tocItem {
+  margin-bottom: 2px;
+}
+
+.tocLink {
+  display: block;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: #888;
+  text-decoration: none;
+  padding: 4px 8px 4px 0;
+  border-left: 2px solid transparent;
+  padding-left: 10px;
+  line-height: 1.4;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.tocLink:hover {
+  color: #2a5a8c;
+}
+
+.tocLinkActive {
+  color: #2a5a8c;
+  border-left-color: #2a5a8c;
+  font-weight: 500;
+}
+
+.tocNumber {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6rem;
+  color: #aaa;
+  margin-right: 6px;
+}
+
+/* ---------------------------------------------------------------
+   Main content column
+--------------------------------------------------------------- */
+.main {
+  flex: 1;
+  min-width: 0;
+  max-width: 680px;
+  padding: 0 0 120px 0;
+}
+
+/* ---------------------------------------------------------------
+   Section wrappers
+--------------------------------------------------------------- */
+.section {
+  position: relative;
+  scroll-margin-top: 120px;
+}
+
+/* ---------------------------------------------------------------
+   Page number in margin (right side)
+--------------------------------------------------------------- */
+.pageNum {
+  position: absolute;
+  right: -80px;
+  top: 8px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6rem;
+  color: #ccc;
+  letter-spacing: 0.08em;
+  user-select: none;
+}
+
+/* ---------------------------------------------------------------
+   Title Page — Section 1
+--------------------------------------------------------------- */
+.titlePage {
+  min-height: 70vh;
+  padding: 80px 0 80px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 64px;
+}
+
+.titlePageInner {
+  text-align: center;
+}
+
+.paperTitle {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 400;
+  line-height: 1.35;
+  color: #1a1a1a;
+  margin-bottom: 32px;
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.paperMeta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  color: #888;
+  letter-spacing: 0.08em;
+  margin-bottom: 40px;
+}
+
+.paperRule {
+  border: none;
+  border-top: 1px solid #ccc;
+  width: 120px;
+  margin: 40px auto;
+}
+
+.paperAuthors {
+  font-size: 0.9rem;
+  font-style: italic;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.paperAffil {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  color: #aaa;
+  letter-spacing: 0.06em;
+}
+
+/* ---------------------------------------------------------------
+   Abstract — Section 2
+--------------------------------------------------------------- */
+.abstract {
+  padding: 0 0 56px 0;
+  border-bottom: 1px solid #e8e8e8;
+  margin-bottom: 56px;
+}
+
+.abstractHeading {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #888;
+  margin-bottom: 16px;
+}
+
+.abstractBody {
+  padding-left: 40px;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #444;
+}
+
+.keywords {
+  margin-top: 20px;
+  padding-left: 40px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.78rem;
+  color: #888;
+}
+
+.keywordsLabel {
+  font-style: italic;
+}
+
+/* ---------------------------------------------------------------
+   Table of Contents page — Section 3
+--------------------------------------------------------------- */
+.tocSection {
+  padding: 0 0 56px 0;
+  border-bottom: 1px solid #e8e8e8;
+  margin-bottom: 56px;
+}
+
+.sectionHeading {
+  font-size: 1rem;
+  font-weight: 500;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.06em;
+  color: #333;
+  margin-bottom: 24px;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+}
+
+.tocPageList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tocPageItem {
+  display: flex;
+  align-items: baseline;
+  padding: 6px 0;
+  border-bottom: 1px dotted #ddd;
+  font-size: 0.95rem;
+}
+
+.tocPageItem:last-child {
+  border-bottom: none;
+}
+
+.tocPageNum {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  color: #888;
+  margin-right: 16px;
+  min-width: 24px;
+  flex-shrink: 0;
+}
+
+.tocPageTitle {
+  flex: 1;
+  color: #333;
+}
+
+.tocPageDots {
+  flex: 1;
+  border-bottom: 1px dotted #bbb;
+  margin: 0 12px;
+  position: relative;
+  top: -4px;
+  min-width: 40px;
+}
+
+.tocPageRight {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  color: #aaa;
+}
+
+/* ---------------------------------------------------------------
+   Content sections (1–4 + appendices)
+--------------------------------------------------------------- */
+.contentSection {
+  padding: 0 0 56px 0;
+  border-bottom: 1px solid #e8e8e8;
+  margin-bottom: 56px;
+  position: relative;
+}
+
+.contentSection:last-child {
+  border-bottom: none;
+}
+
+.h1 {
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.3;
+  color: #1a1a1a;
+  margin-bottom: 24px;
+  margin-top: 0;
+}
+
+.h2 {
+  font-size: 1.15rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+  margin-top: 36px;
+}
+
+.p {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.p:last-of-type {
+  margin-bottom: 0;
+}
+
+/* ---------------------------------------------------------------
+   Margin notes (positioned left of main text)
+--------------------------------------------------------------- */
+.marginNote {
+  position: absolute;
+  left: -180px;
+  width: 160px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: #888;
+  font-style: italic;
+  border-left: 2px solid #e0e0e0;
+  padding-left: 10px;
+
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.marginNote.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ---------------------------------------------------------------
+   Figures
+--------------------------------------------------------------- */
+.figure {
+  margin: 36px 0;
+  border: 1px solid #e8e8e8;
+  background: #fafafa;
+  padding: 28px 32px 20px;
+}
+
+.figureCode {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75rem;
+  line-height: 1.9;
+  color: #444;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.figureCaption {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-style: italic;
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 16px;
+  border-top: 1px solid #e8e8e8;
+  padding-top: 12px;
+
+  opacity: 0;
+  transition: opacity 0.4s ease 0.2s;
+}
+
+.figureCaption.visible {
+  opacity: 1;
+}
+
+/* ---------------------------------------------------------------
+   Tables
+--------------------------------------------------------------- */
+.tableWrapper {
+  margin: 28px 0;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.tableCaption {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.8rem;
+  font-style: italic;
+  color: #888;
+  text-align: left;
+  margin-bottom: 12px;
+  caption-side: top;
+}
+
+.table th {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #888;
+  text-align: left;
+  padding: 10px 16px;
+  border-bottom: 2px solid #ddd;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 10px 16px;
+  border-bottom: 1px solid #eee;
+  color: #444;
+  vertical-align: top;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tr:nth-child(even) td {
+  background: #fafafa;
+}
+
+.footnotes {
+  margin-top: 16px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.75rem;
+  color: #888;
+  border-top: 1px solid #ddd;
+  padding-top: 12px;
+}
+
+.footnoteItem {
+  margin-bottom: 4px;
+}
+
+.footnoteMark {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  color: #2a5a8c;
+  margin-right: 6px;
+}
+
+/* ---------------------------------------------------------------
+   References
+--------------------------------------------------------------- */
+.refList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.refItem {
+  display: flex;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.88rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+.refItem:last-child {
+  border-bottom: none;
+}
+
+.refNum {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  color: #2a5a8c;
+  min-width: 28px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+/* ---------------------------------------------------------------
+   Fade-in animation for sections
+--------------------------------------------------------------- */
+.fadeIn {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.fadeIn.visible {
+  opacity: 1;
+}
+
+/* ---------------------------------------------------------------
+   Mobile: collapse sidebar, inline margin notes
+--------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .layout {
+    flex-direction: column;
+    padding: 0 24px;
+  }
+
+  .sidebar {
+    width: 100%;
+    position: static;
+    top: auto;
+    padding-top: 80px;
+    padding-right: 0;
+    padding-bottom: 0;
+    overflow-x: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0;
+    flex-wrap: nowrap;
+  }
+
+  .sidebarTitle {
+    white-space: nowrap;
+    margin-bottom: 0;
+    margin-right: 16px;
+    flex-shrink: 0;
+  }
+
+  .tocList {
+    display: flex;
+    flex-direction: row;
+    gap: 0;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+  }
+
+  .tocItem {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .tocLink {
+    border-left: none;
+    border-bottom: 2px solid transparent;
+    padding: 4px 10px;
+    white-space: nowrap;
+  }
+
+  .tocLinkActive {
+    border-bottom-color: #2a5a8c;
+    border-left-color: transparent;
+  }
+
+  .main {
+    max-width: 100%;
+    padding-top: 24px;
+  }
+
+  .pageNum {
+    display: none;
+  }
+
+  .marginNote {
+    position: static;
+    width: auto;
+    left: auto;
+    transform: none;
+    opacity: 1;
+    margin: 16px 0;
+    border-left: 2px solid #e0e0e0;
+    padding-left: 12px;
+    background: #fafafa;
+    padding: 10px 12px;
+  }
+
+  .marginNote.visible {
+    transform: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .layout {
+    padding: 0 16px;
+  }
+
+  .paperTitle {
+    font-size: 1.3rem;
+  }
+
+  .abstractBody {
+    padding-left: 0;
+  }
+
+  .keywords {
+    padding-left: 0;
+  }
+
+  .figure {
+    padding: 16px;
+  }
+
+  .figureCode {
+    font-size: 0.65rem;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .fadeIn,
+  .marginNote,
+  .figureCaption {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
