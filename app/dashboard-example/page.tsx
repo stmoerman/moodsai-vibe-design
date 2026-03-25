@@ -1,282 +1,217 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import s from "./page.module.css";
+'use client';
 
-export const metadata: Metadata = {
-  title: "Dashboard — Moods AI",
-  description:
-    "Organization owner dashboard example for GGZ Noord, built with the Design 10 visual language.",
-};
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import s from './page.module.css';
+
+function getGreeting(hour: number) {
+  if (hour < 12) return 'Good morning';
+  if (hour < 18) return 'Good afternoon';
+  return 'Good evening';
+}
+
+function formatTime(date: Date) {
+  return date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+}
+
+function formatDate(date: Date) {
+  return date.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'long' });
+}
+
+const appointments = [
+  { time: '09:00', client: 'M. de Vries', therapist: 'Dr. Smit', status: 'confirmed' as const },
+  { time: '09:30', client: 'J. Bakker', therapist: 'Dr. van Dijk', status: 'confirmed' as const },
+  { time: '10:00', client: 'A. Hoekstra', therapist: 'Dr. Smit', status: 'pending' as const },
+  { time: '11:00', client: 'S. Jansen', therapist: 'Dr. de Vries', status: 'confirmed' as const },
+  { time: '13:00', client: 'T. van Berg', therapist: 'Dr. Smit', status: 'confirmed' as const },
+  { time: '14:00', client: '\u2014', therapist: 'Dr. van Dijk', status: 'available' as const },
+];
+
+const activityItems = [
+  { text: 'Session report generated \u2014 M. de Vries', time: '2 min ago' },
+  { text: 'New client registered \u2014 A. Hoekstra', time: '18 min ago' },
+  { text: 'Leave request submitted \u2014 Dr. van Dijk', time: '1h ago' },
+  { text: '3 AI reports completed', time: '2h ago' },
+  { text: 'Newsletter published', time: '3h ago' },
+];
+
+const notifications = [
+  { color: '#4a6a9a', text: 'New client: A. Hoekstra' },
+  { color: '#8b6d4f', text: 'Leave request: Dr. van Dijk' },
+  { color: '#d0cdc6', text: 'Report ready for review' },
+];
+
+const modules = [
+  { name: 'Core', stat: 'Dashboard & AI', active: true },
+  { name: 'Video', stat: '8 rooms active', active: true },
+  { name: 'HCI', stat: '78% declarability', active: true },
+  { name: 'BI', stat: '12 reports ready', active: true },
+  { name: 'Care', stat: '3 new referrals', active: true },
+  { name: 'Newsletter', stat: 'Not configured', active: false },
+];
 
 export default function DashboardExample() {
+  const [now, setNow] = useState<Date | null>(null);
+
+  useEffect(() => {
+    setNow(new Date());
+  }, []);
+
+  const greeting = now ? getGreeting(now.getHours()) : 'Good morning';
+  const timeStr = now ? formatTime(now) : '';
+  const dateStr = now ? formatDate(now) : '';
+
+  // Determine which appointment is "current" based on hour
+  const currentHour = now ? now.getHours() : 9;
+  const currentSlotIndex = (() => {
+    const hours = [9, 9.5, 10, 11, 13, 14];
+    let idx = 0;
+    for (let i = 0; i < hours.length; i++) {
+      if (currentHour >= hours[i]) idx = i;
+    }
+    return idx;
+  })();
+
   return (
     <div className={s.root}>
-      {/* Dot-grid background */}
       <div className={s.dotGrid} aria-hidden="true" />
 
-      {/* Scroll progress bar */}
-      <div className={s.progressBar} aria-hidden="true" />
+      {/* Top Bar */}
+      <header className={s.topBar}>
+        <Link href="/" className={s.logo}>Moods.ai</Link>
+        <div className={s.topBarRight}>
+          <span className={s.orgName}>GGZ Noord</span>
+          <div className={s.avatar}>JV</div>
+        </div>
+      </header>
 
-      {/* ── Navigation ── */}
-      <nav className={s.nav}>
-        <Link href="/" className={s.navLogo}>Moods.ai</Link>
-        <ul className={s.navLinks}>
-          <li><Link href="#" className={s.navLink}>Overview</Link></li>
-          <li><Link href="#" className={s.navLink}>Schedule</Link></li>
-          <li><Link href="#" className={s.navLink}>Team</Link></li>
-          <li><Link href="#" className={s.navLink}>Analytics</Link></li>
-          <li><Link href="#" className={s.navLink}>Settings</Link></li>
-        </ul>
-      </nav>
+      {/* Welcome Strip */}
+      <div className={s.welcomeStrip}>
+        <span className={s.greeting}>{greeting}, Jaime</span>
+        <span className={s.dateTime}>{dateStr} &middot; {timeStr}</span>
+      </div>
 
-      <div className={s.page}>
+      {/* Main Grid */}
+      <main className={s.mainGrid}>
 
-        {/* ════════════════════════════════════════════
-            Hero
-        ════════════════════════════════════════════ */}
-        <section className={s.hero}>
-          <p className={s.heroEyebrow}>Practice Overview</p>
+        {/* Left Column */}
+        <div className={s.leftCol}>
 
-          <h1 className={s.heroHeadline}>
-            Good morning, Dr. van Berg
-            <svg
-              className={s.heroUnderline}
-              width="360"
-              height="16"
-              viewBox="0 0 360 16"
-              aria-hidden="true"
-            >
-              <path
-                d="M0,8 C30,2 60,14 90,6 C120,0 150,12 180,4 C210,-2 240,10 270,6 C300,2 330,10 360,8"
-                className={s.underlinePath}
-              />
-            </svg>
-          </h1>
-
-          <p className={s.heroSub}>
-            GGZ Noord &middot; Wednesday, 25 March 2026
-          </p>
-        </section>
-
-        <div className={s.sectionDivider} />
-
-        {/* ════════════════════════════════════════════
-            01 — Overview
-        ════════════════════════════════════════════ */}
-        <section className={s.section}>
-          <p className={s.sectionLabel}>01 &mdash; Overview</p>
-
-          <div className={s.statsRow}>
-            <div className={s.stat}>
-              <div className={s.statLabel}>Revenue</div>
-              <div className={s.statValue}>&euro;18,430</div>
-              <div className={s.statTrend}>+12% vs last week</div>
+          {/* Today's Schedule */}
+          <section className={s.scheduleSection}>
+            <div className={s.scheduleHeader}>
+              <span className={s.scheduleTitle}>Today</span>
+              <span className={s.scheduleCount}>6 appointments</span>
             </div>
-            <div className={s.statDivider} />
-            <div className={s.stat}>
-              <div className={s.statLabel}>Sessions</div>
-              <div className={s.statValue}>142</div>
-              <div className={s.statTrend}>+8% vs last week</div>
+            <div className={s.scheduleList}>
+              {appointments.map((apt, i) => (
+                <div
+                  key={i}
+                  className={`${s.scheduleRow} ${i === currentSlotIndex ? s.scheduleRowActive : ''}`}
+                  style={{ animationDelay: `${0.15 + i * 0.03}s` }}
+                >
+                  <span className={s.scheduleTime}>{apt.time}</span>
+                  <span className={s.scheduleClient}>{apt.client}</span>
+                  <span className={s.scheduleTherapist}>{apt.therapist}</span>
+                  <span
+                    className={`${s.statusDot} ${
+                      apt.status === 'confirmed' ? s.statusConfirmed :
+                      apt.status === 'pending' ? s.statusPending :
+                      s.statusAvailable
+                    }`}
+                  />
+                </div>
+              ))}
             </div>
-            <div className={s.statDivider} />
-            <div className={s.stat}>
-              <div className={s.statLabel}>Declarability</div>
-              <div className={s.statValue}>78%</div>
-              <div className={s.statTrend}>Target 80%</div>
+          </section>
+
+          {/* Quick Stats */}
+          <div className={s.quickStats}>
+            <div className={s.quickStat}>
+              <div className={s.quickStatValue}>&euro;18,430</div>
+              <div className={s.quickStatLabel}>Revenue</div>
             </div>
-            <div className={s.statDivider} />
-            <div className={s.stat}>
-              <div className={s.statLabel}>Team</div>
-              <div className={s.statValue}>8/12</div>
-              <div className={s.statTrend}>Online now</div>
+            <div className={s.quickStatDivider} />
+            <div className={s.quickStat}>
+              <div className={s.quickStatValue}>142</div>
+              <div className={s.quickStatLabel}>Sessions</div>
+            </div>
+            <div className={s.quickStatDivider} />
+            <div className={s.quickStat}>
+              <div className={s.quickStatValue}>78%</div>
+              <div className={s.quickStatLabel}>Declarability</div>
+            </div>
+            <div className={s.quickStatDivider} />
+            <div className={s.quickStat}>
+              <div className={s.quickStatValue}>8/12</div>
+              <div className={s.quickStatLabel}>Online</div>
             </div>
           </div>
-        </section>
 
-        <div className={s.sectionDivider} />
+        </div>
 
-        {/* ════════════════════════════════════════════
-            02 — Today
-        ════════════════════════════════════════════ */}
-        <section className={s.section}>
-          <p className={s.sectionLabel}>02 &mdash; Today</p>
+        {/* Right Column */}
+        <div className={s.rightCol}>
 
-          <table className={s.scheduleTable}>
-            <thead>
-              <tr>
-                <th>Time</th>
-                <th>Client</th>
-                <th>Therapist</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>09:00</td>
-                <td>M. de Vries</td>
-                <td>Dr. Smit</td>
-                <td><span className={s.statusConfirmed}>Confirmed</span></td>
-              </tr>
-              <tr>
-                <td>09:30</td>
-                <td>J. Bakker</td>
-                <td>Dr. van Dijk</td>
-                <td><span className={s.statusConfirmed}>Confirmed</span></td>
-              </tr>
-              <tr>
-                <td>10:00</td>
-                <td>A. Hoekstra</td>
-                <td>Dr. Smit</td>
-                <td><span className={s.statusPending}>Pending</span></td>
-              </tr>
-              <tr>
-                <td>11:00</td>
-                <td>S. Jansen</td>
-                <td>Dr. de Vries</td>
-                <td><span className={s.statusConfirmed}>Confirmed</span></td>
-              </tr>
-              <tr>
-                <td>13:00</td>
-                <td>T. van Berg</td>
-                <td>Dr. Smit</td>
-                <td><span className={s.statusConfirmed}>Confirmed</span></td>
-              </tr>
-              <tr>
-                <td>14:00</td>
-                <td className={s.tdMuted}>&mdash;</td>
-                <td>Dr. van Dijk</td>
-                <td><span className={s.statusConfirmed}>Available</span></td>
-              </tr>
-              <tr>
-                <td>15:00</td>
-                <td>E. Mulder</td>
-                <td>Dr. de Vries</td>
-                <td><span className={s.statusPending}>Pending</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-
-        <div className={s.sectionDivider} />
-
-        {/* ════════════════════════════════════════════
-            03 — Recent
-        ════════════════════════════════════════════ */}
-        <section className={s.section}>
-          <p className={s.sectionLabel}>03 &mdash; Recent</p>
-
-          <div className={s.activityRow}>
-            <span className={s.activityText}>Session report generated &mdash; M. de Vries</span>
-            <span className={s.activityTime}>2 min ago</span>
-          </div>
-          <div className={s.activityRow}>
-            <span className={s.activityText}>New client registered &mdash; A. Hoekstra</span>
-            <span className={s.activityTime}>18 min ago</span>
-          </div>
-          <div className={s.activityRow}>
-            <span className={s.activityText}>Leave request submitted &mdash; Dr. van Dijk</span>
-            <span className={s.activityTime}>1 hour ago</span>
-          </div>
-          <div className={s.activityRow}>
-            <span className={s.activityText}>3 AI reports completed</span>
-            <span className={s.activityTime}>2 hours ago</span>
-          </div>
-          <div className={s.activityRow}>
-            <span className={s.activityText}>Newsletter published</span>
-            <span className={s.activityTime}>3 hours ago</span>
-          </div>
-        </section>
-
-        <div className={s.sectionDivider} />
-
-        {/* ════════════════════════════════════════════
-            04 — Ask
-        ════════════════════════════════════════════ */}
-        <section className={s.section}>
-          <p className={s.sectionLabel}>04 &mdash; Ask</p>
-
-          <input
-            type="text"
-            className={s.askInput}
-            placeholder="How did revenue compare this week vs last week?"
-            readOnly
-          />
-          <div className={s.askMeta}>Powered by AI</div>
-        </section>
-
-        <div className={s.sectionDivider} />
-
-        {/* ════════════════════════════════════════════
-            05 — Modules
-        ════════════════════════════════════════════ */}
-        <section className={s.section}>
-          <p className={s.sectionLabel}>05 &mdash; Modules</p>
-
-          <div className={s.moduleGrid}>
-            <div className={s.moduleCard}>
-              <div className={s.moduleHeader}>
-                <span className={s.moduleName}>Core</span>
-                <span className={s.moduleStatus}>Active</span>
-              </div>
-              <p className={s.moduleDesc}>
-                Dashboard, AI chat, settings, and member management. Always on.
+          {/* AskMoody */}
+          <section className={s.askMoody}>
+            <div className={s.askMoodyHeader}>
+              <span className={s.askMoodyLabel}>ASKMOODY</span>
+              <span className={s.askMoodyDot} />
+            </div>
+            <div className={s.askMoodyBody}>
+              <p className={s.askMoodyMsg}>
+                Revenue up 12% this week. 3 therapists below target.
               </p>
             </div>
-            <div className={s.moduleCard}>
-              <div className={s.moduleHeader}>
-                <span className={s.moduleName}>Video</span>
-                <span className={s.moduleStatus}>Active</span>
+            <input
+              type="text"
+              className={s.askMoodyInput}
+              placeholder="Ask anything..."
+              readOnly
+            />
+          </section>
+
+          {/* Activity Feed */}
+          <section className={s.activitySection}>
+            <h3 className={s.sectionHeading}>Recent</h3>
+            {activityItems.map((item, i) => (
+              <div key={i} className={s.activityRow}>
+                <span className={s.activityText}>{item.text}</span>
+                <span className={s.activityTime}>{item.time}</span>
               </div>
-              <p className={s.moduleDesc}>
-                Whereby video rooms, virtual office, and session transcripts.
-              </p>
+            ))}
+          </section>
+
+          {/* Notifications */}
+          <section className={s.notificationsSection}>
+            <div className={s.notificationsHeader}>
+              <h3 className={s.sectionHeading}>Notifications</h3>
+              <span className={s.notifBadge}>3</span>
             </div>
-            <div className={s.moduleCard}>
-              <div className={s.moduleHeader}>
-                <span className={s.moduleName}>HCI</span>
-                <span className={s.moduleStatus}>Active</span>
+            {notifications.map((notif, i) => (
+              <div key={i} className={s.notifRow}>
+                <span className={s.notifDot} style={{ backgroundColor: notif.color }} />
+                <span className={s.notifText}>{notif.text}</span>
               </div>
-              <p className={s.moduleDesc}>
-                HCI integration, employee data, declarability, and HR features.
-              </p>
-            </div>
-            <div className={s.moduleCard}>
-              <div className={s.moduleHeader}>
-                <span className={s.moduleName}>BI</span>
-                <span className={s.moduleStatus}>Active</span>
-              </div>
-              <p className={s.moduleDesc}>
-                Business intelligence dashboards, reports, and analytics.
-              </p>
-            </div>
-            <div className={s.moduleCard}>
-              <div className={s.moduleHeader}>
-                <span className={s.moduleName}>Care</span>
-                <span className={s.moduleStatus}>Active</span>
-              </div>
-              <p className={s.moduleDesc}>
-                Care chat, eHealth tools, client onboarding, and referrals.
-              </p>
-            </div>
-            <div className={s.moduleCardInactive}>
-              <div className={s.moduleHeader}>
-                <span className={s.moduleName}>Newsletter</span>
-                <span className={s.moduleStatus}>Inactive</span>
-              </div>
-              <p className={s.moduleDesc}>
-                Newsletter creation and distribution for clients and staff.
-              </p>
-            </div>
+            ))}
+          </section>
+
+        </div>
+      </main>
+
+      {/* Bottom Row — Module Quick Access */}
+      <div className={s.modulesRow}>
+        {modules.map((mod, i) => (
+          <div
+            key={i}
+            className={`${s.moduleTile} ${!mod.active ? s.moduleTileInactive : ''}`}
+            style={{ animationDelay: `${0.3 + i * 0.04}s` }}
+          >
+            <div className={s.moduleName}>{mod.name}</div>
+            <div className={s.moduleStat}>{mod.stat}</div>
           </div>
-        </section>
-
-        <div className={s.sectionDivider} />
-
-        {/* ── Footer ── */}
-        <footer className={s.footer}>
-          <p className={s.footerText}>Moods AI &middot; Amsterdam</p>
-        </footer>
-
+        ))}
       </div>
     </div>
   );
