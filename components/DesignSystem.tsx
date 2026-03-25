@@ -33,6 +33,16 @@ const neutralColors = [
   { name: 'Pewter', hex: '#8a8580', usage: 'Tertiary text',                       dark: true  },
 ]
 
+/* ── reMarkable brand reference ─────────────────────────── */
+
+const remarkableColors = [
+  { name: 'Blue Ribbon', hex: '#2559F4', usage: 'Primary blue accent (links, CTAs)',    dark: true  },
+  { name: 'Masala',      hex: '#423C38', usage: 'Dark warm brown (text, headings)',      dark: true  },
+  { name: 'Silver Rust', hex: '#CBBDB9', usage: 'Warm grey/taupe (borders, muted)',      dark: false },
+  { name: 'Pearl Bush',  hex: '#E7E1D5', usage: 'Light warm cream (backgrounds)',        dark: false },
+  { name: 'Dune',        hex: '#211E1C', usage: 'Near-black (dark surfaces, nav)',       dark: true  },
+]
+
 /* ── Spacing scale ───────────────────────────────────────── */
 
 const spacingScale = [
@@ -194,6 +204,16 @@ export default function DesignSystem() {
             <div className={s.colorGroupLabel}>Neutral Scale</div>
             <div className={s.colorGrid}>
               {neutralColors.map(c => <Swatch key={c.name} {...c} />)}
+            </div>
+          </div>
+
+          <div className={s.colorGroup}>
+            <div className={s.colorGroupLabel}>reMarkable Brand Reference</div>
+            <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.75rem', color: '#959ead', marginBottom: '1rem' }}>
+              Source palette from remarkable.com — our design DNA. Adapt for Moods AI, don&apos;t copy directly.
+            </p>
+            <div className={s.colorGrid}>
+              {remarkableColors.map(c => <Swatch key={c.name} {...c} />)}
             </div>
           </div>
         </section>
