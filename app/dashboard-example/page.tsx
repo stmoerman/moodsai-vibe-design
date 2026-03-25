@@ -330,12 +330,10 @@ export default function DashboardExample() {
                         apt.status === 'pending' ? s.aptPending : '',
                         apt.status === 'available' ? s.aptAvailable : '',
                         apt.status === 'break' ? s.aptBreak : '',
-                        isExpanded ? s.aptExpanded : '',
                       ].filter(Boolean).join(' ')}
                       style={{
                         top: `${topPct}%`,
-                        height: isExpanded ? 'auto' : `${heightPct}%`,
-                        minHeight: isExpanded ? '200px' : undefined,
+                        height: `${heightPct}%`,
                         animationDelay: `${1.5 + i * 0.04}s`,
                       }}
                       onClick={isAppointment ? () => toggleExpand(i) : undefined}
@@ -350,40 +348,6 @@ export default function DashboardExample() {
                           {apt.status === 'available' && 'Beschikbaar'}
                         </span>
                       </div>
-
-                      {/* Expanded Details */}
-                      {isAppointment && (
-                        <div className={`${s.aptDetails} ${isExpanded ? s.aptDetailsOpen : ''}`}>
-                          <div className={s.aptDetailsInner}>
-                            <div className={s.aptDetailsTop}>
-                              <div className={s.aptDetailAvatar}>{details?.initials || '??'}</div>
-                              <div className={s.aptDetailInfo}>
-                                <span className={s.aptDetailName}>{details?.fullName || apt.client}</span>
-                                <span className={s.aptDetailType}>{apt.type} &middot; {apt.durationMin} min &middot; {details?.location}</span>
-                              </div>
-                            </div>
-                            <div className={s.aptDetailRow}>
-                              <span className={s.aptDetailLabel}>Vorige sessie</span>
-                              <span className={s.aptDetailValue}>{details?.lastSession}</span>
-                            </div>
-                            <div className={s.aptDetailRow}>
-                              <span className={s.aptDetailLabel}>Notities</span>
-                              <span className={s.aptDetailValue}>{details?.notes}</span>
-                            </div>
-                            <div className={s.aptDetailActions}>
-                              <button className={s.aptDetailAction}>Start videogesprek</button>
-                              <button className={s.aptDetailAction}>Bekijk dossier</button>
-                              <button className={s.aptDetailAction}>Notitie maken</button>
-                            </div>
-                            <button
-                              className={s.aptDetailClose}
-                              onClick={(e) => { e.stopPropagation(); setExpandedAppointment(null); }}
-                            >
-                              Sluiten
-                            </button>
-                          </div>
-                        </div>
-                      )}
                     </div>
                   );
                 })}
@@ -413,7 +377,7 @@ export default function DashboardExample() {
           </section>
 
           <section className={s.notesSection}>
-            <h3 className={s.sectionHeading}>Recente notities</h3>
+            <h3 className={s.sectionHeading}>Recente verslagen</h3>
             {recentNotes.map((note, i) => (
               <div key={i} className={s.noteRow}>
                 <span className={s.noteText}>{note.text}</span>
@@ -433,6 +397,55 @@ export default function DashboardExample() {
 
         </div>
       </main>
+
+      {/* Appointment Dialog */}
+      {expandedAppointment !== null && (() => {
+        const apt = schedule[expandedAppointment];
+        const details = apt.client ? appointmentDetails[apt.client] : null;
+        if (!details) return null;
+        return (
+          <div className={s.dialogOverlay} onClick={() => setExpandedAppointment(null)}>
+            <div className={s.dialog} onClick={(e) => e.stopPropagation()}>
+              <div className={s.dialogHeader}>
+                <div className={s.aptDetailsTop}>
+                  <div className={s.aptDetailAvatar}>{details.initials}</div>
+                  <div className={s.aptDetailInfo}>
+                    <span className={s.aptDetailName}>{details.fullName}</span>
+                    <span className={s.aptDetailType}>
+                      {apt.type} &middot; {apt.durationMin} min &middot; {details.location}
+                    </span>
+                  </div>
+                </div>
+                <button className={s.dialogClose} onClick={() => setExpandedAppointment(null)}>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                    <line x1="4" y1="4" x2="12" y2="12" />
+                    <line x1="12" y1="4" x2="4" y2="12" />
+                  </svg>
+                </button>
+              </div>
+              <div className={s.dialogBody}>
+                <div className={s.aptDetailRow}>
+                  <span className={s.aptDetailLabel}>Tijd</span>
+                  <span className={s.aptDetailValue}>{apt.time} — {apt.endTime}</span>
+                </div>
+                <div className={s.aptDetailRow}>
+                  <span className={s.aptDetailLabel}>Vorige sessie</span>
+                  <span className={s.aptDetailValue}>{details.lastSession}</span>
+                </div>
+                <div className={s.aptDetailRow}>
+                  <span className={s.aptDetailLabel}>Notities</span>
+                  <span className={s.aptDetailValue}>{details.notes}</span>
+                </div>
+              </div>
+              <div className={s.dialogActions}>
+                <button className={s.aptDetailAction}>Start videogesprek</button>
+                <button className={s.aptDetailAction}>Bekijk dossier</button>
+                <button className={s.aptDetailAction}>Notitie maken</button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }

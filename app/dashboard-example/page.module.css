@@ -788,6 +788,65 @@
   color: #3a3a3a;
 }
 
+/* ── Appointment Dialog ── */
+.dialogOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(58, 58, 58, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.15s ease;
+}
+
+.dialog {
+  background: #f5f2ec;
+  border: 1px solid #d0cdc6;
+  width: 100%;
+  max-width: 480px;
+  margin: 20px;
+  animation: dialogSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes dialogSlideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dialogHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid #e8e4dd;
+}
+
+.dialogClose {
+  background: none;
+  border: none;
+  color: #7a746e;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.dialogClose:hover {
+  color: #3a3a3a;
+}
+
+.dialogBody {
+  padding: 16px 24px;
+}
+
+.dialogActions {
+  display: flex;
+  gap: 8px;
+  padding: 0 24px 24px;
+  flex-wrap: wrap;
+}
+
 /* ── Right Column ── */
 .rightCol {
   display: flex;
