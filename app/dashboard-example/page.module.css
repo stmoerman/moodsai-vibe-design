@@ -190,14 +190,14 @@
 .welcomeHero {
   position: relative;
   z-index: 1;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 28px 32px 20px;
 }
 
 .greeting {
   font-family: 'Crimson Pro', serif;
-  font-size: 2rem;
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
   font-weight: 400;
   color: #8b6d4f;
   letter-spacing: -0.01em;
@@ -237,7 +237,7 @@
 .mainGrid {
   position: relative;
   z-index: 1;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 32px;
   display: grid;
@@ -272,7 +272,7 @@
 
 .statValue {
   font-family: 'Space Mono', monospace;
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 700;
   color: #1a1815;
   line-height: 1.2;
@@ -294,7 +294,7 @@
 
 .quickAction {
   font-family: 'Crimson Pro', serif;
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: #3a3a3a;
   padding: 8px 0;
   border: none;
@@ -348,7 +348,7 @@
 
 .scheduleTitle {
   font-family: 'Crimson Pro', serif;
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   font-weight: 400;
   color: #3a3a3a;
 }
@@ -440,7 +440,7 @@
 
 .scheduleClient {
   font-family: 'Crimson Pro', serif;
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: #3a3a3a;
   flex: 1;
   min-width: 0;
@@ -522,7 +522,7 @@
 
 .askMoodyMsg {
   font-family: 'Crimson Pro', serif;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   color: #3a3a3a;
   line-height: 1.5;
   margin: 0;
@@ -560,7 +560,7 @@
 
 .sectionHeading {
   font-family: 'Crimson Pro', serif;
-  font-size: 1rem;
+  font-size: 1.15rem;
   font-weight: 400;
   color: #3a3a3a;
   margin: 0 0 8px 0;
@@ -664,7 +664,7 @@
 .bottomNav {
   position: relative;
   z-index: 1;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 16px auto 24px;
   padding: 0 32px;
   display: grid;
