@@ -319,7 +319,7 @@ export default function DashboardExample() {
                   style={{
                     top: `${topPct}%`,
                     height: `${heightPct}%`,
-                    animationDelay: `${1.5 + i * 0.04}s`,
+                    animationDelay: `${i * 0.03}s`,
                   }}
                   onClick={isAppointment ? () => toggleExpand(i) : undefined}
                 >
@@ -636,6 +636,7 @@ export default function DashboardExample() {
       {activeTab === 'client-chat' && (
         <div className={s.teamchatsView}>
           <div className={s.teamchatsSidebar}>
+            <button className={s.teamchatNewBtn}>+ Nieuw gesprek</button>
             <div className={s.teamchatSearch}>
               <input type="text" placeholder="Zoek cli&euml;nt..." className={s.teamchatSearchInput} readOnly />
             </div>
