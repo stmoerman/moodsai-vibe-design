@@ -404,19 +404,7 @@ export default function Design10() {
     const ctaSection = document.querySelector(`.${styles.ctaSection}`)
     if (ctaSection) ctaObserver.observe(ctaSection)
 
-    /* ── E-ink flash at section boundaries ─────────── */
-    const sections = document.querySelectorAll('section[data-section]')
-    const einkObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            triggerEinkFlash()
-          }
-        })
-      },
-      { threshold: 0.01, rootMargin: '-45% 0px -45% 0px' }
-    )
-    sections.forEach((s) => einkObserver.observe(s))
+    /* ── E-ink flash disabled — was triggering too frequently on scroll ── */
 
     return () => {
       window.removeEventListener('scroll', onScroll)
@@ -427,7 +415,7 @@ export default function Design10() {
       priceCheckObserver.disconnect()
       chatObserver.disconnect()
       ctaObserver.disconnect()
-      einkObserver.disconnect()
+      /* einkObserver removed */
       if (arrowIntervalRef.current) clearInterval(arrowIntervalRef.current)
     }
   }, [prefersReducedMotion, streamChat, drawArrow, triggerEinkFlash])
