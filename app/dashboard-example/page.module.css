@@ -1,7 +1,4 @@
-/* ===================================================================
-   Dashboard Example — Organization Owner View
-   Moods AI Design System · Sharp corners · Paper-first philosophy
-   =================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
 /* ===== Top Navigation ===== */
 .topNav {
@@ -10,8 +7,9 @@
   left: 0;
   right: 0;
   z-index: 100;
-  height: 56px;
-  background: #211E1C;
+  height: 48px;
+  background: #ffffff;
+  border-bottom: 1px solid #e8e6e3;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -19,249 +17,140 @@
 }
 
 .navLogo {
-  font-family: 'EB Garamond', serif;
-  font-size: 1.25rem;
-  font-weight: 400;
-  font-style: italic;
-  color: #E7E1D5;
-  letter-spacing: -0.01em;
-  flex-shrink: 0;
-}
-
-.navTabs {
-  display: flex;
-  gap: 0;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-
-.navTabs::-webkit-scrollbar {
-  display: none;
-}
-
-.navTab {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.75rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
   font-weight: 500;
-  color: #8a837d;
-  padding: 18px 16px;
-  text-decoration: none;
-  white-space: nowrap;
-  border-bottom: 2px solid transparent;
-  transition: color 0.15s, border-color 0.15s;
-}
-
-.navTab:hover {
-  color: #E7E1D5;
-}
-
-.navTabActive {
-  composes: navTab;
-  color: #E7E1D5;
-  border-bottom-color: #2559F4;
+  color: #000000;
 }
 
 .navRight {
   display: flex;
   align-items: center;
-  gap: 16px;
-  flex-shrink: 0;
+  gap: 12px;
 }
 
-.navBell {
-  font-size: 1rem;
-  color: #8a837d;
-  cursor: pointer;
-  position: relative;
-}
-
-.navBellDot {
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  width: 6px;
-  height: 6px;
-  background: #c44;
-  border-radius: 50%;
+.navName {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #999;
 }
 
 .navAvatar {
   width: 32px;
   height: 32px;
-  background: #2559F4;
+  background: #f5f5f3;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.6875rem;
-  font-weight: 700;
-  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #000000;
 }
 
-.navOrg {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.6875rem;
-  color: #8a837d;
-  white-space: nowrap;
-}
-
-/* ===== Main Content ===== */
+/* ===== Main ===== */
 .main {
-  background: #E7E1D5;
+  background: #ffffff;
   min-height: 100vh;
-  padding-top: 56px;
+  padding-top: 48px;
 }
 
 .content {
-  max-width: 1200px;
+  max-width: 1080px;
   margin: 0 auto;
-  padding: 48px 24px 128px;
+  padding: 48px 64px 0;
 }
 
-/* ===== Header Area ===== */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 48px;
-  padding-bottom: 32px;
-  border-bottom: 1px solid #CBBDB9;
-}
-
-.headerLeft {}
-
-.greeting {
-  font-family: 'EB Garamond', serif;
-  font-size: clamp(1.8rem, 3vw, 2.5rem);
+/* ===== Greeting ===== */
+.greetingLabel {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
   font-weight: 400;
-  font-style: italic;
-  color: #423C38;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
+  color: #999;
   margin-bottom: 8px;
 }
 
-.headerMeta {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  color: #6b625c;
-  letter-spacing: 0.03em;
+.greetingDate {
+  font-family: 'Inter', sans-serif;
+  font-size: 32px;
+  font-weight: 400;
+  color: #000000;
+  letter-spacing: -0.02em;
 }
 
-.headerRight {
-  display: flex;
-  gap: 0;
-  flex-shrink: 0;
-  margin-top: 8px;
+.spacer48 {
+  height: 48px;
 }
 
-.togglePill {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.6875rem;
-  font-weight: 500;
-  padding: 8px 16px;
-  border: 1px solid #CBBDB9;
-  background: transparent;
-  color: #6b625c;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-  margin-left: -1px;
+.spacer64 {
+  height: 64px;
 }
 
-.togglePill:first-child {
-  margin-left: 0;
+.divider {
+  height: 1px;
+  background: #e8e6e3;
 }
 
-.togglePillActive {
-  composes: togglePill;
-  background: #211E1C;
-  color: #E7E1D5;
-  border-color: #211E1C;
-}
-
-/* ===== Stat Cards ===== */
+/* ===== Stats ===== */
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  margin-bottom: 48px;
+  gap: 0;
 }
 
-.statCard {
-  background: #f2eee9;
-  border: 1px solid #CBBDB9;
-  padding: 24px;
-}
+.stat {}
 
 .statLabel {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: #6b625c;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #999;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.1em;
   margin-bottom: 12px;
 }
 
 .statValue {
-  font-family: 'Space Mono', monospace;
-  font-size: 2rem;
-  font-weight: 700;
-  color: #423C38;
-  margin-bottom: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 40px;
+  font-weight: 600;
+  color: #000000;
+  font-variant-numeric: tabular-nums;
   line-height: 1.1;
+  margin-bottom: 8px;
 }
 
-.statSub {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.6875rem;
-  color: #6b625c;
+.statTrend {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #999;
+}
+
+.statTrendPositive {
+  composes: statTrend;
+  color: #2559F4;
+}
+
+/* ===== Schedule ===== */
+.sectionHeading {
+  font-family: 'Inter', sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: #000000;
   margin-bottom: 4px;
 }
 
-.statTrendUp {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #3d5c4f;
-}
-
-.statTrendWarn {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #8a6318;
-}
-
-.statTrendNeutral {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #6b625c;
-}
-
-/* ===== Row 2: Two-Column ===== */
-.twoCol {
-  display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: 24px;
-  margin-bottom: 48px;
-}
-
-/* Schedule */
-.card {
-  background: #f2eee9;
-  border: 1px solid #CBBDB9;
-  padding: 24px;
-}
-
-.cardTitle {
-  font-family: 'EB Garamond', serif;
-  font-size: 1.3rem;
+.sectionSub {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
   font-weight: 400;
-  color: #423C38;
-  margin-bottom: 20px;
+  color: #999;
+}
+
+.spacer24 {
+  height: 24px;
 }
 
 .scheduleTable {
@@ -269,326 +158,235 @@
   border-collapse: collapse;
 }
 
-.scheduleTable th {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.65rem;
-  font-weight: 500;
-  color: #6b625c;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  text-align: left;
-  padding: 10px 12px;
-  border-bottom: 1px solid #CBBDB9;
-}
-
-.scheduleTable td {
-  font-family: 'Crimson Pro', serif;
-  font-size: 0.9375rem;
-  color: #4e565e;
-  padding: 10px 12px;
-  border-bottom: 1px solid #CBBDB9;
-}
-
-.scheduleTable tr:last-child td {
-  border-bottom: none;
-}
-
-.tdMono {
-  font-family: 'Space Mono', monospace !important;
-  font-size: 0.8125rem !important;
-  color: #423C38 !important;
-  font-weight: 500 !important;
-}
-
-.tdMuted {
-  color: #CBBDB9 !important;
-}
-
-.badge {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.6875rem;
-  font-weight: 500;
-  padding: 3px 8px;
-  display: inline-block;
-}
-
-.badgeConfirmed {
-  composes: badge;
-  background: rgba(90, 114, 104, 0.12);
-  color: #3d5c4f;
-}
-
-.badgePending {
-  composes: badge;
-  background: rgba(196, 140, 40, 0.1);
-  color: #8a6318;
-}
-
-.badgeAvailable {
-  composes: badge;
-  background: #E7E1D5;
-  color: #6b625c;
-}
-
-/* Activity Feed */
-.activityList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.activityItem {
+.scheduleRow {
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
+  align-items: center;
   padding: 14px 0;
-  border-bottom: 1px solid #CBBDB9;
+  border-bottom: 1px solid #f5f5f3;
 }
 
-.activityItem:last-child {
-  border-bottom: none;
-}
-
-.activityDot {
-  width: 8px;
-  height: 8px;
+.scheduleTime {
+  width: 80px;
   flex-shrink: 0;
-  margin-top: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #999;
 }
 
-.dotBlue {
-  background: #2559F4;
+.scheduleClient {
+  flex: 1;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #000000;
 }
 
-.dotGreen {
-  background: #5a7268;
+.scheduleClientMuted {
+  composes: scheduleClient;
+  color: #e8e6e3;
 }
 
-.dotAmber {
-  background: #c48c28;
+.scheduleTherapist {
+  width: 160px;
+  flex-shrink: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #999;
 }
 
-.dotPurple {
-  background: #7c5cbf;
+.scheduleStatus {
+  width: 100px;
+  flex-shrink: 0;
+  text-align: right;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #999;
+}
+
+.scheduleStatusPending {
+  composes: scheduleStatus;
+  color: #2559F4;
+}
+
+.scheduleStatusAvailable {
+  composes: scheduleStatus;
+  color: #e8e6e3;
+}
+
+/* ===== Activity ===== */
+.activityRow {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f5f5f3;
 }
 
 .activityText {
-  font-family: 'Crimson Pro', serif;
-  font-size: 0.9375rem;
-  color: #4e565e;
-  line-height: 1.4;
   flex: 1;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #000000;
 }
 
 .activityTime {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.625rem;
-  color: #6b625c;
-  white-space: nowrap;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #999;
   flex-shrink: 0;
-  margin-top: 2px;
+  margin-left: 24px;
 }
 
 /* ===== AskMoody ===== */
-.askMoody {
-  background: #f2eee9;
-  border: 1px solid #CBBDB9;
-  padding: 32px;
-  margin-bottom: 48px;
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-
-.askMoodyLeft {
-  flex-shrink: 0;
-}
-
-.askMoodyTitle {
-  font-family: 'EB Garamond', serif;
-  font-size: 1.3rem;
+.askInput {
+  width: 100%;
+  height: 48px;
+  border: 1px solid #e8e6e3;
+  background: #ffffff;
+  padding: 0 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
   font-weight: 400;
-  color: #423C38;
-  margin-bottom: 4px;
-}
-
-.askMoodySubtitle {
-  font-family: 'Crimson Pro', serif;
-  font-size: 0.9375rem;
-  color: #6b625c;
-}
-
-.askMoodyInput {
-  flex: 1;
-  background: #E7E1D5;
-  border: 1px solid #CBBDB9;
-  padding: 12px 16px;
-  font-family: 'Crimson Pro', serif;
-  font-size: 1rem;
-  color: #423C38;
+  color: #000000;
   outline: none;
-  transition: border-color 0.15s;
+  box-sizing: border-box;
 }
 
-.askMoodyInput::placeholder {
-  color: #7a7873;
+.askInput::placeholder {
+  color: #ccc;
 }
 
-.askMoodyInput:focus {
+.askInput:focus {
   border-color: #2559F4;
 }
 
-.askMoodyMeta {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.625rem;
-  color: #6b625c;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  flex-shrink: 0;
-}
-
-/* ===== Module Grid ===== */
-.sectionTitle {
-  font-family: 'EB Garamond', serif;
-  font-size: 1.5rem;
+.askMeta {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
   font-weight: 400;
-  font-style: italic;
-  color: #423C38;
-  margin-bottom: 20px;
+  color: #ccc;
+  text-align: right;
+  margin-top: 8px;
 }
 
+/* ===== Modules ===== */
 .moduleGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
 }
 
 .moduleCard {
-  background: #f2eee9;
-  border: 1px solid #CBBDB9;
+  border: 1px solid #e8e6e3;
   padding: 24px;
+  background: #ffffff;
 }
 
 .moduleCardActive {
   composes: moduleCard;
-  border-left: 3px solid #2559F4;
-}
-
-.moduleCardInactive {
-  composes: moduleCard;
-  opacity: 0.7;
+  border-left: 2px solid #2559F4;
 }
 
 .moduleHeader {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 8px;
+  align-items: center;
 }
 
 .moduleName {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #423C38;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000000;
 }
 
 .moduleDesc {
-  font-family: 'Crimson Pro', serif;
-  font-size: 0.9375rem;
-  color: #4e565e;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #999;
+  margin-top: 4px;
   line-height: 1.5;
 }
 
-.moduleBadgeActive {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.625rem;
-  font-weight: 500;
-  padding: 3px 8px;
-  background: rgba(90, 114, 104, 0.12);
-  color: #3d5c4f;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+.moduleStatusActive {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #2559F4;
 }
 
-.moduleBadgeInactive {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.625rem;
-  font-weight: 500;
-  padding: 3px 8px;
-  background: #E7E1D5;
-  color: #6b625c;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+.moduleStatusInactive {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #ccc;
+}
+
+/* ===== Footer ===== */
+.footer {
+  padding: 80px 0 48px;
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #ccc;
 }
 
 /* ===== Mobile ===== */
 @media (max-width: 768px) {
   .content {
-    padding: 32px 16px 64px;
-  }
-
-  .header {
-    flex-direction: column;
-    gap: 16px;
+    padding: 48px 24px 0;
   }
 
   .statsGrid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 32px 0;
   }
 
-  .twoCol {
-    grid-template-columns: 1fr;
+  .statValue {
+    font-size: 32px;
   }
 
-  .askMoody {
-    flex-direction: column;
-    align-items: flex-start;
+  .greetingDate {
+    font-size: 24px;
   }
 
-  .askMoodyInput {
-    width: 100%;
+  .scheduleRow {
+    font-size: 13px;
+  }
+
+  .scheduleTime {
+    width: 60px;
+    font-size: 13px;
+  }
+
+  .scheduleClient,
+  .scheduleClientMuted {
+    font-size: 13px;
+  }
+
+  .scheduleTherapist {
+    width: 120px;
+    font-size: 13px;
+  }
+
+  .scheduleStatus,
+  .scheduleStatusPending,
+  .scheduleStatusAvailable {
+    width: 80px;
+    font-size: 12px;
   }
 
   .moduleGrid {
     grid-template-columns: 1fr;
   }
 
-  .navTabs {
-    overflow-x: auto;
-  }
-
-  .navOrg {
+  .navName {
     display: none;
-  }
-
-  .scheduleTable {
-    font-size: 0.8125rem;
-  }
-
-  .scheduleTable th,
-  .scheduleTable td {
-    padding: 8px 8px;
-  }
-
-  .statValue {
-    font-size: 1.5rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .statsGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .headerRight {
-    width: 100%;
-  }
-
-  .togglePill {
-    flex: 1;
-    text-align: center;
   }
 }
