@@ -973,6 +973,21 @@
   letter-spacing: 0.04em;
 }
 
+.messagesScroll {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #d0cdc6 transparent;
+}
+
+.messagesScroll::-webkit-scrollbar {
+  width: 3px;
+}
+
+.messagesScroll::-webkit-scrollbar-thumb {
+  background: #d0cdc6;
+}
+
 .roomLink {
   display: flex;
   align-items: center;

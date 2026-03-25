@@ -57,7 +57,7 @@ const appointmentDetails: Record<string, {
     initials: 'MV',
     location: 'Kamer 3',
     lastSession: '18 maart 2026',
-    notes: 'GAD-7: 12 → 8 (verbetering). Behandelplan loopt goed.',
+    notes: 'GAD-7 gedaald van 12 naar 8. Behandelplan loopt goed.',
   },
   'M.D. Kemme': {
     fullName: 'Marcus D. Kemme',
@@ -90,7 +90,12 @@ const recentNotes = [
 
 const messages = [
   { name: 'M. de Vries', preview: 'Bedankt voor de sessie', time: '10m' },
-  { name: 'A. Hoekstra', preview: 'Ik heb de vragenlijst...', time: '2u' },
+  { name: 'A. Hoekstra', preview: 'Ik heb de vragenlijst ingevuld', time: '2u' },
+  { name: 'J. Bakker', preview: 'Kan ik de afspraak verzetten?', time: '3u' },
+  { name: 'M.D. Kemme', preview: 'Heb je het verslag al gezien?', time: '5u' },
+  { name: 'S. Jansen', preview: 'Tot volgende week', time: '1d' },
+  { name: 'Dr. van Dijk', preview: 'Overleg over casus Hoekstra', time: '1d' },
+  { name: 'T. van Berg', preview: 'Ik voel me veel beter', time: '2d' },
 ];
 
 const navTabs = [
@@ -243,23 +248,17 @@ export default function DashboardExample() {
           <section className={s.messagesSection}>
             <div className={s.messagesHeader}>
               <h3 className={s.sectionHeading}>Berichten</h3>
-              <span className={s.messageBadge}>2</span>
+              <span className={s.messageBadge}>{messages.length}</span>
             </div>
-            {messages.map((msg, i) => (
-              <div key={i} className={s.messageRow}>
-                <span className={s.messageName}>{msg.name}</span>
-                <span className={s.messagePreview}>{msg.preview}</span>
-                <span className={s.messageTime}>{msg.time}</span>
-              </div>
-            ))}
-            <a href="#" target="_blank" rel="noopener noreferrer" className={s.roomLink}>
-              Mijn kamer
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4.5 1.5H2a.5.5 0 0 0-.5.5v8a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5V7.5" />
-                <path d="M7 1.5h3.5V5" />
-                <path d="M5 7L10.5 1.5" />
-              </svg>
-            </a>
+            <div className={s.messagesScroll}>
+              {messages.map((msg, i) => (
+                <div key={i} className={s.messageRow}>
+                  <span className={s.messageName}>{msg.name}</span>
+                  <span className={s.messagePreview}>{msg.preview}</span>
+                  <span className={s.messageTime}>{msg.time}</span>
+                </div>
+              ))}
+            </div>
           </section>
         </div>
 
@@ -399,7 +398,7 @@ export default function DashboardExample() {
             </div>
             <div className={s.askMoodyBody}>
               <p className={s.askMoodyMsg}>
-                Je hebt 6 sessies vandaag. M.&nbsp;de&nbsp;Vries liet verbeterde GAD-7 scores zien vorige sessie.
+                Je hebt 6 sessies vandaag. M.&nbsp;de&nbsp;Vries scoorde lager op de GAD-7 vorige sessie.
               </p>
             </div>
             <input
