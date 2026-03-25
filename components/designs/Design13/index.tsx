@@ -375,7 +375,7 @@ function TerminalSection() {
       if (line.type === 'command') {
         // Type character by character
         let charI = 0
-        function typeChar() {
+        const typeChar = () => {
           if (charI <= lineText.length) {
             setLines(prev => {
               const copy = [...prev]

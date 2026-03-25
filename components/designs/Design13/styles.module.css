@@ -5,24 +5,16 @@
    A paper-first, 3D interactive experience for Moods AI
    ═══════════════════════════════════════════════════════════ */
 
-/* ── CSS Variables ────────────────────────────────────────── */
-:root {
-  --d13-bg: #E7E1D5;
-  --d13-text: #423C38;
-  --d13-muted: #CBBDB9;
-  --d13-dark: #211E1C;
-  --d13-blue: #2559F4;
-  --d13-sage: #5a7268;
-  --d13-ember: #c44;
-  --d13-cloud: #faf8f5;
-  --d13-fog: #f5f1ec;
-  --d13-ash: #e2ded8;
-}
+/* ── Design Tokens (inlined — CSS Modules don't allow :root) ──
+   bg: #E7E1D5  |  text: #423C38  |  muted: #CBBDB9
+   dark: #211E1C  |  blue: #2559F4  |  sage: #5a7268
+   ember: #c44  |  cloud: #faf8f5  |  fog: #f5f1ec  |  ash: #e2ded8
+── */
 
 /* ── Base ─────────────────────────────────────────────────── */
 .root {
-  background: var(--d13-bg);
-  color: var(--d13-text);
+  background: #E7E1D5;
+  color: #423C38;
   font-family: 'Crimson Pro', 'EB Garamond', Georgia, serif;
   overflow-x: hidden;
   position: relative;
@@ -52,7 +44,7 @@
 
 .foldPanel {
   position: absolute;
-  background: var(--d13-bg);
+  background: #E7E1D5;
   transform-origin: center;
   will-change: transform, opacity;
   /* Paper texture */
@@ -65,25 +57,25 @@
   top: 0; left: 0; right: 0; height: 50%;
   transform-origin: top center;
   animation: foldUpTop 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-  border-bottom: 1px solid var(--d13-muted);
+  border-bottom: 1px solid #CBBDB9;
 }
 .foldBottom {
   bottom: 0; left: 0; right: 0; height: 50%;
   transform-origin: bottom center;
   animation: foldUpBottom 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-  border-top: 1px solid var(--d13-muted);
+  border-top: 1px solid #CBBDB9;
 }
 .foldLeft {
   top: 0; left: 0; bottom: 0; width: 50%;
   transform-origin: left center;
   animation: foldUpLeft 1.5s cubic-bezier(0.23, 1, 0.32, 1) 0.15s forwards;
-  border-right: 1px solid var(--d13-muted);
+  border-right: 1px solid #CBBDB9;
 }
 .foldRight {
   top: 0; right: 0; bottom: 0; width: 50%;
   transform-origin: right center;
   animation: foldUpRight 1.5s cubic-bezier(0.23, 1, 0.32, 1) 0.15s forwards;
-  border-left: 1px solid var(--d13-muted);
+  border-left: 1px solid #CBBDB9;
 }
 
 /* Crinkle texture on fold lines */
@@ -143,7 +135,7 @@
   font-family: 'EB Garamond', serif;
   font-size: clamp(3rem, 8vw, 6rem);
   font-weight: 500;
-  color: var(--d13-text);
+  color: #423C38;
   text-shadow:
     1px 1px 0 rgba(255,255,255,0.6),
     -1px -1px 0 rgba(0,0,0,0.05);
@@ -154,7 +146,7 @@
 .heroTagline {
   font-family: 'Crimson Pro', serif;
   font-size: clamp(1rem, 2.5vw, 1.35rem);
-  color: var(--d13-muted);
+  color: #CBBDB9;
   margin-bottom: 2rem;
   font-style: italic;
 }
@@ -162,7 +154,7 @@
 .heroTyped {
   font-family: 'Space Mono', monospace;
   font-size: clamp(0.85rem, 1.8vw, 1.1rem);
-  color: var(--d13-sage);
+  color: #5a7268;
   min-height: 1.6em;
   margin-bottom: 3rem;
 }
@@ -171,7 +163,7 @@
   display: inline-block;
   width: 2px;
   height: 1.1em;
-  background: var(--d13-sage);
+  background: #5a7268;
   margin-left: 2px;
   vertical-align: text-bottom;
   animation: blink 1s step-end infinite;
@@ -189,8 +181,8 @@
   letter-spacing: 0.05em;
   text-transform: uppercase;
   padding: 1rem 2.5rem;
-  background: var(--d13-dark);
-  color: var(--d13-bg);
+  background: #211E1C;
+  color: #E7E1D5;
   border: none;
   cursor: pointer;
   position: relative;
@@ -205,7 +197,7 @@
   width: 0; height: 0;
   border-style: solid;
   border-width: 0 24px 24px 0;
-  border-color: transparent var(--d13-bg) transparent transparent;
+  border-color: transparent #E7E1D5 transparent transparent;
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -241,7 +233,7 @@
 .cardStackSub {
   font-family: 'Crimson Pro', serif;
   font-size: 1.1rem;
-  color: var(--d13-muted);
+  color: #CBBDB9;
   text-align: center;
   margin-bottom: 4rem;
   font-style: italic;
@@ -255,8 +247,8 @@
 }
 
 .featureCard {
-  background: var(--d13-cloud);
-  border: 1px solid var(--d13-ash);
+  background: #faf8f5;
+  border: 1px solid #e2ded8;
   padding: 2rem;
   position: relative;
   transform-style: preserve-3d;
@@ -296,7 +288,7 @@
   width: 48px;
   height: 48px;
   margin-bottom: 1.25rem;
-  color: var(--d13-sage);
+  color: #5a7268;
 }
 
 .cardTitle {
@@ -329,7 +321,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--d13-muted);
+  background: #CBBDB9;
 }
 
 /* Mini interaction areas */
@@ -338,7 +330,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-top: 1px solid var(--d13-ash);
+  border-top: 1px solid #e2ded8;
   padding-top: 1rem;
 }
 
@@ -352,7 +344,7 @@
 
 .waveBar {
   width: 3px;
-  background: var(--d13-sage);
+  background: #5a7268;
   border-radius: 2px;
   transition: height 0.3s ease;
   height: 8px;
@@ -389,11 +381,11 @@
   font-size: 0.6rem;
   text-align: center;
   padding: 2px;
-  color: var(--d13-muted);
+  color: #CBBDB9;
 }
 
 .calToday {
-  background: var(--d13-sage);
+  background: #5a7268;
   color: white;
   border-radius: 2px;
 }
@@ -405,14 +397,14 @@
   gap: 0.5rem;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 0.7rem;
-  color: var(--d13-muted);
+  color: #CBBDB9;
 }
 
 .liveDot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--d13-ember);
+  background: #c44;
   animation: livePulse 2s ease-in-out infinite;
 }
 
@@ -438,7 +430,7 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: var(--d13-muted);
+  background: #CBBDB9;
   transition: background 0.3s ease;
 }
 
@@ -450,8 +442,8 @@
 .orgNode:nth-child(3) { animation-delay: 0.3s; }
 
 @keyframes orgPulse {
-  0%, 100% { background: var(--d13-muted); }
-  50% { background: var(--d13-sage); }
+  0%, 100% { background: #CBBDB9; }
+  50% { background: #5a7268; }
 }
 
 /* Mini chart */
@@ -462,7 +454,7 @@
 
 .chartLine {
   fill: none;
-  stroke: var(--d13-sage);
+  stroke: #5a7268;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-dasharray: 200;
@@ -486,7 +478,7 @@
   bottom: 0;
   width: 24px;
   height: 18px;
-  background: var(--d13-muted);
+  background: #CBBDB9;
   border-radius: 3px;
   transition: background 0.3s ease;
 }
@@ -497,7 +489,7 @@
   left: 4px;
   width: 16px;
   height: 14px;
-  border: 3px solid var(--d13-muted);
+  border: 3px solid #CBBDB9;
   border-bottom: none;
   border-radius: 8px 8px 0 0;
   transition: transform 0.3s ease, border-color 0.3s ease;
@@ -506,11 +498,11 @@
 
 .featureCard:hover .lockShackle {
   transform: rotate(0deg);
-  border-color: var(--d13-sage);
+  border-color: #5a7268;
 }
 
 .featureCard:hover .lockBody {
-  background: var(--d13-sage);
+  background: #5a7268;
 }
 
 .lockShackleOpen {
@@ -530,7 +522,7 @@
 .splitDark {
   position: absolute;
   inset: 0;
-  background: var(--d13-dark);
+  background: #211E1C;
   color: #888;
   display: flex;
   flex-direction: column;
@@ -542,8 +534,8 @@
 .splitLight {
   position: absolute;
   inset: 0;
-  background: var(--d13-bg);
-  color: var(--d13-text);
+  background: #E7E1D5;
+  color: #423C38;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -610,13 +602,13 @@
 .orderIcon {
   width: 40px;
   height: 40px;
-  border: 1px solid var(--d13-ash);
+  border: 1px solid #e2ded8;
   border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.2rem;
-  background: var(--d13-cloud);
+  background: #faf8f5;
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -624,7 +616,7 @@
    ══════════════════════════════════════════════════════════════ */
 
 .terminalSection {
-  background: var(--d13-dark);
+  background: #211E1C;
   padding: 6rem 2rem;
   display: flex;
   justify-content: center;
@@ -683,7 +675,7 @@
 }
 
 .termPrompt {
-  color: var(--d13-sage);
+  color: #5a7268;
 }
 
 .termCommand {
@@ -695,7 +687,7 @@
 }
 
 .termHighlight {
-  color: var(--d13-sage);
+  color: #5a7268;
 }
 
 .termUp {
@@ -703,7 +695,7 @@
 }
 
 .termDown {
-  color: var(--d13-ember);
+  color: #c44;
 }
 
 .termNeutral {
@@ -714,7 +706,7 @@
   display: inline-block;
   width: 8px;
   height: 1.1em;
-  background: var(--d13-sage);
+  background: #5a7268;
   animation: blink 1s step-end infinite;
   vertical-align: text-bottom;
 }
@@ -740,7 +732,7 @@
 .metricsSub {
   font-family: 'Crimson Pro', serif;
   font-size: 1.1rem;
-  color: var(--d13-muted);
+  color: #CBBDB9;
   text-align: center;
   margin-bottom: 4rem;
   font-style: italic;
@@ -755,8 +747,8 @@
 .metricCard {
   text-align: center;
   padding: 2rem 1rem;
-  background: var(--d13-cloud);
-  border: 1px solid var(--d13-ash);
+  background: #faf8f5;
+  border: 1px solid #e2ded8;
 }
 
 .odometerWrap {
@@ -790,7 +782,7 @@
   height: 64px;
   line-height: 64px;
   text-align: center;
-  color: var(--d13-text);
+  color: #423C38;
 }
 
 .odometerStatic {
@@ -798,7 +790,7 @@
   font-size: 2.5rem;
   font-weight: 700;
   line-height: 64px;
-  color: var(--d13-text);
+  color: #423C38;
 }
 
 .metricLabel {
@@ -806,7 +798,7 @@
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--d13-muted);
+  color: #CBBDB9;
   margin-top: 0.5rem;
 }
 
@@ -878,7 +870,7 @@
   font-style: italic;
   font-size: 1rem;
   line-height: 1.6;
-  color: var(--d13-text);
+  color: #423C38;
   margin-bottom: 1rem;
 }
 
@@ -886,7 +878,7 @@
   content: '\201C';
   font-family: 'EB Garamond', serif;
   font-size: 2rem;
-  color: var(--d13-muted);
+  color: #CBBDB9;
   display: block;
   line-height: 1;
   margin-bottom: 0.25rem;
@@ -895,7 +887,7 @@
 .noteAttribution {
   font-family: 'Space Mono', monospace;
   font-size: 0.7rem;
-  color: var(--d13-muted);
+  color: #CBBDB9;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -933,7 +925,7 @@
 .pricingSub {
   font-family: 'Crimson Pro', serif;
   font-size: 1.1rem;
-  color: var(--d13-muted);
+  color: #CBBDB9;
   text-align: center;
   margin-bottom: 4rem;
   font-style: italic;
@@ -974,8 +966,8 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  border: 1px solid var(--d13-ash);
-  background: var(--d13-cloud);
+  border: 1px solid #e2ded8;
+  background: #faf8f5;
 }
 
 .flipBack {
@@ -990,7 +982,7 @@
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  color: var(--d13-muted);
+  color: #CBBDB9;
   margin-bottom: 1rem;
 }
 
@@ -998,21 +990,21 @@
   font-family: 'IBM Plex Mono', monospace;
   font-size: 3rem;
   font-weight: 700;
-  color: var(--d13-text);
+  color: #423C38;
   margin-bottom: 0.5rem;
 }
 
 .planPer {
   font-family: 'Crimson Pro', serif;
   font-size: 0.9rem;
-  color: var(--d13-muted);
+  color: #CBBDB9;
   margin-bottom: 2rem;
 }
 
 .flipHint {
   font-family: 'Space Mono', monospace;
   font-size: 0.65rem;
-  color: var(--d13-muted);
+  color: #CBBDB9;
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
@@ -1035,13 +1027,13 @@
   font-family: 'Crimson Pro', serif;
   font-size: 0.9rem;
   padding: 0.5rem 0;
-  border-bottom: 1px solid var(--d13-ash);
+  border-bottom: 1px solid #e2ded8;
   color: #6b6560;
 }
 
 .backFeatures li::before {
   content: '\2713';
-  color: var(--d13-sage);
+  color: #5a7268;
   margin-right: 0.5rem;
   font-weight: 700;
 }
@@ -1059,7 +1051,7 @@
   content: '';
   position: absolute;
   inset: -2px;
-  background: conic-gradient(from var(--border-angle, 0deg), var(--d13-sage), var(--d13-blue), var(--d13-sage), transparent, var(--d13-sage));
+  background: conic-gradient(from var(--border-angle, 0deg), #5a7268, #2559F4, #5a7268, transparent, #5a7268);
   z-index: -1;
   animation: rotateBorder 4s linear infinite;
 }
@@ -1089,7 +1081,7 @@
 .proCard .flipBack::before {
   inset: -2px;
   border-radius: 0;
-  background: conic-gradient(var(--d13-sage), var(--d13-blue), var(--d13-sage), transparent, var(--d13-sage));
+  background: conic-gradient(#5a7268, #2559F4, #5a7268, transparent, #5a7268);
   animation: rotateBorderFallback 4s linear infinite;
 }
 
@@ -1099,7 +1091,7 @@
 
 .vaultSection {
   padding: 6rem 2rem;
-  background: var(--d13-fog);
+  background: #f5f1ec;
   text-align: center;
   overflow: hidden;
 }
@@ -1114,7 +1106,7 @@
 .vaultSub {
   font-family: 'Crimson Pro', serif;
   font-size: 1.1rem;
-  color: var(--d13-muted);
+  color: #CBBDB9;
   font-style: italic;
   margin-bottom: 4rem;
 }
@@ -1156,7 +1148,7 @@
 
 .certBadge {
   padding: 1.5rem 1rem;
-  border: 2px solid var(--d13-ash);
+  border: 2px solid #e2ded8;
   border-radius: 50%;
   width: 120px;
   height: 120px;
@@ -1165,7 +1157,7 @@
   align-items: center;
   justify-content: center;
   margin: 0 auto;
-  background: var(--d13-cloud);
+  background: #faf8f5;
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.8),
     inset 0 -1px 0 rgba(0,0,0,0.05),
@@ -1177,7 +1169,7 @@
   font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--d13-text);
+  color: #423C38;
   font-weight: 700;
   text-align: center;
 }
@@ -1185,7 +1177,7 @@
 .certDesc {
   font-family: 'Crimson Pro', serif;
   font-size: 0.7rem;
-  color: var(--d13-muted);
+  color: #CBBDB9;
   margin-top: 0.25rem;
   text-align: center;
 }
@@ -1229,7 +1221,7 @@
 .airplaneSvg {
   width: 60px;
   height: 60px;
-  color: var(--d13-muted);
+  color: #CBBDB9;
 }
 
 .ctaHeading {
@@ -1248,8 +1240,8 @@
   letter-spacing: 0.05em;
   text-transform: uppercase;
   padding: 1.15rem 3rem;
-  background: var(--d13-dark);
-  color: var(--d13-bg);
+  background: #211E1C;
+  color: #E7E1D5;
   border: none;
   cursor: pointer;
   position: relative;
@@ -1279,7 +1271,7 @@
 .ctaSubtext {
   font-family: 'Space Mono', monospace;
   font-size: 0.75rem;
-  color: var(--d13-muted);
+  color: #CBBDB9;
   margin-top: 1.5rem;
   position: relative;
   z-index: 2;
@@ -1292,13 +1284,13 @@
 .footer {
   padding: 3rem 2rem;
   text-align: center;
-  border-top: 1px solid var(--d13-ash);
+  border-top: 1px solid #e2ded8;
 }
 
 .footerText {
   font-family: 'Space Mono', monospace;
   font-size: 0.7rem;
-  color: var(--d13-muted);
+  color: #CBBDB9;
   letter-spacing: 0.05em;
 }
 
@@ -1453,7 +1445,7 @@
 
   .flipBack {
     display: flex;
-    border-top: 1px dashed var(--d13-ash);
+    border-top: 1px dashed #e2ded8;
   }
 
   .flipHint {

@@ -5,27 +5,19 @@
 
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Space+Mono:wght@400;700&family=IBM+Plex+Mono:wght@300;400;500&display=swap');
 
-/* ── CSS Custom Properties ── */
-:root {
-  --d11-bg: #E7E1D5;
-  --d11-surface: #f2eee9;
-  --d11-dark: #211E1C;
-  --d11-text: #423C38;
-  --d11-text-secondary: #4e565e;
-  --d11-muted: #CBBDB9;
-  --d11-blue: #2559F4;
-  --d11-ember: #c44;
-  --d11-sage: #5a7268;
-  --d11-border: #CBBDB9;
-  --d11-divider: #E7E1D5;
-}
+/* ── Design Tokens (inlined — CSS Modules don't allow :root) ──
+   bg: #E7E1D5  |  surface: #f2eee9  |  dark: #211E1C
+   text: #423C38  |  text-secondary: #4e565e  |  muted: #CBBDB9
+   blue: #2559F4  |  ember: #c44  |  sage: #5a7268
+   border: #CBBDB9  |  divider: #E7E1D5
+── */
 
 /* ── Root ── */
 .root {
   position: relative;
-  background: var(--d11-bg);
+  background: #E7E1D5;
   min-height: 100vh;
-  color: var(--d11-text);
+  color: #423C38;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -35,7 +27,7 @@
 .dotGrid {
   position: fixed;
   inset: 0;
-  background-image: radial-gradient(circle, var(--d11-muted) 0.8px, transparent 0.8px);
+  background-image: radial-gradient(circle, #CBBDB9 0.8px, transparent 0.8px);
   background-size: 24px 24px;
   pointer-events: none;
   z-index: 0;
@@ -58,7 +50,7 @@
   left: 0;
   height: 1.5px;
   width: 0%;
-  background: var(--d11-blue);
+  background: #2559F4;
   z-index: 200;
   transition: none;
   will-change: width;
@@ -86,7 +78,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--d11-muted);
+  background: #CBBDB9;
   border: none;
   padding: 0;
   cursor: pointer;
@@ -98,7 +90,7 @@
 }
 
 .navDotActive {
-  background: var(--d11-text);
+  background: #423C38;
   transform: scale(1.2);
 }
 
@@ -110,7 +102,7 @@
   font-weight: 400;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--d11-text);
+  color: #423C38;
   opacity: 0.4;
   margin-bottom: 24px;
 }
@@ -129,7 +121,7 @@
   font-size: clamp(2rem, 4vw, 3.4rem);
   line-height: 1.15;
   letter-spacing: -0.02em;
-  color: var(--d11-text);
+  color: #423C38;
   margin-bottom: 16px;
 }
 
@@ -198,7 +190,7 @@
   top: 0;
   width: 100%;
   height: 1px;
-  background: var(--d11-muted);
+  background: #CBBDB9;
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
@@ -210,11 +202,11 @@
 
 /* Color accents */
 .accent {
-  color: var(--d11-ember);
+  color: #c44;
 }
 
 .accentGreen {
-  color: var(--d11-sage);
+  color: #5a7268;
 }
 
 /* Floating particles */
@@ -231,7 +223,7 @@
   width: 2px;
   height: 2px;
   border-radius: 50%;
-  background: var(--d11-muted);
+  background: #CBBDB9;
   opacity: 0.4;
   animation: particleDrift linear infinite;
 }
@@ -261,7 +253,7 @@
   line-height: 1.1;
   letter-spacing: -0.025em;
   margin-bottom: 2.5rem;
-  color: var(--d11-text);
+  color: #423C38;
   perspective: 600px;
 }
 
@@ -275,7 +267,7 @@
   font-family: 'EB Garamond', serif;
   font-size: clamp(1.8rem, 3.5vw, 2.8rem);
   font-weight: 500;
-  color: var(--d11-text);
+  color: #423C38;
   letter-spacing: -0.01em;
 }
 
@@ -287,7 +279,7 @@
 
 .underlinePath {
   fill: none;
-  stroke: var(--d11-ember);
+  stroke: #c44;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -304,7 +296,7 @@
   font-family: 'Space Mono', monospace;
   font-size: 0.82rem;
   line-height: 1.8;
-  color: var(--d11-text-secondary);
+  color: #4e565e;
   max-width: 520px;
   margin: 40px auto 40px;
   letter-spacing: 0.01em;
@@ -320,8 +312,8 @@
 .heroCta {
   display: inline-block;
   position: relative;
-  background: var(--d11-text);
-  color: var(--d11-bg);
+  background: #423C38;
+  color: #E7E1D5;
   font-family: 'Space Mono', monospace;
   font-size: 0.75rem;
   letter-spacing: 0.12em;
@@ -338,7 +330,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: var(--d11-ember);
+  background: #c44;
   transform: translateX(-101%);
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 0;
@@ -374,8 +366,8 @@
   margin-top: 32px;
   overflow: hidden;
   user-select: none;
-  border: 1px solid var(--d11-border);
-  background: var(--d11-surface);
+  border: 1px solid #CBBDB9;
+  background: #f2eee9;
 }
 
 .sliderSide {
@@ -400,7 +392,7 @@
   top: 0;
   bottom: 0;
   width: 3px;
-  background: var(--d11-text);
+  background: #423C38;
   cursor: ew-resize;
   z-index: 10;
   transform: translateX(-50%);
@@ -414,7 +406,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--d11-text);
+  background: #423C38;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -422,7 +414,7 @@
 }
 
 .sliderHandleGrip svg {
-  color: var(--d11-bg);
+  color: #E7E1D5;
 }
 
 .splitTitle {
@@ -431,7 +423,7 @@
   font-size: 1.3rem;
   margin-bottom: 1.5rem;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--d11-border);
+  border-bottom: 1px solid #CBBDB9;
 }
 
 .timeSlot {
@@ -447,17 +439,17 @@
 .timeLabel {
   flex-shrink: 0;
   width: 4.5rem;
-  color: var(--d11-text);
+  color: #423C38;
   opacity: 0.45;
 }
 
 .taskAdmin {
-  color: var(--d11-ember);
+  color: #c44;
   font-weight: 500;
 }
 
 .taskClient {
-  color: var(--d11-sage);
+  color: #5a7268;
   font-weight: 500;
 }
 
@@ -483,7 +475,7 @@
 .solutionSubline {
   font-family: 'Space Mono', monospace;
   font-size: 0.82rem;
-  color: var(--d11-text-secondary);
+  color: #4e565e;
   margin-bottom: 48px;
 }
 
@@ -520,9 +512,9 @@
 .toolItem {
   font-family: 'EB Garamond', serif;
   font-size: 1.15rem;
-  color: var(--d11-text);
+  color: #423C38;
   padding: 9px 0;
-  border-bottom: 1px solid var(--d11-border);
+  border-bottom: 1px solid #CBBDB9;
   position: relative;
   overflow: hidden;
   transition: color 0.5s ease, opacity 0.5s ease;
@@ -535,7 +527,7 @@
   top: 50%;
   width: 100%;
   height: 1.5px;
-  background: var(--d11-ember);
+  background: #c44;
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
@@ -546,7 +538,7 @@
 }
 
 .toolItem.struck {
-  color: var(--d11-muted);
+  color: #CBBDB9;
   opacity: 0.5;
 }
 
@@ -568,7 +560,7 @@
   font-family: 'EB Garamond', serif;
   font-weight: 600;
   font-size: 1.6rem;
-  color: var(--d11-ember);
+  color: #c44;
 }
 
 /* ─────────────────────────────────────────────
@@ -603,7 +595,7 @@
   top: 0;
   width: 1px;
   height: 0%;
-  background: var(--d11-border);
+  background: #CBBDB9;
   transition: height 0.05s linear;
 }
 
@@ -620,8 +612,8 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  border: 1.5px solid var(--d11-ember);
-  background: var(--d11-bg);
+  border: 1.5px solid #c44;
+  background: #E7E1D5;
   margin: 0 auto;
   margin-top: 20px;
   position: relative;
@@ -636,7 +628,7 @@
 
 .timelineCard {
   background: rgba(242, 238, 233, 0.9);
-  border: 1px solid var(--d11-border);
+  border: 1px solid #CBBDB9;
   padding: 28px;
   position: relative;
   backdrop-filter: blur(4px);
@@ -648,7 +640,7 @@
 .timelineCard:hover {
   transform: scale(1.01) translateY(-2px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-  border-color: var(--d11-text);
+  border-color: #423C38;
 }
 
 .timelineCard.left {
@@ -678,14 +670,14 @@
   height: 32px;
   margin-bottom: 14px;
   opacity: 0.65;
-  color: var(--d11-text);
+  color: #423C38;
 }
 
 .timelineCardTitle {
   font-family: 'EB Garamond', serif;
   font-size: 1.2rem;
   font-weight: 500;
-  color: var(--d11-text);
+  color: #423C38;
   margin-bottom: 8px;
 }
 
@@ -693,7 +685,7 @@
   font-family: 'Space Mono', monospace;
   font-size: 0.68rem;
   line-height: 1.75;
-  color: var(--d11-text-secondary);
+  color: #4e565e;
   letter-spacing: 0.01em;
 }
 
@@ -723,7 +715,7 @@
   font-size: 0.62rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--d11-text);
+  color: #423C38;
   opacity: 0.4;
   margin-bottom: 16px;
 }
@@ -744,7 +736,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--d11-ember);
+  background: #c44;
   animation: dotPulse 1.4s ease-in-out infinite;
 }
 
@@ -773,7 +765,7 @@
 
 .waveBar {
   width: 3px;
-  background: var(--d11-ember);
+  background: #c44;
   border-radius: 2px;
   transition: height 0.15s ease;
 }
@@ -789,7 +781,7 @@
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: var(--d11-muted);
+  background: #CBBDB9;
   animation: thinkPulse 1.2s ease-in-out infinite;
 }
 
@@ -803,23 +795,23 @@
 
 /* E-ink Chat */
 .chatWindow {
-  border: 1px solid var(--d11-border);
+  border: 1px solid #CBBDB9;
   background: rgba(242, 238, 233, 0.92);
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .chatWindow:hover {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-  border-color: var(--d11-text);
+  border-color: #423C38;
 }
 
 .chatHeader {
-  border-bottom: 1px solid var(--d11-border);
+  border-bottom: 1px solid #CBBDB9;
   padding: 10px 16px;
   font-family: 'IBM Plex Mono', 'Space Mono', monospace;
   font-size: 0.58rem;
   letter-spacing: 0.12em;
-  color: var(--d11-text);
+  color: #423C38;
   opacity: 0.4;
   text-transform: uppercase;
 }
@@ -840,7 +832,7 @@
 }
 
 .chatMsgUser {
-  color: var(--d11-text);
+  color: #423C38;
   opacity: 0.55;
 }
 
@@ -850,7 +842,7 @@
 }
 
 .chatMsgMoody {
-  color: var(--d11-text);
+  color: #423C38;
 }
 
 .chatMsgMoody::before {
@@ -863,7 +855,7 @@
   display: inline-block;
   width: 7px;
   height: 1em;
-  background: var(--d11-text);
+  background: #423C38;
   vertical-align: text-bottom;
   margin-left: 2px;
   animation: blink 0.85s step-end infinite;
@@ -891,7 +883,7 @@
   font-family: 'EB Garamond', serif;
   font-weight: 500;
   font-size: clamp(2rem, 4vw, 3.2rem);
-  color: var(--d11-ember);
+  color: #c44;
   line-height: 1;
 }
 
@@ -899,7 +891,7 @@
   font-family: 'Space Mono', monospace;
   font-weight: 400;
   font-size: 0.72rem;
-  color: var(--d11-text);
+  color: #423C38;
   opacity: 0.5;
   margin-top: 8px;
 }
@@ -916,7 +908,7 @@
 .securitySubline {
   font-family: 'Space Mono', monospace;
   font-size: 0.82rem;
-  color: var(--d11-text-secondary);
+  color: #4e565e;
   margin-bottom: 48px;
 }
 
@@ -924,13 +916,13 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0;
-  border-top: 1px solid var(--d11-border);
-  border-left: 1px solid var(--d11-border);
+  border-top: 1px solid #CBBDB9;
+  border-left: 1px solid #CBBDB9;
 }
 
 .securityItem {
-  border-right: 1px solid var(--d11-border);
-  border-bottom: 1px solid var(--d11-border);
+  border-right: 1px solid #CBBDB9;
+  border-bottom: 1px solid #CBBDB9;
   padding: 28px 24px;
   display: flex;
   flex-direction: column;
@@ -951,7 +943,7 @@
 
 .checkPath {
   fill: none;
-  stroke: var(--d11-sage);
+  stroke: #5a7268;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -969,13 +961,13 @@
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: var(--d11-text);
+  color: #423C38;
 }
 
 .securityItemDesc {
   font-family: 'EB Garamond', serif;
   font-size: 1rem;
-  color: var(--d11-text-secondary);
+  color: #4e565e;
   line-height: 1.5;
 }
 
@@ -996,7 +988,7 @@
 
 .quoteCard {
   background: rgba(242, 238, 233, 0.85);
-  border: 1px solid var(--d11-border);
+  border: 1px solid #CBBDB9;
   padding: 32px 28px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   position: relative;
@@ -1009,14 +1001,14 @@
 .quoteCard:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
-  border-color: var(--d11-text);
+  border-color: #423C38;
 }
 
 .quoteMark {
   font-family: 'EB Garamond', serif;
   font-size: 4rem;
   line-height: 0.8;
-  color: var(--d11-ember);
+  color: #c44;
   opacity: 0.25;
   display: block;
   margin-bottom: 8px;
@@ -1032,7 +1024,7 @@
   font-size: 1.15rem;
   font-style: italic;
   line-height: 1.6;
-  color: var(--d11-text);
+  color: #423C38;
   margin-bottom: 24px;
 }
 
@@ -1041,7 +1033,7 @@
   font-size: 0.62rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--d11-text);
+  color: #423C38;
   opacity: 0.45;
 }
 
@@ -1057,7 +1049,7 @@
 .pricingSubline {
   font-family: 'Space Mono', monospace;
   font-size: 0.82rem;
-  color: var(--d11-text-secondary);
+  color: #4e565e;
   margin-bottom: 48px;
 }
 
@@ -1069,7 +1061,7 @@
 
 .pricingCard {
   padding: 36px 28px;
-  border: 1px solid var(--d11-border);
+  border: 1px solid #CBBDB9;
   background: rgba(242, 238, 233, 0.85);
   backdrop-filter: blur(4px);
   text-align: center;
@@ -1079,19 +1071,19 @@
 }
 
 .pricingCard:hover {
-  border-color: var(--d11-text);
+  border-color: #423C38;
   transform: translateY(-4px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
 }
 
 .pricingCardFeatured {
-  border-color: var(--d11-blue);
+  border-color: #2559F4;
   border-width: 2px;
   box-shadow: 0 0 24px rgba(37, 89, 244, 0.08);
 }
 
 .pricingCardFeatured:hover {
-  border-color: var(--d11-blue);
+  border-color: #2559F4;
   box-shadow: 0 0 32px rgba(37, 89, 244, 0.12), 0 8px 24px rgba(0, 0, 0, 0.06);
 }
 
@@ -1101,7 +1093,7 @@
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--d11-text);
+  color: #423C38;
   opacity: 0.55;
   margin-bottom: 16px;
 }
@@ -1110,7 +1102,7 @@
   font-family: 'EB Garamond', serif;
   font-weight: 500;
   font-size: 2.8rem;
-  color: var(--d11-text);
+  color: #423C38;
   line-height: 1;
   margin-bottom: 4px;
 }
@@ -1119,7 +1111,7 @@
   font-family: 'Space Mono', monospace;
   font-weight: 400;
   font-size: 0.68rem;
-  color: var(--d11-text);
+  color: #423C38;
   opacity: 0.45;
   margin-bottom: 28px;
 }
@@ -1132,7 +1124,7 @@
   font-family: 'Space Mono', monospace;
   font-weight: 400;
   font-size: 0.72rem;
-  color: var(--d11-text);
+  color: #423C38;
   opacity: 0.7;
   padding: 5px 0;
 }
@@ -1145,7 +1137,7 @@
 
 .pricingCheckPath {
   fill: none;
-  stroke: var(--d11-sage);
+  stroke: #5a7268;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -1168,9 +1160,9 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   text-decoration: none;
-  border: 1px solid var(--d11-text);
+  border: 1px solid #423C38;
   background: transparent;
-  color: var(--d11-text);
+  color: #423C38;
   cursor: pointer;
   overflow: hidden;
   transition: color 0.3s ease, transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1180,7 +1172,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: var(--d11-text);
+  background: #423C38;
   transform: translateX(-101%);
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 0;
@@ -1191,7 +1183,7 @@
 }
 
 .pricingCta:hover {
-  color: var(--d11-bg);
+  color: #E7E1D5;
 }
 
 .pricingCtaText {
@@ -1200,12 +1192,12 @@
 }
 
 .pricingCtaFeatured {
-  border-color: var(--d11-blue);
-  color: var(--d11-blue);
+  border-color: #2559F4;
+  color: #2559F4;
 }
 
 .pricingCtaFeatured::before {
-  background: var(--d11-blue);
+  background: #2559F4;
 }
 
 .pricingCtaFeatured:hover {
@@ -1219,7 +1211,7 @@
   padding: 140px 72px;
   text-align: center;
   position: relative;
-  background: var(--d11-dark);
+  background: #211E1C;
 }
 
 .ctaArrowWrapper {
@@ -1234,7 +1226,7 @@
 
 .arrowPath {
   fill: none;
-  stroke: var(--d11-ember);
+  stroke: #c44;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -1246,7 +1238,7 @@
 
 .arrowHeadPath {
   fill: none;
-  stroke: var(--d11-ember);
+  stroke: #c44;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -1260,7 +1252,7 @@
   font-family: 'EB Garamond', serif;
   font-size: clamp(2rem, 4.5vw, 3.6rem);
   font-weight: 500;
-  color: var(--d11-bg);
+  color: #E7E1D5;
   margin-bottom: 32px;
   letter-spacing: -0.02em;
 }
@@ -1268,8 +1260,8 @@
 .ctaButton {
   display: inline-block;
   position: relative;
-  background: var(--d11-bg);
-  color: var(--d11-dark);
+  background: #E7E1D5;
+  color: #211E1C;
   font-family: 'Space Mono', monospace;
   font-size: 0.78rem;
   letter-spacing: 0.12em;
@@ -1286,7 +1278,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: var(--d11-ember);
+  background: #c44;
   transform: translateX(-101%);
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 0;
@@ -1297,7 +1289,7 @@
 }
 
 .ctaButton:hover {
-  color: var(--d11-bg);
+  color: #E7E1D5;
   transform: translateY(-2px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
@@ -1310,7 +1302,7 @@
 .ctaNote {
   font-family: 'Space Mono', monospace;
   font-size: 0.65rem;
-  color: var(--d11-muted);
+  color: #CBBDB9;
   margin-top: 20px;
   letter-spacing: 0.08em;
 }
@@ -1322,7 +1314,7 @@
   position: relative;
   padding: 48px 72px 40px;
   text-align: center;
-  background: var(--d11-dark);
+  background: #211E1C;
 }
 
 .footerText {
@@ -1331,7 +1323,7 @@
   font-family: 'Space Mono', monospace;
   font-size: 0.62rem;
   letter-spacing: 0.12em;
-  color: var(--d11-muted);
+  color: #CBBDB9;
   text-transform: uppercase;
 }
 
