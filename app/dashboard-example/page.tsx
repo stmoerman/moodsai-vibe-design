@@ -69,16 +69,29 @@ function parseHour(time: string): number {
 
 export default function DashboardExample() {
   const [now, setNow] = useState<Date | null>(null);
-  const [bootPhase, setBootPhase] = useState<'visible' | 'fading' | 'done'>('visible');
+  const [bootPhase, setBootPhase] = useState<'visible' | 'fading' | 'done'>('done');
 
   useEffect(() => {
     setNow(new Date());
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+
+    // Check if we already showed the splash today (24h cookie)
+    const lastSplash = document.cookie
+      .split('; ')
+      .find((c) => c.startsWith('moods_splash='));
+    const alreadyShown = !!lastSplash;
+
+    if (alreadyShown || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       setBootPhase('done');
       return;
     }
-    const fadeTimer = setTimeout(() => setBootPhase('fading'), 2000);
-    const doneTimer = setTimeout(() => setBootPhase('done'), 2800);
+
+    // Show splash and set 24h cookie
+    setBootPhase('visible');
+    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000).toUTCString();
+    document.cookie = `moods_splash=1; expires=${expires}; path=/`;
+
+    const fadeTimer = setTimeout(() => setBootPhase('fading'), 3000);
+    const doneTimer = setTimeout(() => setBootPhase('done'), 3800);
     return () => { clearTimeout(fadeTimer); clearTimeout(doneTimer); };
   }, []);
 
@@ -114,6 +127,13 @@ export default function DashboardExample() {
                 className={`${s.bootUnderlinePath} ${s.bootUnderlineDrawn}`}
               />
             </svg>
+            <div className={s.bootStats}>
+              <span className={s.bootStat}>6 sessies vandaag</span>
+              <span className={s.bootStatDot}>&middot;</span>
+              <span className={s.bootStat}>1% boven je declarabiliteit target</span>
+              <span className={s.bootStatDot}>&middot;</span>
+              <span className={s.bootStat}>3 ongelezen berichten</span>
+            </div>
           </div>
         </div>
       )}
