@@ -1,0 +1,1511 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap');
+
+/* ═══════════════════════════════════════════════════════════
+   Design 13 — "The Impossible"
+   A paper-first, 3D interactive experience for Moods AI
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── CSS Variables ────────────────────────────────────────── */
+:root {
+  --d13-bg: #E7E1D5;
+  --d13-text: #423C38;
+  --d13-muted: #CBBDB9;
+  --d13-dark: #211E1C;
+  --d13-blue: #2559F4;
+  --d13-sage: #5a7268;
+  --d13-ember: #c44;
+  --d13-cloud: #faf8f5;
+  --d13-fog: #f5f1ec;
+  --d13-ash: #e2ded8;
+}
+
+/* ── Base ─────────────────────────────────────────────────── */
+.root {
+  background: var(--d13-bg);
+  color: var(--d13-text);
+  font-family: 'Crimson Pro', 'EB Garamond', Georgia, serif;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   1. PAPER UNFOLD HERO
+   ══════════════════════════════════════════════════════════════ */
+
+.heroWrapper {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1200px;
+  overflow: hidden;
+}
+
+/* Paper fold overlay */
+.paperFold {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.foldPanel {
+  position: absolute;
+  background: var(--d13-bg);
+  transform-origin: center;
+  will-change: transform, opacity;
+  /* Paper texture */
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(0,0,0,0.02) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.foldTop {
+  top: 0; left: 0; right: 0; height: 50%;
+  transform-origin: top center;
+  animation: foldUpTop 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  border-bottom: 1px solid var(--d13-muted);
+}
+.foldBottom {
+  bottom: 0; left: 0; right: 0; height: 50%;
+  transform-origin: bottom center;
+  animation: foldUpBottom 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  border-top: 1px solid var(--d13-muted);
+}
+.foldLeft {
+  top: 0; left: 0; bottom: 0; width: 50%;
+  transform-origin: left center;
+  animation: foldUpLeft 1.5s cubic-bezier(0.23, 1, 0.32, 1) 0.15s forwards;
+  border-right: 1px solid var(--d13-muted);
+}
+.foldRight {
+  top: 0; right: 0; bottom: 0; width: 50%;
+  transform-origin: right center;
+  animation: foldUpRight 1.5s cubic-bezier(0.23, 1, 0.32, 1) 0.15s forwards;
+  border-left: 1px solid var(--d13-muted);
+}
+
+/* Crinkle texture on fold lines */
+.foldTop::after,
+.foldBottom::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    rgba(0,0,0,0.03) 2px,
+    transparent 4px
+  );
+}
+.foldTop::after { bottom: -2px; }
+.foldBottom::after { top: -2px; }
+
+@keyframes foldUpTop {
+  0% { transform: perspective(1200px) rotateX(0deg); opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: perspective(1200px) rotateX(-90deg); opacity: 0; }
+}
+@keyframes foldUpBottom {
+  0% { transform: perspective(1200px) rotateX(0deg); opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: perspective(1200px) rotateX(90deg); opacity: 0; }
+}
+@keyframes foldUpLeft {
+  0% { transform: perspective(1200px) rotateY(0deg); opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: perspective(1200px) rotateY(90deg); opacity: 0; }
+}
+@keyframes foldUpRight {
+  0% { transform: perspective(1200px) rotateY(0deg); opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: perspective(1200px) rotateY(-90deg); opacity: 0; }
+}
+
+/* Hero content */
+.heroContent {
+  text-align: center;
+  opacity: 0;
+  animation: heroReveal 0.8s ease-out 1.4s forwards;
+  position: relative;
+  z-index: 1;
+  padding: 2rem;
+}
+
+@keyframes heroReveal {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.heroLogo {
+  font-family: 'EB Garamond', serif;
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 500;
+  color: var(--d13-text);
+  text-shadow:
+    1px 1px 0 rgba(255,255,255,0.6),
+    -1px -1px 0 rgba(0,0,0,0.05);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+
+.heroTagline {
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(1rem, 2.5vw, 1.35rem);
+  color: var(--d13-muted);
+  margin-bottom: 2rem;
+  font-style: italic;
+}
+
+.heroTyped {
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(0.85rem, 1.8vw, 1.1rem);
+  color: var(--d13-sage);
+  min-height: 1.6em;
+  margin-bottom: 3rem;
+}
+
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  background: var(--d13-sage);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* CTA with paper-fold hover */
+.heroCta {
+  display: inline-block;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 1rem 2.5rem;
+  background: var(--d13-dark);
+  color: var(--d13-bg);
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.heroCta::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 0; height: 0;
+  border-style: solid;
+  border-width: 0 24px 24px 0;
+  border-color: transparent var(--d13-bg) transparent transparent;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.heroCta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+.heroCta:hover::before {
+  opacity: 1;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   2. 3D CARD STACK
+   ══════════════════════════════════════════════════════════════ */
+
+.cardStackSection {
+  padding: 6rem 2rem;
+  perspective: 1200px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.cardStackTitle {
+  font-family: 'EB Garamond', serif;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.cardStackSub {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.1rem;
+  color: var(--d13-muted);
+  text-align: center;
+  margin-bottom: 4rem;
+  font-style: italic;
+}
+
+.cardStackGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  transform-style: preserve-3d;
+}
+
+.featureCard {
+  background: var(--d13-cloud);
+  border: 1px solid var(--d13-ash);
+  padding: 2rem;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1),
+              box-shadow 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform;
+  cursor: default;
+}
+
+/* Stacked state (before scroll reveal) */
+.featureCard.stacked {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotateZ(var(--card-rotate, 0deg)) translateZ(var(--card-z, 0px));
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.04),
+    0 4px 8px rgba(0,0,0,0.04);
+}
+
+/* Revealed state */
+.featureCard.revealed {
+  transform: rotate(var(--card-rotate, 0deg)) translateZ(0);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.04),
+    0 4px 12px rgba(0,0,0,0.06);
+}
+
+.featureCard:hover {
+  transform: rotate(0deg) translateY(-8px) translateZ(20px) !important;
+  box-shadow:
+    0 4px 8px rgba(0,0,0,0.06),
+    0 16px 40px rgba(0,0,0,0.1) !important;
+}
+
+.cardIcon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 1.25rem;
+  color: var(--d13-sage);
+}
+
+.cardTitle {
+  font-family: 'EB Garamond', serif;
+  font-size: 1.35rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+}
+
+.cardBullets {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+}
+
+.cardBullets li {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.95rem;
+  color: #6b6560;
+  padding: 0.3rem 0;
+  padding-left: 1.2rem;
+  position: relative;
+}
+
+.cardBullets li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.65rem;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--d13-muted);
+}
+
+/* Mini interaction areas */
+.cardMini {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid var(--d13-ash);
+  padding-top: 1rem;
+}
+
+/* Waveform for AI Doc */
+.waveform {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 32px;
+}
+
+.waveBar {
+  width: 3px;
+  background: var(--d13-sage);
+  border-radius: 2px;
+  transition: height 0.3s ease;
+  height: 8px;
+}
+
+.featureCard:hover .waveBar {
+  animation: waveAnim 0.6s ease-in-out infinite alternate;
+}
+
+.waveBar:nth-child(1) { animation-delay: 0s; }
+.waveBar:nth-child(2) { animation-delay: 0.1s; }
+.waveBar:nth-child(3) { animation-delay: 0.2s; }
+.waveBar:nth-child(4) { animation-delay: 0.15s; }
+.waveBar:nth-child(5) { animation-delay: 0.25s; }
+.waveBar:nth-child(6) { animation-delay: 0.05s; }
+.waveBar:nth-child(7) { animation-delay: 0.18s; }
+.waveBar:nth-child(8) { animation-delay: 0.08s; }
+
+@keyframes waveAnim {
+  from { height: 4px; }
+  to { height: 28px; }
+}
+
+/* Mini calendar */
+.miniCalendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  width: 100%;
+}
+
+.calDay {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6rem;
+  text-align: center;
+  padding: 2px;
+  color: var(--d13-muted);
+}
+
+.calToday {
+  background: var(--d13-sage);
+  color: white;
+  border-radius: 2px;
+}
+
+/* Mini video */
+.miniVideo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--d13-muted);
+}
+
+.liveDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--d13-ember);
+  animation: livePulse 2s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Mini org chart */
+.miniOrg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.orgRow {
+  display: flex;
+  gap: 6px;
+}
+
+.orgNode {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--d13-muted);
+  transition: background 0.3s ease;
+}
+
+.featureCard:hover .orgNode {
+  animation: orgPulse 1s ease-in-out infinite;
+}
+
+.orgNode:nth-child(2) { animation-delay: 0.15s; }
+.orgNode:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes orgPulse {
+  0%, 100% { background: var(--d13-muted); }
+  50% { background: var(--d13-sage); }
+}
+
+/* Mini chart */
+.miniChart {
+  width: 100%;
+  height: 32px;
+}
+
+.chartLine {
+  fill: none;
+  stroke: var(--d13-sage);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+  transition: stroke-dashoffset 1s ease-out;
+}
+
+.featureCard:hover .chartLine {
+  stroke-dashoffset: 0;
+}
+
+/* Mini lock */
+.miniLock {
+  position: relative;
+  width: 24px;
+  height: 28px;
+}
+
+.lockBody {
+  position: absolute;
+  bottom: 0;
+  width: 24px;
+  height: 18px;
+  background: var(--d13-muted);
+  border-radius: 3px;
+  transition: background 0.3s ease;
+}
+
+.lockShackle {
+  position: absolute;
+  top: 0;
+  left: 4px;
+  width: 16px;
+  height: 14px;
+  border: 3px solid var(--d13-muted);
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+  transform-origin: right bottom;
+}
+
+.featureCard:hover .lockShackle {
+  transform: rotate(0deg);
+  border-color: var(--d13-sage);
+}
+
+.featureCard:hover .lockBody {
+  background: var(--d13-sage);
+}
+
+.lockShackleOpen {
+  transform: rotate(-30deg);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   3. SPLIT WORLD
+   ══════════════════════════════════════════════════════════════ */
+
+.splitSection {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.splitDark {
+  position: absolute;
+  inset: 0;
+  background: var(--d13-dark);
+  color: #888;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.splitLight {
+  position: absolute;
+  inset: 0;
+  background: var(--d13-bg);
+  color: var(--d13-text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  clip-path: polygon(var(--split-x, 70%) 0%, 100% 0%, 100% 100%, var(--split-x2, 55%) 100%);
+  transition: clip-path 0.05s linear;
+}
+
+.splitLabel {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 1.5rem;
+  opacity: 0.5;
+}
+
+.splitHeading {
+  font-family: 'EB Garamond', serif;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 500;
+  margin-bottom: 2rem;
+}
+
+/* Chaotic floating icons */
+.chaosIcons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  max-width: 400px;
+  justify-content: center;
+}
+
+.chaosIcon {
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  animation: chaosFloat 3s ease-in-out infinite;
+}
+
+.chaosIcon:nth-child(odd) { animation-duration: 3.5s; }
+.chaosIcon:nth-child(3n) { animation-duration: 4s; animation-direction: reverse; }
+
+@keyframes chaosFloat {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(5px, -8px) rotate(3deg); }
+  50% { transform: translate(-3px, 4px) rotate(-2deg); }
+  75% { transform: translate(7px, 2px) rotate(1deg); }
+}
+
+/* Clean ordered grid */
+.orderGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 40px);
+  gap: 0.75rem;
+}
+
+.orderIcon {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--d13-ash);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  background: var(--d13-cloud);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   4. ASKMOODY TERMINAL
+   ══════════════════════════════════════════════════════════════ */
+
+.terminalSection {
+  background: var(--d13-dark);
+  padding: 6rem 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.terminal {
+  width: 100%;
+  max-width: 720px;
+  background: #1a1714;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow:
+    0 4px 16px rgba(0,0,0,0.3),
+    0 24px 64px rgba(0,0,0,0.2);
+}
+
+.terminalBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.terminalDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.terminalDotRed { background: #ff5f56; }
+.terminalDotYellow { background: #ffbd2e; }
+.terminalDotGreen { background: #27c93f; }
+
+.terminalTitle {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.3);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.terminalBody {
+  padding: 1.5rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: clamp(0.65rem, 1.3vw, 0.8rem);
+  line-height: 1.7;
+  color: rgba(255,255,255,0.7);
+  min-height: 400px;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.termPrompt {
+  color: var(--d13-sage);
+}
+
+.termCommand {
+  color: rgba(255,255,255,0.9);
+}
+
+.termMuted {
+  color: rgba(255,255,255,0.3);
+}
+
+.termHighlight {
+  color: var(--d13-sage);
+}
+
+.termUp {
+  color: #4ade80;
+}
+
+.termDown {
+  color: var(--d13-ember);
+}
+
+.termNeutral {
+  color: rgba(255,255,255,0.5);
+}
+
+.termCursor {
+  display: inline-block;
+  width: 8px;
+  height: 1.1em;
+  background: var(--d13-sage);
+  animation: blink 1s step-end infinite;
+  vertical-align: text-bottom;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   5. METRIC ODOMETERS
+   ══════════════════════════════════════════════════════════════ */
+
+.metricsSection {
+  padding: 6rem 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.metricsSectionTitle {
+  font-family: 'EB Garamond', serif;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.metricsSub {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.1rem;
+  color: var(--d13-muted);
+  text-align: center;
+  margin-bottom: 4rem;
+  font-style: italic;
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+}
+
+.metricCard {
+  text-align: center;
+  padding: 2rem 1rem;
+  background: var(--d13-cloud);
+  border: 1px solid var(--d13-ash);
+}
+
+.odometerWrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 64px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.odometerDigit {
+  display: inline-block;
+  height: 64px;
+  overflow: hidden;
+  position: relative;
+  width: 36px;
+}
+
+.digitStrip {
+  display: flex;
+  flex-direction: column;
+  transition: transform 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform;
+}
+
+.digitChar {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 2.5rem;
+  font-weight: 700;
+  height: 64px;
+  line-height: 64px;
+  text-align: center;
+  color: var(--d13-text);
+}
+
+.odometerStatic {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 64px;
+  color: var(--d13-text);
+}
+
+.metricLabel {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--d13-muted);
+  margin-top: 0.5rem;
+}
+
+.metricDetail {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.85rem;
+  color: #8a8580;
+  margin-top: 0.25rem;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   6. TESTIMONIAL PAPER NOTES
+   ══════════════════════════════════════════════════════════════ */
+
+.testimonialsSection {
+  padding: 6rem 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+.testimonialsSectionTitle {
+  font-family: 'EB Garamond', serif;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.notesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  position: relative;
+}
+
+.paperNote {
+  padding: 2rem 1.5rem 1.5rem;
+  position: relative;
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1),
+              box-shadow 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  transform: rotate(var(--note-rotate, 0deg));
+  cursor: default;
+}
+
+.paperNote:hover {
+  transform: rotate(0deg) translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+  z-index: 10;
+}
+
+.noteColor1 { background: #faf6ee; }
+.noteColor2 { background: #f5f0e3; }
+.noteColor3 { background: #f0ede6; }
+.noteColor4 { background: #faf8f0; }
+
+/* Pin SVG */
+.notePin {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 20px;
+}
+
+.noteQuote {
+  font-family: 'Crimson Pro', serif;
+  font-style: italic;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--d13-text);
+  margin-bottom: 1rem;
+}
+
+.noteQuote::before {
+  content: '\201C';
+  font-family: 'EB Garamond', serif;
+  font-size: 2rem;
+  color: var(--d13-muted);
+  display: block;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.noteAttribution {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--d13-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Scatter animation */
+.paperNote.scattered {
+  opacity: 0;
+  transform: rotate(var(--note-rotate, 0deg)) translate(var(--scatter-x, 0), var(--scatter-y, 0)) scale(0.8);
+}
+
+.paperNote.settled {
+  opacity: 1;
+  transform: rotate(var(--note-rotate, 0deg));
+  transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   7. PRICING FLIP CARDS
+   ══════════════════════════════════════════════════════════════ */
+
+.pricingSection {
+  padding: 6rem 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.pricingSectionTitle {
+  font-family: 'EB Garamond', serif;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.pricingSub {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.1rem;
+  color: var(--d13-muted);
+  text-align: center;
+  margin-bottom: 4rem;
+  font-style: italic;
+}
+
+.pricingGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  perspective: 1200px;
+}
+
+.flipCard {
+  height: 380px;
+  perspective: 1200px;
+  cursor: pointer;
+}
+
+.flipCardInner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.flipCard.flipped .flipCardInner {
+  transform: rotateY(180deg);
+}
+
+.flipFront,
+.flipBack {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  border: 1px solid var(--d13-ash);
+  background: var(--d13-cloud);
+}
+
+.flipBack {
+  transform: rotateY(180deg);
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-top: 2rem;
+}
+
+.planName {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--d13-muted);
+  margin-bottom: 1rem;
+}
+
+.planPrice {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--d13-text);
+  margin-bottom: 0.5rem;
+}
+
+.planPer {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.9rem;
+  color: var(--d13-muted);
+  margin-bottom: 2rem;
+}
+
+.flipHint {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--d13-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.backTitle {
+  font-family: 'EB Garamond', serif;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.backFeatures {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.backFeatures li {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.9rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--d13-ash);
+  color: #6b6560;
+}
+
+.backFeatures li::before {
+  content: '\2713';
+  color: var(--d13-sage);
+  margin-right: 0.5rem;
+  font-weight: 700;
+}
+
+/* Pro card animated border */
+.proCard .flipFront,
+.proCard .flipBack {
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  position: relative;
+}
+
+.proCard .flipFront::before,
+.proCard .flipBack::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: conic-gradient(from var(--border-angle, 0deg), var(--d13-sage), var(--d13-blue), var(--d13-sage), transparent, var(--d13-sage));
+  z-index: -1;
+  animation: rotateBorder 4s linear infinite;
+}
+
+@property --border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes rotateBorder {
+  to { --border-angle: 360deg; }
+}
+
+/* Fallback for browsers without @property */
+.proCard .flipFront::before,
+.proCard .flipBack::before {
+  animation: rotateBorderFallback 4s linear infinite;
+}
+
+@keyframes rotateBorderFallback {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.proCard .flipFront::before,
+.proCard .flipBack::before {
+  inset: -2px;
+  border-radius: 0;
+  background: conic-gradient(var(--d13-sage), var(--d13-blue), var(--d13-sage), transparent, var(--d13-sage));
+  animation: rotateBorderFallback 4s linear infinite;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   8. SECURITY VAULT
+   ══════════════════════════════════════════════════════════════ */
+
+.vaultSection {
+  padding: 6rem 2rem;
+  background: var(--d13-fog);
+  text-align: center;
+  overflow: hidden;
+}
+
+.vaultTitle {
+  font-family: 'EB Garamond', serif;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.vaultSub {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.1rem;
+  color: var(--d13-muted);
+  font-style: italic;
+  margin-bottom: 4rem;
+}
+
+.vaultContainer {
+  position: relative;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.vaultDoor {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 3rem;
+  transition: transform 1s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.6s ease;
+  will-change: transform;
+}
+
+.vaultDoor.open {
+  transform: rotate(90deg) scale(1.1);
+  opacity: 0.3;
+}
+
+.certGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1.5rem;
+  max-width: 700px;
+  margin: 0 auto;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s;
+}
+
+.certGrid.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.certBadge {
+  padding: 1.5rem 1rem;
+  border: 2px solid var(--d13-ash);
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  background: var(--d13-cloud);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.8),
+    inset 0 -1px 0 rgba(0,0,0,0.05),
+    0 2px 4px rgba(0,0,0,0.04);
+}
+
+.certName {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--d13-text);
+  font-weight: 700;
+  text-align: center;
+}
+
+.certDesc {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.7rem;
+  color: var(--d13-muted);
+  margin-top: 0.25rem;
+  text-align: center;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   9. CTA — PAPER AIRPLANE
+   ══════════════════════════════════════════════════════════════ */
+
+.ctaSection {
+  padding: 8rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.airplane {
+  position: absolute;
+  top: 30%;
+  transition: transform 1.5s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.5s ease;
+  will-change: transform;
+  z-index: 1;
+}
+
+.airplane.folding {
+  left: 10%;
+  transform: rotate(0deg) scale(1);
+  opacity: 0.6;
+}
+
+.airplane.launched {
+  left: 10%;
+  transform: translateX(80vw) translateY(-100px) rotate(-15deg) scale(0.6);
+  opacity: 0;
+}
+
+.airplaneSvg {
+  width: 60px;
+  height: 60px;
+  color: var(--d13-muted);
+}
+
+.ctaHeading {
+  font-family: 'EB Garamond', serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 500;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.ctaButton {
+  display: inline-block;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 1.15rem 3rem;
+  background: var(--d13-dark);
+  color: var(--d13-bg);
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  z-index: 2;
+  transition: transform 0.3s ease;
+}
+
+.ctaButton:hover {
+  transform: translateY(-2px);
+}
+
+/* Ripple effect */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  transform: scale(0);
+  animation: rippleAnim 0.6s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes rippleAnim {
+  to { transform: scale(4); opacity: 0; }
+}
+
+.ctaSubtext {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--d13-muted);
+  margin-top: 1.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   FOOTER
+   ══════════════════════════════════════════════════════════════ */
+
+.footer {
+  padding: 3rem 2rem;
+  text-align: center;
+  border-top: 1px solid var(--d13-ash);
+}
+
+.footerText {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--d13-muted);
+  letter-spacing: 0.05em;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   REDUCED MOTION
+   ══════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .foldTop, .foldBottom, .foldLeft, .foldRight {
+    animation: none;
+    opacity: 0;
+  }
+  .heroContent {
+    animation: none;
+    opacity: 1;
+  }
+  .featureCard {
+    transition: none;
+    transform: none !important;
+  }
+  .chaosIcon {
+    animation: none;
+  }
+  .liveDot {
+    animation: none;
+  }
+  .flipCardInner {
+    transition: none;
+  }
+  .vaultDoor {
+    transition: none;
+  }
+  .certGrid {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+  .airplane {
+    transition: none;
+    display: none;
+  }
+  .cursor {
+    animation: none;
+  }
+  .waveBar {
+    animation: none !important;
+  }
+  .orgNode {
+    animation: none !important;
+  }
+  .chartLine {
+    stroke-dashoffset: 0;
+    transition: none;
+  }
+  .paperNote {
+    transition: none;
+    opacity: 1 !important;
+    transform: rotate(var(--note-rotate, 0deg)) !important;
+  }
+  .digitStrip {
+    transition: none;
+  }
+  .proCard .flipFront::before,
+  .proCard .flipBack::before {
+    animation: none;
+  }
+  .ripple {
+    animation: none;
+    display: none;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MOBILE RESPONSIVE (< 768px)
+   ══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 767px) {
+  /* Flatten 3D — simplify all */
+  .foldTop, .foldBottom, .foldLeft, .foldRight {
+    animation-duration: 0.8s;
+  }
+
+  .cardStackGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .featureCard {
+    transform: none !important;
+  }
+
+  .featureCard:hover {
+    transform: translateY(-4px) !important;
+  }
+
+  .splitSection {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .splitLight {
+    clip-path: none !important;
+    position: relative;
+    padding: 4rem 2rem;
+  }
+
+  .splitDark {
+    position: relative;
+    padding: 4rem 2rem;
+  }
+
+  .terminalBody {
+    font-size: 0.6rem;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  .metricsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .notesGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .pricingGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .flipCard {
+    height: auto;
+  }
+
+  .flipCardInner {
+    transform-style: flat;
+    position: relative;
+  }
+
+  .flipFront,
+  .flipBack {
+    position: relative;
+    backface-visibility: visible;
+    transform: none;
+  }
+
+  .flipCard.flipped .flipCardInner {
+    transform: none;
+  }
+
+  .flipBack {
+    display: flex;
+    border-top: 1px dashed var(--d13-ash);
+  }
+
+  .flipHint {
+    display: none;
+  }
+
+  .vaultDoor {
+    width: 140px;
+    height: 140px;
+  }
+
+  .certBadge {
+    width: 100px;
+    height: 100px;
+  }
+
+  .airplane {
+    display: none;
+  }
+
+  .odometerDigit {
+    width: 24px;
+    height: 48px;
+  }
+
+  .digitChar {
+    font-size: 1.75rem;
+    height: 48px;
+    line-height: 48px;
+  }
+
+  .odometerStatic {
+    font-size: 1.75rem;
+    line-height: 48px;
+  }
+
+  .odometerWrap {
+    height: 48px;
+  }
+}
+
+/* ── Tablet (768-1024) ──────────────────────────────────── */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .cardStackGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .metricsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .notesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
