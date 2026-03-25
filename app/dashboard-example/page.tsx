@@ -134,8 +134,8 @@ export default function DashboardExample() {
           {/* Quick Stats */}
           <div className={s.quickStats}>
             <div className={s.quickStat}>
-              <div className={s.quickStatValue}>&euro;18,430</div>
-              <div className={s.quickStatLabel}>Revenue</div>
+              <div className={s.quickStatValue}>8</div>
+              <div className={s.quickStatLabel}>Clients today</div>
             </div>
             <div className={s.quickStatDivider} />
             <div className={s.quickStat}>
@@ -167,7 +167,7 @@ export default function DashboardExample() {
             </div>
             <div className={s.askMoodyBody}>
               <p className={s.askMoodyMsg}>
-                Revenue up 12% this week. 3 therapists below target.
+                8 clients scheduled today. 3 therapists below target.
               </p>
             </div>
             <input
