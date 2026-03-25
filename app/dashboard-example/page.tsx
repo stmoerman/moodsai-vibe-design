@@ -100,12 +100,12 @@ const messages = [
 ];
 
 const navTabs = [
-  { label: 'Agenda', active: true },
-  { label: 'Teamchats', active: false },
-  { label: 'Directe Tijd', active: false },
-  { label: 'Mijn Cliënten', active: false },
-  { label: 'Cliënt Chat', active: false },
-  { label: 'MyMoody', active: false },
+  { label: 'Agenda', id: 'agenda' },
+  { label: 'Teamchats', id: 'teamchats' },
+  { label: 'Directe Tijd', id: 'directe-tijd' },
+  { label: 'Mijn Cliënten', id: 'clienten' },
+  { label: 'Cliënt Chat', id: 'client-chat' },
+  { label: 'MyMoody', id: 'mymoody' },
 ];
 
 const mockDates = ['Di 24 maart', 'Wo 25 maart', 'Do 26 maart'];
@@ -155,6 +155,7 @@ export default function DashboardExample() {
   const [weekIndex, setWeekIndex] = useState(1); // 1 = current week (Week 13)
   const [viewMode, setViewMode] = useState<'dag' | 'week'>('dag');
   const [isAgendaExpanded, setIsAgendaExpanded] = useState(false);
+  const [activeTab, setActiveTab] = useState('agenda');
 
   useEffect(() => {
     setNow(new Date());
@@ -460,10 +461,11 @@ export default function DashboardExample() {
       {/* Navigation Tabs */}
       <nav className={s.navTabs}>
         <div className={s.navTabsInner}>
-          {navTabs.map((tab, i) => (
+          {navTabs.map((tab) => (
             <button
-              key={i}
-              className={`${s.navTab} ${tab.active ? s.navTabActive : ''}`}
+              key={tab.id}
+              className={`${s.navTab} ${activeTab === tab.id ? s.navTabActive : ''}`}
+              onClick={() => setActiveTab(tab.id)}
             >
               {tab.label}
             </button>
@@ -471,8 +473,76 @@ export default function DashboardExample() {
         </div>
       </nav>
 
-      {/* Main 3-Column Grid */}
-      <main className={s.mainGrid}>
+      {/* Tab: Teamchats */}
+      {activeTab === 'teamchats' && (
+        <div className={s.teamchatsView}>
+          <div className={s.teamchatsSidebar}>
+            <div className={s.teamchatSearch}>
+              <input type="text" placeholder="Zoek gesprek..." className={s.teamchatSearchInput} readOnly />
+            </div>
+            {[
+              { name: '# Algemeen', preview: 'Dr. van Dijk: Wie kan morgen de 14:00 overnemen?', time: '5m', unread: 2 },
+              { name: '# Klinisch overleg', preview: 'S. Jansen: Nieuwe richtlijn bijgevoegd', time: '1u', unread: 0 },
+              { name: '# Rooster', preview: 'Jaime: Ik ben er vrijdag niet', time: '3u', unread: 0 },
+              { name: 'Dr. van Dijk', preview: 'Heb je de verwijsbrief gezien?', time: '20m', unread: 1 },
+              { name: 'S. Jansen', preview: 'Bedankt voor de workshop tips!', time: '2u', unread: 0 },
+              { name: 'M. de Groot', preview: 'Vergadering verzet naar 15:00', time: '4u', unread: 0 },
+              { name: '# Admin', preview: 'Systeem update gepland voor zondag', time: '1d', unread: 0 },
+            ].map((chat, i) => (
+              <div key={i} className={`${s.teamchatItem} ${i === 0 ? s.teamchatItemActive : ''}`}>
+                <div className={s.teamchatItemTop}>
+                  <span className={s.teamchatItemName}>{chat.name}</span>
+                  <span className={s.teamchatItemTime}>{chat.time}</span>
+                </div>
+                <div className={s.teamchatItemPreview}>
+                  {chat.preview}
+                  {chat.unread > 0 && <span className={s.teamchatUnread}>{chat.unread}</span>}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className={s.teamchatMain}>
+            <div className={s.teamchatHeader}>
+              <span className={s.teamchatChannelName}># Algemeen</span>
+              <span className={s.teamchatChannelMeta}>8 leden</span>
+            </div>
+            <div className={s.teamchatMessages}>
+              {[
+                { author: 'Dr. van Dijk', initials: 'VD', time: '14:32', text: 'Wie kan morgen de 14:00 slot overnemen? Ik heb een spoedafspraak.' },
+                { author: 'S. Jansen', initials: 'SJ', time: '14:35', text: 'Ik kan dat doen, heb nog ruimte.' },
+                { author: 'Jaime', initials: 'JS', time: '14:36', text: 'Top, bedankt Sophie! Ik update de agenda.' },
+                { author: 'Dr. van Dijk', initials: 'VD', time: '14:38', text: 'Fijn, het gaat om een cliënt van mij — M. Bakker. Dossier staat klaar.' },
+                { author: 'M. de Groot', initials: 'MG', time: '14:45', text: 'Vergeet niet dat we morgen ook teamoverleg hebben om 16:00.' },
+              ].map((msg, i) => (
+                <div key={i} className={s.teamchatMsg}>
+                  <div className={s.teamchatMsgAvatar}>{msg.initials}</div>
+                  <div className={s.teamchatMsgBody}>
+                    <div className={s.teamchatMsgTop}>
+                      <span className={s.teamchatMsgAuthor}>{msg.author}</span>
+                      <span className={s.teamchatMsgTime}>{msg.time}</span>
+                    </div>
+                    <p className={s.teamchatMsgText}>{msg.text}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className={s.teamchatInput}>
+              <input type="text" placeholder="Bericht naar # Algemeen..." className={s.teamchatInputField} readOnly />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tab: Placeholder for other tabs */}
+      {activeTab !== 'agenda' && activeTab !== 'teamchats' && (
+        <div className={s.placeholderTab}>
+          <span className={s.placeholderIcon}>&#9744;</span>
+          <span className={s.placeholderText}>{navTabs.find(t => t.id === activeTab)?.label} — binnenkort beschikbaar</span>
+        </div>
+      )}
+
+      {/* Tab: Agenda — Main 3-Column Grid */}
+      {activeTab === 'agenda' && <main className={s.mainGrid}>
 
         {/* Left Column — Key Stats */}
         <div className={s.leftCol}>
@@ -556,9 +626,9 @@ export default function DashboardExample() {
           </a>
 
         </div>
-      </main>
+      </main>}
 
-      {/* Appointment Dialog (day view) */}
+      {/* Appointment Dialog */}
       {expandedAppointment !== null && (() => {
         const apt = schedule[expandedAppointment];
         const details = apt.client ? appointmentDetails[apt.client] : null;
