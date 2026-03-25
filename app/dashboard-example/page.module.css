@@ -1244,6 +1244,11 @@
   max-height: none;
 }
 
+/* ── Mobile Berichten (hidden on desktop) ── */
+.mobileBerichtenWrap {
+  display: none;
+}
+
 /* ── Team Chats View ── */
 .teamchatsView {
   position: relative;
@@ -1758,19 +1763,44 @@
     gap: 16px;
   }
 
-  /* Stats: 2x2 grid instead of horizontal scroll */
+  /* Stats: 2x2 grid, hide Berichten (shows after agenda instead) */
   .leftCol {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
+    order: 1;
   }
 
   .statBlock {
     min-width: 0;
   }
 
-  .messagesSection {
-    grid-column: 1 / -1;
+  /* Hide Berichten from left column on mobile */
+  .leftCol .messagesSection {
+    display: none;
+  }
+
+  /* AskMoody comes right after stats */
+  .rightCol {
+    order: 2;
+  }
+
+  /* Hide Mijn kamer and notes on mobile (they're in the agenda area) */
+  .rightCol .roomLinkCard {
+    display: none;
+  }
+
+  /* Agenda after AskMoody */
+  .centerCol {
+    order: 3;
+  }
+
+  /* Show mobile Berichten below agenda */
+  .mobileBerichtenWrap {
+    display: block;
+    padding: 0 16px 32px;
+    max-width: 1600px;
+    margin: 0 auto;
   }
 
   .agendaHeader {

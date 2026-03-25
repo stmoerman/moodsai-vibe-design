@@ -797,6 +797,27 @@ export default function DashboardExample() {
         </div>
       </main>}
 
+      {/* Mobile-only: Berichten below agenda */}
+      {activeTab === 'agenda' && (
+        <div className={s.mobileBerichtenWrap}>
+          <section className={s.messagesSection}>
+            <div className={s.messagesHeader}>
+              <h3 className={s.sectionHeading}>Berichten</h3>
+              <span className={s.messageBadge}>{messages.length}</span>
+            </div>
+            <div className={s.messagesScroll}>
+              {messages.map((msg, i) => (
+                <div key={i} className={s.messageRow}>
+                  <span className={s.messageName}>{msg.name}</span>
+                  <span className={s.messagePreview}>{msg.preview}</span>
+                  <span className={s.messageTime}>{msg.time}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+      )}
+
       {/* Appointment Dialog */}
       {expandedAppointment !== null && (() => {
         const apt = schedule[expandedAppointment];
