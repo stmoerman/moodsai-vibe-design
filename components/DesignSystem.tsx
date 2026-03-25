@@ -111,8 +111,8 @@ export default function DesignSystem() {
           </div>
           <h1 className={s.headerTitle}>Design System</h1>
           <p className={s.headerSubtitle}>
-            Visual guidelines for the Moods AI platform. Derived from reMarkable&apos;s paper-first
-            philosophy. Sharp corners, generous whitespace, restrained color.
+            Visual guidelines for the Moods AI platform. Paper-first philosophy.
+            Sharp corners, generous whitespace, restrained color.
           </p>
           <p className={s.headerMeta}>Last updated March 2026 · v1.0</p>
         </header>
@@ -244,7 +244,7 @@ export default function DesignSystem() {
             <div className={s.specimenLabel}>Specimen Paragraph</div>
             <p className={s.specimenParagraph}>
               Mental healthcare documentation should feel as natural as writing on paper.
-              Moods AI builds on reMarkable&apos;s principle that the best tools disappear into
+              Moods AI is built on the principle that the best tools disappear into
               the workflow. Every typeface, every spacing decision, every color choice serves
               clarity and calm. The serif warmth of EB Garamond and Crimson Pro conveys
               authority without coldness; Space Mono grounds data in precision.
@@ -543,62 +543,7 @@ export default function DesignSystem() {
         </section>
 
         {/* ═══════════════════════════════════════════════════════
-            9. DARK MODE SPECIMENS
-            ═══════════════════════════════════════════════════════ */}
-        <section className={s.section}>
-          <h2 className={s.sectionTitle}>Dark Mode Specimens</h2>
-          <p className={s.sectionDesc}>
-            How components render on the Dune (#211E1C) background, used for sidebars and dark sections.
-          </p>
-
-          <div className={s.darkSpecimen}>
-            <div className={s.darkSpecimenLabel}>Text Colors on Dark</div>
-            <div className={s.darkTextPrimary}>Primary heading on dark</div>
-            <div className={s.darkTextSecondary}>
-              Body text on dark surfaces uses Silver Rust (#CBBDB9) for comfortable reading contrast
-              without the harshness of pure white.
-            </div>
-            <div className={s.darkTextMuted}>MUTED LABEL ON DARK &mdash; #8a7e79</div>
-          </div>
-
-          <div className={s.darkSpecimen}>
-            <div className={s.darkSpecimenLabel}>Buttons on Dark</div>
-            <div className={s.darkBtnRow}>
-              <button className={s.darkBtnPrimary}>Primary</button>
-              <button className={s.darkBtnSecondary}>Secondary</button>
-              <button className={s.darkBtnAccent}>Accent</button>
-            </div>
-          </div>
-
-          <div className={s.darkSpecimen}>
-            <div className={s.darkSpecimenLabel}>Card on Dark</div>
-            <div className={s.darkCard}>
-              <div className={s.darkCardTitle}>Session Summary</div>
-              <div className={s.darkCardBody}>
-                Cards on dark backgrounds use subtle white-alpha fills with muted borders.
-                Text shifts to Pearl Bush (#E7E1D5) for headings and Silver Rust (#CBBDB9) for body.
-              </div>
-            </div>
-          </div>
-
-          <div className={s.darkSpecimen}>
-            <div className={s.darkSpecimenLabel}>Navigation on Dark</div>
-            <div className={s.darkNavList}>
-              <div className={s.darkNavItemActive}>
-                <span className={s.navItemIcon}>&#9632;</span> Dashboard
-              </div>
-              <div className={s.darkNavItem}>
-                <span className={s.navItemIcon}>&#9632;</span> Patients
-              </div>
-              <div className={s.darkNavItem}>
-                <span className={s.navItemIcon}>&#9632;</span> Sessions
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ═══════════════════════════════════════════════════════
-            10. DO'S AND DON'TS
+            9. DO'S AND DON'TS
             ═══════════════════════════════════════════════════════ */}
         <section className={s.section}>
           <h2 className={s.sectionTitle}>Do&apos;s and Don&apos;ts</h2>
