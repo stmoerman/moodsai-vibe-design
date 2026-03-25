@@ -1,0 +1,4 @@
+/* Layout wrapper — intentionally minimal; all styles live in DesignSystem.module.css */
+.wrapper {
+  min-height: 100vh;
+}
