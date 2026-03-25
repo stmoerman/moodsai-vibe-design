@@ -34,7 +34,7 @@ interface Appointment {
 const schedule: Appointment[] = [
   { time: '08:00', endTime: '09:00', durationMin: 60, client: '',                    type: 'Beschikbaar',          status: 'available' },
   { time: '09:00', endTime: '10:00', durationMin: 60, client: 'M. de Vries',         type: 'Behandeling (ZPM)',    status: 'confirmed' },
-  { time: '09:30', endTime: '10:30', durationMin: 60, client: 'M.D. Kemme',          type: 'Behandeling (ZPM)',    status: 'confirmed' },
+  { time: '09:30', endTime: '10:30', durationMin: 60, client: 'S. Jansen',           type: 'Behandeling (ZPM)',    status: 'confirmed' },
   { time: '10:30', endTime: '12:00', durationMin: 90, client: 'Workshop Stressregulatie', type: '8 deelnemers',    status: 'confirmed' },
   { time: '12:00', endTime: '12:30', durationMin: 30, client: '',                    type: 'Beschikbaar',          status: 'available' },
   { time: '12:30', endTime: '13:00', durationMin: 30, client: 'M.D. Kemme',          type: 'Behandeling (ZPM)',    status: 'confirmed' },
@@ -80,6 +80,13 @@ const appointmentDetails: Record<string, {
     location: 'Kamer 2',
     lastSession: '21 maart 2026',
     notes: 'EMDR fase 3 gestart. Goede voortgang.',
+  },
+  'S. Jansen': {
+    fullName: 'Sophie Jansen',
+    initials: 'SJ',
+    location: 'Kamer 3',
+    lastSession: '19 maart 2026',
+    notes: 'CGT fase 2. Huiswerkopdrachten besproken.',
   },
 };
 
