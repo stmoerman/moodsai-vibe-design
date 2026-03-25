@@ -117,12 +117,42 @@ function parseHour(time: string): number {
   return h + m / 60;
 }
 
+const weekSchedule: Record<string, Appointment[]> = {
+  'Ma': [
+    { time: '09:00', endTime: '10:00', durationMin: 60, client: 'S. Jansen', type: 'Behandeling', status: 'confirmed' },
+    { time: '11:00', endTime: '12:00', durationMin: 60, client: 'T. van Berg', type: 'Intake', status: 'confirmed' },
+    { time: '14:00', endTime: '15:00', durationMin: 60, client: 'M. de Vries', type: 'Vervolgconsult', status: 'confirmed' },
+  ],
+  'Di': [
+    { time: '08:30', endTime: '09:30', durationMin: 60, client: 'J. Bakker', type: 'Behandeling', status: 'confirmed' },
+    { time: '10:00', endTime: '11:30', durationMin: 90, client: 'Workshop ACT', type: '6 deelnemers', status: 'confirmed' },
+    { time: '13:00', endTime: '14:00', durationMin: 60, client: 'A. Hoekstra', type: 'Behandeling', status: 'confirmed' },
+    { time: '15:00', endTime: '16:00', durationMin: 60, client: 'M.D. Kemme', type: 'Behandeling', status: 'pending' },
+  ],
+  'Wo': [], // Will use the existing `schedule` array
+  'Do': [
+    { time: '09:00', endTime: '10:00', durationMin: 60, client: 'M. de Vries', type: 'Behandeling', status: 'confirmed' },
+    { time: '10:30', endTime: '11:30', durationMin: 60, client: 'S. Jansen', type: 'Behandeling', status: 'confirmed' },
+    { time: '13:30', endTime: '14:30', durationMin: 60, client: 'M.D. Kemme', type: 'Diagnostiek', status: 'confirmed' },
+  ],
+  'Vr': [
+    { time: '09:00', endTime: '09:30', durationMin: 30, client: '', type: 'Administratietijd', status: 'break' },
+    { time: '09:30', endTime: '10:30', durationMin: 60, client: 'J. Bakker', type: 'Behandeling', status: 'confirmed' },
+    { time: '11:00', endTime: '12:00', durationMin: 60, client: 'T. van Berg', type: 'Vervolgconsult', status: 'confirmed' },
+  ],
+};
+
+const weekDays = ['Ma', 'Di', 'Wo', 'Do', 'Vr'] as const;
+const weekDates = ['Ma 24', 'Di 25', 'Wo 26', 'Do 27', 'Vr 28'];
+
 export default function DashboardExample() {
   const [now, setNow] = useState<Date | null>(null);
   const [bootPhase, setBootPhase] = useState<'visible' | 'fading' | 'done'>('done');
   const [expandedAppointment, setExpandedAppointment] = useState<number | null>(null);
+  const [selectedWeekApt, setSelectedWeekApt] = useState<{ day: string; idx: number } | null>(null);
   const [dateIndex, setDateIndex] = useState(1); // 1 = today (Wo 25 maart)
   const [viewMode, setViewMode] = useState<'dag' | 'week'>('dag');
+  const [isAgendaExpanded, setIsAgendaExpanded] = useState(false);
 
   useEffect(() => {
     setNow(new Date());
@@ -146,6 +176,20 @@ export default function DashboardExample() {
     return () => { clearTimeout(fadeTimer); clearTimeout(doneTimer); };
   }, []);
 
+  // Close dialogs on Escape
+  useEffect(() => {
+    if (expandedAppointment === null && selectedWeekApt === null && !isAgendaExpanded) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setExpandedAppointment(null);
+        setSelectedWeekApt(null);
+        setIsAgendaExpanded(false);
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [expandedAppointment, selectedWeekApt, isAgendaExpanded]);
+
   const greeting = now ? getGreeting(now.getHours()) : 'Goedemorgen';
   const dateStr = now ? formatDate(now) : '';
   const currentHour = now ? now.getHours() + now.getMinutes() / 60 : 10.5;
@@ -161,6 +205,192 @@ export default function DashboardExample() {
   const toggleExpand = (idx: number) => {
     setExpandedAppointment((prev) => (prev === idx ? null : idx));
   };
+
+  const getWeekDaySchedule = (day: string): Appointment[] => {
+    if (day === 'Wo') return schedule;
+    return weekSchedule[day] || [];
+  };
+
+  const handleWeekAptClick = (day: string, idx: number, apt: Appointment) => {
+    const isAppointment = apt.status === 'confirmed' || apt.status === 'pending';
+    if (!isAppointment) return;
+    setSelectedWeekApt({ day, idx });
+  };
+
+  // Resolve selected week appointment for dialog
+  const selectedWeekAptData = selectedWeekApt
+    ? (() => {
+        const daySchedule = getWeekDaySchedule(selectedWeekApt.day);
+        const apt = daySchedule[selectedWeekApt.idx];
+        const details = apt?.client ? appointmentDetails[apt.client] : null;
+        return apt && details ? { apt, details } : null;
+      })()
+    : null;
+
+  // Renders the agenda content (used both inline and in expanded dialog)
+  const renderAgendaContent = (inExpandedDialog: boolean) => (
+    <>
+      {/* Agenda Header */}
+      <div className={s.agendaHeader}>
+        <div className={s.agendaNav}>
+          <button className={s.agendaNavBtn} onClick={handlePrevDate} disabled={dateIndex === 0}>&lt;</button>
+          <button className={s.agendaTodayBtn} onClick={handleToday}>Vandaag</button>
+          <button className={s.agendaNavBtn} onClick={handleNextDate} disabled={dateIndex === mockDates.length - 1}>&gt;</button>
+          <span className={s.agendaDateLabel}>{mockDates[dateIndex]}</span>
+        </div>
+        <div className={s.agendaHeaderRight}>
+          <div className={s.togglePills}>
+            <button
+              className={`${s.togglePill} ${viewMode === 'dag' ? s.togglePillActive : ''}`}
+              onClick={() => setViewMode('dag')}
+            >
+              Dag
+            </button>
+            <button
+              className={`${s.togglePill} ${viewMode === 'week' ? s.togglePillActive : ''}`}
+              onClick={() => setViewMode('week')}
+            >
+              Week
+            </button>
+          </div>
+          {inExpandedDialog ? (
+            <button className={s.expandBtn} onClick={() => setIsAgendaExpanded(false)} title="Sluiten">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                <line x1="4" y1="4" x2="12" y2="12" />
+                <line x1="12" y1="4" x2="4" y2="12" />
+              </svg>
+            </button>
+          ) : (
+            <button className={s.expandBtn} onClick={() => setIsAgendaExpanded(true)} title="Volledig scherm">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                <path d="M1 5V1h4M9 1h4v4M13 9v4H9M5 13H1V9" />
+              </svg>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Day View */}
+      {viewMode === 'dag' && (
+        <div className={s.timeline}>
+          <div className={s.timelineGutter}>
+            {timeSlots.map((t) => (
+              <div key={t} className={s.timelineGutterSlot}>
+                <span className={s.timelineGutterTime}>{t}</span>
+              </div>
+            ))}
+          </div>
+          <div className={s.timelineBody}>
+            <div className={s.timelineVerticalLine} />
+            {showNowLine && dateIndex === 1 && (
+              <div className={s.nowMarker} style={{ top: `${nowPct}%` }}>
+                <div className={s.nowDot} />
+                <div className={s.nowLine} />
+              </div>
+            )}
+            {schedule.map((apt, i) => {
+              const topPct = ((parseHour(apt.time) - 8) / 10) * 100;
+              const heightPct = (apt.durationMin / 600) * 100;
+              const isAppointment = apt.status === 'confirmed' || apt.status === 'pending';
+              return (
+                <div
+                  key={i}
+                  className={[
+                    s.aptBlock,
+                    apt.status === 'confirmed' ? s.aptConfirmed : '',
+                    apt.status === 'pending' ? s.aptPending : '',
+                    apt.status === 'available' ? s.aptAvailable : '',
+                    apt.status === 'break' ? s.aptBreak : '',
+                  ].filter(Boolean).join(' ')}
+                  style={{
+                    top: `${topPct}%`,
+                    height: `${heightPct}%`,
+                    animationDelay: `${1.5 + i * 0.04}s`,
+                  }}
+                  onClick={isAppointment ? () => toggleExpand(i) : undefined}
+                >
+                  <div className={s.aptCollapsed}>
+                    <span className={s.aptClient}>
+                      {isAppointment ? apt.client : apt.type}
+                    </span>
+                    <span className={s.aptMeta}>
+                      {isAppointment && `${apt.type} — ${apt.durationMin} min`}
+                      {apt.status === 'break' && `${apt.durationMin} min`}
+                      {apt.status === 'available' && 'Beschikbaar'}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Week View */}
+      {viewMode === 'week' && (
+        <div className={s.weekTimeline}>
+          {/* Time gutter */}
+          <div className={s.weekGutter}>
+            <div className={s.weekGutterHeader} />
+            <div className={s.weekGutterSlots}>
+              {timeSlots.map((t) => (
+                <div key={t} className={s.timelineGutterSlot}>
+                  <span className={s.timelineGutterTime}>{t}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* Day columns */}
+          {weekDays.map((day, di) => {
+            const dayScheduleItems = getWeekDaySchedule(day);
+            const isToday = day === 'Wo';
+            return (
+              <div key={day} className={s.weekDayCol}>
+                <div className={`${s.weekDayHeader} ${isToday ? s.weekDayHeaderActive : ''}`}>
+                  {weekDates[di]}
+                </div>
+                <div className={`${s.weekDayBody} ${isToday ? s.weekDayBodyActive : ''}`}>
+                  {/* Now marker for current day */}
+                  {isToday && showNowLine && dateIndex === 1 && (
+                    <div className={s.nowMarker} style={{ top: `${nowPct}%` }}>
+                      <div className={s.nowDot} />
+                      <div className={s.nowLine} />
+                    </div>
+                  )}
+                  {dayScheduleItems.map((apt, i) => {
+                    const topPct = ((parseHour(apt.time) - 8) / 10) * 100;
+                    const heightPct = (apt.durationMin / 600) * 100;
+                    const isAppointment = apt.status === 'confirmed' || apt.status === 'pending';
+                    return (
+                      <div
+                        key={i}
+                        className={[
+                          s.weekAptBlock,
+                          apt.status === 'confirmed' ? s.aptConfirmed : '',
+                          apt.status === 'pending' ? s.aptPending : '',
+                          apt.status === 'available' ? s.aptAvailable : '',
+                          apt.status === 'break' ? s.aptBreak : '',
+                        ].filter(Boolean).join(' ')}
+                        style={{
+                          top: `${topPct}%`,
+                          height: `${heightPct}%`,
+                        }}
+                        onClick={isAppointment ? () => handleWeekAptClick(day, i, apt) : undefined}
+                      >
+                        <span className={s.weekAptClient}>
+                          {isAppointment ? apt.client : apt.type}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </>
+  );
 
   return (
     <div className={s.root}>
@@ -268,91 +498,7 @@ export default function DashboardExample() {
         {/* Center Column — Interactive Agenda */}
         <div className={s.centerCol}>
           <section className={s.agendaSection}>
-            {/* Agenda Header */}
-            <div className={s.agendaHeader}>
-              <div className={s.agendaNav}>
-                <button className={s.agendaNavBtn} onClick={handlePrevDate} disabled={dateIndex === 0}>&lt;</button>
-                <button className={s.agendaTodayBtn} onClick={handleToday}>Vandaag</button>
-                <button className={s.agendaNavBtn} onClick={handleNextDate} disabled={dateIndex === mockDates.length - 1}>&gt;</button>
-                <span className={s.agendaDateLabel}>{mockDates[dateIndex]}</span>
-              </div>
-              <div className={s.togglePills}>
-                <button
-                  className={`${s.togglePill} ${viewMode === 'dag' ? s.togglePillActive : ''}`}
-                  onClick={() => setViewMode('dag')}
-                >
-                  Dag
-                </button>
-                <button
-                  className={`${s.togglePill} ${viewMode === 'week' ? s.togglePillActive : ''}`}
-                  onClick={() => setViewMode('week')}
-                >
-                  Week
-                </button>
-              </div>
-            </div>
-
-            {/* Agenda Timeline */}
-            <div className={s.timeline}>
-              <div className={s.timelineGutter}>
-                {timeSlots.map((t) => (
-                  <div key={t} className={s.timelineGutterSlot}>
-                    <span className={s.timelineGutterTime}>{t}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className={s.timelineBody}>
-                <div className={s.timelineVerticalLine} />
-
-                {/* Now marker */}
-                {showNowLine && dateIndex === 1 && (
-                  <div className={s.nowMarker} style={{ top: `${nowPct}%` }}>
-                    <div className={s.nowDot} />
-                    <div className={s.nowLine} />
-                  </div>
-                )}
-
-                {/* Appointment blocks */}
-                {schedule.map((apt, i) => {
-                  const topPct = ((parseHour(apt.time) - 8) / 10) * 100;
-                  const heightPct = (apt.durationMin / 600) * 100;
-                  const isExpanded = expandedAppointment === i;
-                  const details = apt.client ? appointmentDetails[apt.client] : null;
-                  const isAppointment = apt.status === 'confirmed' || apt.status === 'pending';
-
-                  return (
-                    <div
-                      key={i}
-                      className={[
-                        s.aptBlock,
-                        apt.status === 'confirmed' ? s.aptConfirmed : '',
-                        apt.status === 'pending' ? s.aptPending : '',
-                        apt.status === 'available' ? s.aptAvailable : '',
-                        apt.status === 'break' ? s.aptBreak : '',
-                      ].filter(Boolean).join(' ')}
-                      style={{
-                        top: `${topPct}%`,
-                        height: `${heightPct}%`,
-                        animationDelay: `${1.5 + i * 0.04}s`,
-                      }}
-                      onClick={isAppointment ? () => toggleExpand(i) : undefined}
-                    >
-                      <div className={s.aptCollapsed}>
-                        <span className={s.aptClient}>
-                          {isAppointment ? apt.client : apt.type}
-                        </span>
-                        <span className={s.aptMeta}>
-                          {isAppointment && `${apt.type} — ${apt.durationMin} min`}
-                          {apt.status === 'break' && `${apt.durationMin} min`}
-                          {apt.status === 'available' && 'Beschikbaar'}
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            {renderAgendaContent(false)}
           </section>
         </div>
 
@@ -398,7 +544,7 @@ export default function DashboardExample() {
         </div>
       </main>
 
-      {/* Appointment Dialog */}
+      {/* Appointment Dialog (day view) */}
       {expandedAppointment !== null && (() => {
         const apt = schedule[expandedAppointment];
         const details = apt.client ? appointmentDetails[apt.client] : null;
@@ -446,6 +592,59 @@ export default function DashboardExample() {
           </div>
         );
       })()}
+
+      {/* Appointment Dialog (week view) */}
+      {selectedWeekAptData && (
+        <div className={s.dialogOverlay} onClick={() => setSelectedWeekApt(null)}>
+          <div className={s.dialog} onClick={(e) => e.stopPropagation()}>
+            <div className={s.dialogHeader}>
+              <div className={s.aptDetailsTop}>
+                <div className={s.aptDetailAvatar}>{selectedWeekAptData.details.initials}</div>
+                <div className={s.aptDetailInfo}>
+                  <span className={s.aptDetailName}>{selectedWeekAptData.details.fullName}</span>
+                  <span className={s.aptDetailType}>
+                    {selectedWeekAptData.apt.type} &middot; {selectedWeekAptData.apt.durationMin} min &middot; {selectedWeekAptData.details.location}
+                  </span>
+                </div>
+              </div>
+              <button className={s.dialogClose} onClick={() => setSelectedWeekApt(null)}>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                  <line x1="4" y1="4" x2="12" y2="12" />
+                  <line x1="12" y1="4" x2="4" y2="12" />
+                </svg>
+              </button>
+            </div>
+            <div className={s.dialogBody}>
+              <div className={s.aptDetailRow}>
+                <span className={s.aptDetailLabel}>Tijd</span>
+                <span className={s.aptDetailValue}>{selectedWeekAptData.apt.time} — {selectedWeekAptData.apt.endTime}</span>
+              </div>
+              <div className={s.aptDetailRow}>
+                <span className={s.aptDetailLabel}>Vorige sessie</span>
+                <span className={s.aptDetailValue}>{selectedWeekAptData.details.lastSession}</span>
+              </div>
+              <div className={s.aptDetailRow}>
+                <span className={s.aptDetailLabel}>Notities</span>
+                <span className={s.aptDetailValue}>{selectedWeekAptData.details.notes}</span>
+              </div>
+            </div>
+            <div className={s.dialogActions}>
+              <button className={s.aptDetailAction}>Start videogesprek</button>
+              <button className={s.aptDetailAction}>Bekijk dossier</button>
+              <button className={s.aptDetailAction}>Notitie maken</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Expanded Agenda Dialog */}
+      {isAgendaExpanded && (
+        <div className={s.dialogOverlay} onClick={() => setIsAgendaExpanded(false)}>
+          <div className={s.dialogWide} onClick={(e) => e.stopPropagation()}>
+            {renderAgendaContent(true)}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

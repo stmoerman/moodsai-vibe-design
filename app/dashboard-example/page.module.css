@@ -1090,6 +1090,149 @@
   border-color: #8b6d4f;
 }
 
+/* ── Agenda Header Right (toggle + expand) ── */
+.agendaHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.expandBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: 1px solid #d0cdc6;
+  color: #7a746e;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  padding: 0;
+}
+
+.expandBtn:hover {
+  background: #3a3a3a;
+  color: #eeeae3;
+}
+
+/* ── Week View ── */
+.weekTimeline {
+  display: grid;
+  grid-template-columns: 52px repeat(5, 1fr);
+  max-height: 600px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #d0cdc6 transparent;
+}
+
+.weekTimeline::-webkit-scrollbar {
+  width: 4px;
+}
+
+.weekTimeline::-webkit-scrollbar-thumb {
+  background: #d0cdc6;
+}
+
+.weekGutter {
+  flex-shrink: 0;
+}
+
+.weekGutterHeader {
+  height: 33px;
+  border-bottom: 1px solid #d0cdc6;
+}
+
+.weekGutterSlots {
+  position: relative;
+}
+
+.weekDayCol {
+  border-left: 1px solid #e8e4dd;
+  min-width: 0;
+}
+
+.weekDayHeader {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-align: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #d0cdc6;
+  color: #7a746e;
+}
+
+.weekDayHeaderActive {
+  color: #3a3a3a;
+  border-bottom-color: #8b6d4f;
+  font-weight: 700;
+}
+
+.weekDayBody {
+  position: relative;
+  min-height: 792px; /* 11 slots x 72px */
+}
+
+.weekDayBodyActive {
+  background: #f5f2ec;
+}
+
+.weekAptBlock {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  padding: 3px 5px;
+  cursor: default;
+  box-sizing: border-box;
+  overflow: hidden;
+  font-size: 0.75rem;
+  transition: box-shadow 0.2s ease;
+}
+
+.weekAptClient {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.8rem;
+  color: #3a3a3a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  line-height: 1.3;
+}
+
+/* ── Expanded Agenda Dialog ── */
+.dialogWide {
+  background: #f5f2ec;
+  border: 1px solid #d0cdc6;
+  width: 100%;
+  max-width: 1200px;
+  max-height: 90vh;
+  margin: 20px;
+  padding: 16px 20px 0;
+  overflow-y: auto;
+  animation: dialogSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  scrollbar-width: thin;
+  scrollbar-color: #d0cdc6 transparent;
+}
+
+.dialogWide::-webkit-scrollbar {
+  width: 4px;
+}
+
+.dialogWide::-webkit-scrollbar-thumb {
+  background: #d0cdc6;
+}
+
+.dialogWide .weekTimeline {
+  max-height: none;
+}
+
+.dialogWide .timeline {
+  max-height: none;
+}
+
 /* ── Mobile ── */
 @media (max-width: 768px) {
   .topBar {
