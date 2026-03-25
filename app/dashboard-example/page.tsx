@@ -5,16 +5,16 @@ import Link from 'next/link';
 import s from './page.module.css';
 
 function getGreeting(hour: number) {
-  if (hour < 12) return 'Good morning';
-  if (hour < 18) return 'Good afternoon';
-  return 'Good evening';
+  if (hour < 12) return 'Goedemorgen';
+  if (hour < 18) return 'Goedemiddag';
+  return 'Goedenavond';
 }
 
 function formatDate(date: Date) {
-  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const days = ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za'];
   const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
+    'januari', 'februari', 'maart', 'april', 'mei', 'juni',
+    'juli', 'augustus', 'september', 'oktober', 'november', 'december',
   ];
   return `${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]}`;
 }
@@ -31,34 +31,34 @@ interface Appointment {
 }
 
 const schedule: Appointment[] = [
-  { time: '08:00', duration: '30m', client: '\u2014',             type: 'Admin time',       status: 'none',      isBreak: true },
-  { time: '09:00', duration: '60m', client: 'M. de Vries',       type: 'Treatment (ZPM)',   status: 'confirmed' },
-  { time: '09:30', duration: '60m', client: 'M.D. Kemme',        type: 'Treatment (ZPM)',   status: 'confirmed' },
-  { time: '10:30', duration: '90m', client: 'Workshop Stress',   type: '8 participants',    status: 'confirmed' },
-  { time: '12:30', duration: '60m', client: 'M.D. Kemme',        type: 'Treatment (ZPM)',   status: 'confirmed' },
-  { time: '13:00', duration: '30m', client: '\u2014',             type: 'Lunch',             status: 'none',      isBreak: true },
-  { time: '13:30', duration: '60m', client: 'A. Hoekstra',       type: 'Intake',            status: 'pending' },
-  { time: '14:30', duration: '60m', client: 'J. Bakker',         type: 'Follow-up',         status: 'confirmed' },
-  { time: '15:30', duration: '\u2014',  client: '\u2014',             type: 'Available',         status: 'available', isBreak: true },
+  { time: '08:00', duration: '30m', client: '\u2014',             type: 'Administratietijd',    status: 'none',      isBreak: true },
+  { time: '09:00', duration: '60m', client: 'M. de Vries',       type: 'Behandeling (ZPM)',    status: 'confirmed' },
+  { time: '09:30', duration: '60m', client: 'M.D. Kemme',        type: 'Behandeling (ZPM)',    status: 'confirmed' },
+  { time: '10:30', duration: '90m', client: 'Workshop Stress',   type: '8 deelnemers',         status: 'confirmed' },
+  { time: '12:30', duration: '60m', client: 'M.D. Kemme',        type: 'Behandeling (ZPM)',    status: 'confirmed' },
+  { time: '13:00', duration: '30m', client: '\u2014',             type: 'Pauze',                status: 'none',      isBreak: true },
+  { time: '13:30', duration: '60m', client: 'A. Hoekstra',       type: 'Intake',               status: 'pending' },
+  { time: '14:30', duration: '60m', client: 'J. Bakker',         type: 'Vervolgconsult',       status: 'confirmed' },
+  { time: '15:30', duration: '\u2014',  client: '\u2014',         type: 'Beschikbaar',          status: 'available', isBreak: true },
 ];
 
 const recentNotes = [
-  { text: 'M. de Vries \u2014 Session note', time: 'yesterday' },
-  { text: 'M.D. Kemme \u2014 Treatment plan', time: '2d ago' },
-  { text: 'Workshop \u2014 Summary', time: '3d ago' },
+  { text: 'M. de Vries \u2014 Sessienotitie', time: 'gisteren' },
+  { text: 'M.D. Kemme \u2014 Behandelplan', time: '2d geleden' },
+  { text: 'Workshop \u2014 Samenvatting', time: '3d geleden' },
 ];
 
 const messages = [
   { name: 'M. de Vries', preview: 'Bedankt voor de sessie', time: '10m' },
-  { name: 'A. Hoekstra', preview: 'Ik heb de vragenlijst...', time: '2h' },
+  { name: 'A. Hoekstra', preview: 'Ik heb de vragenlijst...', time: '2u' },
 ];
 
 const navTiles = [
   { label: 'Agenda', active: true },
   { label: 'Teamchats', active: false },
-  { label: 'Direct Time', active: false },
-  { label: 'My Clients', active: false },
-  { label: 'Client Chat', active: false },
+  { label: 'Directe Tijd', active: false },
+  { label: 'Mijn Cli\u00ebnten', active: false },
+  { label: 'Cli\u00ebnt Chat', active: false },
   { label: 'MyMoody', active: false },
 ];
 
@@ -77,16 +77,14 @@ export default function DashboardExample() {
       setBootPhase('done');
       return;
     }
-    // Show for 2s, then fade out over 0.8s
     const fadeTimer = setTimeout(() => setBootPhase('fading'), 2000);
     const doneTimer = setTimeout(() => setBootPhase('done'), 2800);
     return () => { clearTimeout(fadeTimer); clearTimeout(doneTimer); };
   }, []);
 
-  const greeting = now ? getGreeting(now.getHours()) : 'Good morning';
+  const greeting = now ? getGreeting(now.getHours()) : 'Goedemorgen';
   const dateStr = now ? formatDate(now) : '';
 
-  // Determine current schedule row based on hour
   const currentHour = now ? now.getHours() + now.getMinutes() / 60 : 9;
   const currentSlotIndex = (() => {
     let idx = -1;
@@ -96,7 +94,6 @@ export default function DashboardExample() {
     return idx;
   })();
 
-  // Count sessions (non-break items)
   const sessionCount = schedule.filter((a) => !a.isBreak).length;
   const availableCount = schedule.filter((a) => a.status === 'available').length;
 
@@ -104,20 +101,14 @@ export default function DashboardExample() {
     <div className={s.root}>
       <div className={s.dotGrid} aria-hidden="true" />
 
-      {/* Boot Screen — fade in, hold, fade out */}
+      {/* Boot Screen */}
       {bootPhase !== 'done' && (
         <div className={`${s.bootScreen} ${bootPhase === 'fading' ? s.bootFading : ''}`}>
           <div className={s.bootContent}>
             <h1 className={s.bootGreeting}>
-              {now ? `${getGreeting(now.getHours())}, Jaime` : 'Good morning, Jaime'}
+              {now ? `${getGreeting(now.getHours())}, Jaime` : 'Goedemorgen, Jaime'}
             </h1>
-            <svg
-              className={s.bootUnderline}
-              width="480"
-              height="14"
-              viewBox="0 0 480 14"
-              aria-hidden="true"
-            >
+            <svg className={s.bootUnderline} width="480" height="14" viewBox="0 0 480 14" aria-hidden="true">
               <path
                 d="M0,7 C40,1 80,13 120,6 C160,0 200,12 240,5 C280,-1 320,11 360,6 C400,1 440,11 480,7"
                 className={`${s.bootUnderlinePath} ${s.bootUnderlineDrawn}`}
@@ -129,10 +120,10 @@ export default function DashboardExample() {
 
       {/* Top Bar */}
       <header className={s.topBar}>
-        <Link href="/" className={s.logo}>Moods.ai</Link>
+        <Link href="/" className={s.logo}>Oh My Mood</Link>
         <div className={s.topBarRight}>
-          <span className={s.userName}>Dr. Smit</span>
-          <div className={s.avatar}>DS</div>
+          <span className={s.userName}>GGZ Noord</span>
+          <div className={s.avatar}>JS</div>
         </div>
       </header>
 
@@ -145,50 +136,50 @@ export default function DashboardExample() {
             className={s.greetingUnderlinePath}
           />
         </svg>
-        <span className={s.dateTime}>Therapist &middot; GGZ Noord &middot; {dateStr}</span>
+        <span className={s.dateTime}>Therapeut &middot; GGZ Noord &middot; {dateStr}</span>
       </div>
 
       {/* Main 3-Column Grid */}
       <main className={s.mainGrid}>
 
-        {/* ── Left Column: Stats + Quick Actions ── */}
+        {/* Left Column */}
         <div className={s.leftCol}>
           <div className={s.statBlock}>
-            <div className={s.statLabel}>Clients today</div>
+            <div className={s.statLabel}>Cli&euml;nten vandaag</div>
             <div className={s.statValue}>6</div>
-            <div className={s.statSub}>2 pending</div>
+            <div className={s.statSub}>2 in afwachting</div>
           </div>
           <div className={s.statBlock}>
-            <div className={s.statLabel}>Declarability</div>
+            <div className={s.statLabel}>Declarabiliteit</div>
             <div className={s.statValue}>81%</div>
-            <div className={s.statSub}>19.0 / 23.4 hrs this week</div>
+            <div className={s.statSub}>19,0 / 23,4 uur deze week</div>
           </div>
           <div className={s.statBlock}>
-            <div className={s.statLabel}>Unread</div>
+            <div className={s.statLabel}>Ongelezen</div>
             <div className={s.statValue}>3</div>
-            <div className={s.statSub}>2 chats, 1 report</div>
+            <div className={s.statSub}>2 chats, 1 rapport</div>
           </div>
 
           <div className={s.quickActions}>
-            <button className={`${s.quickAction} ${s.quickActionAccent}`}>&#10022; Ask Moody</button>
-            <button className={s.quickAction}>Start video call</button>
-            <button className={s.quickAction}>View my clients</button>
-            <button className={s.quickAction}>Record dictation</button>
+            <button className={`${s.quickAction} ${s.quickActionAccent}`}>&#10022; Vraag Moody</button>
+            <button className={s.quickAction}>Start videogesprek</button>
+            <button className={s.quickAction}>Mijn cli&euml;nten</button>
+            <button className={s.quickAction}>Dictaat opnemen</button>
           </div>
         </div>
 
-        {/* ── Center Column: Today's Schedule ── */}
+        {/* Center Column */}
         <div className={s.centerCol}>
           <section className={s.scheduleSection}>
             <div className={s.scheduleHeader}>
               <div className={s.scheduleHeaderLeft}>
-                <span className={s.scheduleTitle}>Today</span>
+                <span className={s.scheduleTitle}>Vandaag</span>
                 <span className={s.scheduleCount}>
-                  {sessionCount} sessions &middot; {availableCount} available slot
+                  {sessionCount} sessies &middot; {availableCount} beschikbaar
                 </span>
               </div>
               <div className={s.togglePills}>
-                <button className={`${s.togglePill} ${s.togglePillActive}`}>Day</button>
+                <button className={`${s.togglePill} ${s.togglePillActive}`}>Dag</button>
                 <button className={s.togglePill}>Week</button>
               </div>
             </div>
@@ -222,10 +213,9 @@ export default function DashboardExample() {
           </section>
         </div>
 
-        {/* ── Right Column: Context ── */}
+        {/* Right Column */}
         <div className={s.rightCol}>
 
-          {/* AskMoody */}
           <section className={s.askMoody}>
             <div className={s.askMoodyHeader}>
               <span className={s.askMoodyLabel}>ASKMOODY</span>
@@ -233,20 +223,19 @@ export default function DashboardExample() {
             </div>
             <div className={s.askMoodyBody}>
               <p className={s.askMoodyMsg}>
-                You have 6 sessions today. M.&nbsp;de&nbsp;Vries showed improved GAD-7 scores last session.
+                Je hebt 6 sessies vandaag. M.&nbsp;de&nbsp;Vries liet verbeterde GAD-7 scores zien vorige sessie.
               </p>
             </div>
             <input
               type="text"
               className={s.askMoodyInput}
-              placeholder="Ask anything..."
+              placeholder="Stel een vraag..."
               readOnly
             />
           </section>
 
-          {/* Recent Notes */}
           <section className={s.notesSection}>
-            <h3 className={s.sectionHeading}>Recent notes</h3>
+            <h3 className={s.sectionHeading}>Recente notities</h3>
             {recentNotes.map((note, i) => (
               <div key={i} className={s.noteRow}>
                 <span className={s.noteText}>{note.text}</span>
@@ -255,10 +244,9 @@ export default function DashboardExample() {
             ))}
           </section>
 
-          {/* Messages */}
           <section className={s.messagesSection}>
             <div className={s.messagesHeader}>
-              <h3 className={s.sectionHeading}>Messages</h3>
+              <h3 className={s.sectionHeading}>Berichten</h3>
               <span className={s.messageBadge}>2</span>
             </div>
             {messages.map((msg, i) => (
@@ -273,7 +261,7 @@ export default function DashboardExample() {
         </div>
       </main>
 
-      {/* Bottom Nav Tiles */}
+      {/* Bottom Nav */}
       <div className={s.bottomNav}>
         {navTiles.map((tile, i) => (
           <div
