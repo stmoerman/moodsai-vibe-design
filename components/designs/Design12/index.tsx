@@ -1,5 +1,5 @@
 'use client'
-import { useRef, useEffect, useState, useCallback, useMemo } from 'react'
+import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react'
 import styles from './styles.module.css'
 
 /* ============================================================
@@ -287,73 +287,46 @@ function Checkmark({ drawn }: { drawn: boolean }) {
   )
 }
 
-function ContinuousLine({ progress }: { progress: number }) {
-  const pathRef = useRef<SVGPathElement>(null)
-  const branchRefs = useRef<(SVGPathElement | null)[]>([])
-  const [totalLength, setTotalLength] = useState(0)
-  const [branchLengths, setBranchLengths] = useState<number[]>([])
-
-  useEffect(() => {
-    if (pathRef.current) {
-      setTotalLength(pathRef.current.getTotalLength())
-    }
-    const lengths = branchRefs.current.map((ref) => ref?.getTotalLength() || 0)
-    setBranchLengths(lengths)
-  }, [])
-
-  const dashOffset = totalLength * (1 - progress)
-
+// Static SVG — progress updates happen via direct DOM manipulation in the scroll handler
+const ContinuousLine = React.memo(function ContinuousLine() {
   return (
     <svg className={styles.lineSvg} viewBox="0 0 1200 8000" preserveAspectRatio="none">
-      {/* Glow behind main line */}
       <path
         d={MAIN_PATH}
+        data-role="glow"
         stroke="#423C38"
         strokeWidth="6"
         strokeLinecap="round"
         strokeLinejoin="round"
         fill="none"
         opacity="0.06"
-        filter="blur(3px)"
-        strokeDasharray={totalLength || undefined}
-        strokeDashoffset={dashOffset}
       />
-      {/* Main continuous line */}
       <path
-        ref={pathRef}
         d={MAIN_PATH}
+        data-role="main"
         stroke="#423C38"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
         fill="none"
         opacity="0.8"
-        strokeDasharray={totalLength || undefined}
-        strokeDashoffset={dashOffset}
       />
-      {/* Branch lines */}
-      {BRANCH_PATHS.map((branch, i) => {
-        const branchProgress = Math.max(0, Math.min(1, (progress - branch.threshold) / 0.04))
-        const bLen = branchLengths[i] || 0
-        const bOffset = bLen * (1 - branchProgress)
-        return (
-          <path
-            key={i}
-            ref={(el) => { branchRefs.current[i] = el }}
-            d={branch.d}
-            stroke="#423C38"
-            strokeWidth="1"
-            strokeLinecap="round"
-            fill="none"
-            opacity="0.3"
-            strokeDasharray={bLen || undefined}
-            strokeDashoffset={bOffset}
-          />
-        )
-      })}
+      {BRANCH_PATHS.map((branch, i) => (
+        <path
+          key={i}
+          d={branch.d}
+          data-role="branch"
+          data-threshold={branch.threshold}
+          stroke="#423C38"
+          strokeWidth="1"
+          strokeLinecap="round"
+          fill="none"
+          opacity="0.3"
+        />
+      ))}
     </svg>
   )
-}
+})
 
 function WaypointDot({
   wp,
@@ -386,18 +359,74 @@ function WaypointDot({
 export default function Design12() {
   const pageRef = useRef<HTMLDivElement>(null)
   const [scrollProgress, setScrollProgress] = useState(0)
-  // Scroll handler — throttled with RAF
+  // SVG line lengths (initialized once)
+  const svgInitRef = useRef(false)
+  const mainLenRef = useRef(0)
+
+  // Scroll handler — throttled with RAF, updates SVG via DOM
   useEffect(() => {
     let rafId: number
     let ticking = false
+
+    const initSvg = () => {
+      if (svgInitRef.current) return
+      const svg = pageRef.current?.querySelector(`.${styles.lineSvg}`)
+      if (!svg) return
+      const mainPath = svg.querySelector('[data-role="main"]') as SVGPathElement | null
+      const glowPath = svg.querySelector('[data-role="glow"]') as SVGPathElement | null
+      const branches = svg.querySelectorAll('[data-role="branch"]') as NodeListOf<SVGPathElement>
+      if (!mainPath) return
+
+      const len = mainPath.getTotalLength()
+      mainLenRef.current = len
+      const lenStr = String(len)
+      mainPath.setAttribute('stroke-dasharray', lenStr)
+      mainPath.setAttribute('stroke-dashoffset', lenStr)
+      if (glowPath) {
+        glowPath.setAttribute('stroke-dasharray', lenStr)
+        glowPath.setAttribute('stroke-dashoffset', lenStr)
+      }
+      branches.forEach((b) => {
+        const bLen = b.getTotalLength()
+        b.setAttribute('stroke-dasharray', String(bLen))
+        b.setAttribute('stroke-dashoffset', String(bLen))
+        b.dataset.len = String(bLen)
+      })
+      svgInitRef.current = true
+    }
+
     const onScroll = () => {
       if (ticking) return
       ticking = true
       rafId = requestAnimationFrame(() => {
         ticking = false
+        initSvg()
+
         const docHeight = document.documentElement.scrollHeight - window.innerHeight
-        const progress = docHeight > 0 ? window.scrollY / docHeight : 0
-        setScrollProgress(Math.min(1, Math.max(0, progress)))
+        const progress = docHeight > 0 ? Math.min(1, Math.max(0, window.scrollY / docHeight)) : 0
+
+        // Update SVG directly (no React re-render)
+        const len = mainLenRef.current
+        if (len > 0) {
+          const offset = String(len * (1 - progress))
+          const svg = pageRef.current?.querySelector(`.${styles.lineSvg}`)
+          if (svg) {
+            const main = svg.querySelector('[data-role="main"]')
+            const glow = svg.querySelector('[data-role="glow"]')
+            main?.setAttribute('stroke-dashoffset', offset)
+            glow?.setAttribute('stroke-dashoffset', offset)
+            svg.querySelectorAll('[data-role="branch"]').forEach((b) => {
+              const el = b as SVGPathElement
+              const threshold = parseFloat(el.dataset.threshold ?? '0')
+              const bLen = parseFloat(el.dataset.len ?? '0')
+              const bp = Math.max(0, Math.min(1, (progress - threshold) / 0.04))
+              el.setAttribute('stroke-dashoffset', String(bLen * (1 - bp)))
+            })
+          }
+        }
+
+        // Only update React state for section reveals (coarse, not per-frame)
+        setScrollProgress(progress)
       })
     }
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -428,7 +457,7 @@ export default function Design12() {
   return (
     <div className={styles.page} ref={pageRef}>
       {/* The continuous SVG line */}
-      <ContinuousLine progress={scrollProgress} />
+      <ContinuousLine />
 
       {/* Pen nib and waypoint dots removed for cleaner experience */}
 
