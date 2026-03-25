@@ -70,7 +70,7 @@ const NOTIFICATIONS: NotifItem[] = [
 ]
 
 const TEAM: TeamMember[] = [
-  { initials: 'MV', color: '#4a7c59', online: true },
+  { initials: 'MV', color: '#5a7268', online: true },
   { initials: 'JB', color: '#4a6c9c', online: true },
   { initials: 'SJ', color: '#9c4040', online: true },
   { initials: 'TH', color: '#7c6a4a', online: true },
@@ -145,7 +145,7 @@ function AiDocsPanel() {
           </div>
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             {['SOAP Note', 'DSM-5 Report', 'Progress Note', 'Intake Form'].map(t => (
-              <span key={t} style={{ background: '#f0f8f3', border: '1px solid rgba(74,124,89,0.2)', borderRadius: 6, padding: '4px 10px', fontSize: 11.5, color: '#4a7c59', fontWeight: 500, cursor: 'pointer' }}>{t}</span>
+              <span key={t} style={{ background: '#f0f8f3', border: '1px solid rgba(90,114,104,0.2)', borderRadius: 0, padding: '4px 10px', fontSize: 11.5, color: '#5a7268', fontWeight: 500, cursor: 'pointer' }}>{t}</span>
             ))}
           </div>
         </div>
@@ -153,16 +153,16 @@ function AiDocsPanel() {
       <div className={styles.widgetCard}>
         <div className={styles.widgetTitle}>Recent Documents</div>
         {['de Vries — SOAP 25/03', 'Bakker — Progress 24/03', 'Jansen — Intake 22/03'].map((d, i) => (
-          <div key={i} style={{ padding: '8px 0', borderBottom: i < 2 ? '1px solid #f0ede8' : 'none', fontSize: 12, color: '#444', display: 'flex', justifyContent: 'space-between' }}>
+          <div key={i} style={{ padding: '8px 0', borderBottom: i < 2 ? '1px solid #ebe7e1' : 'none', fontSize: 12, color: '#4e565e', display: 'flex', justifyContent: 'space-between' }}>
             <span>{d}</span>
-            <span style={{ color: '#4a7c59', fontSize: 11, fontWeight: 500 }}>View</span>
+            <span style={{ color: '#5a7268', fontSize: 11, fontWeight: 500 }}>View</span>
           </div>
         ))}
       </div>
       <div className={styles.widgetCard}>
         <div className={styles.widgetTitle}>Moody Insights</div>
-        <div style={{ fontSize: 12.5, color: '#555', lineHeight: 1.6 }}>
-          3 sessions documented today. Average documentation time: <strong style={{ color: '#4a7c59', fontFamily: 'Space Mono, monospace' }}>2m 14s</strong> vs 18 min manual. Time saved this week: <strong style={{ color: '#4a7c59', fontFamily: 'Space Mono, monospace' }}>4.2 hrs</strong>.
+        <div style={{ fontSize: 12.5, color: '#4e565e', lineHeight: 1.6 }}>
+          3 sessions documented today. Average documentation time: <strong style={{ color: '#5a7268', fontFamily: 'Space Mono, monospace' }}>2m 14s</strong> vs 18 min manual. Time saved this week: <strong style={{ color: '#5a7268', fontFamily: 'Space Mono, monospace' }}>4.2 hrs</strong>.
         </div>
       </div>
       <div className={styles.widgetCardFull}>
@@ -199,29 +199,29 @@ function SchedulingPanel() {
 
   return (
     <div style={{ padding: '0 28px 24px' }}>
-      <div style={{ background: '#fff', borderRadius: 12, border: '1px solid #e8e5e0', overflow: 'hidden' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '60px repeat(5, 1fr)', borderBottom: '1px solid #f0ede8' }}>
-          <div style={{ padding: '10px 12px', fontSize: 10, color: '#bbb' }} />
+      <div style={{ background: '#fff', borderRadius: 0, border: '1px solid #e2ded8', overflow: 'hidden' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '60px repeat(5, 1fr)', borderBottom: '1px solid #ebe7e1' }}>
+          <div style={{ padding: '10px 12px', fontSize: 10, color: '#b0b7c1' }} />
           {days.map(d => (
-            <div key={d} style={{ padding: '10px 12px', fontSize: 11, fontWeight: 600, color: '#555', borderLeft: '1px solid #f0ede8', textAlign: 'center', fontFamily: 'Space Mono, monospace' }}>{d}</div>
+            <div key={d} style={{ padding: '10px 12px', fontSize: 11, fontWeight: 600, color: '#4e565e', borderLeft: '1px solid #ebe7e1', textAlign: 'center', fontFamily: 'Space Mono, monospace' }}>{d}</div>
           ))}
         </div>
         {slots.map(slot => (
-          <div key={slot} style={{ display: 'grid', gridTemplateColumns: '60px repeat(5, 1fr)', borderBottom: '1px solid #f9f8f6' }}>
-            <div style={{ padding: '8px 12px', fontSize: 10.5, color: '#bbb', fontFamily: 'Space Mono, monospace', display: 'flex', alignItems: 'center' }}>{slot}</div>
+          <div key={slot} style={{ display: 'grid', gridTemplateColumns: '60px repeat(5, 1fr)', borderBottom: '1px solid #f5f1ec' }}>
+            <div style={{ padding: '8px 12px', fontSize: 10.5, color: '#b0b7c1', fontFamily: 'Space Mono, monospace', display: 'flex', alignItems: 'center' }}>{slot}</div>
             {days.map(d => {
               const key = `${d}-${slot}`
               const appt = filled[key]
               return (
-                <div key={d} style={{ borderLeft: '1px solid #f9f8f6', padding: '4px 8px', minHeight: 34, display: 'flex', alignItems: 'center' }}>
+                <div key={d} style={{ borderLeft: '1px solid #f5f1ec', padding: '4px 8px', minHeight: 34, display: 'flex', alignItems: 'center' }}>
                   {appt && (
                     <div style={{
                       background: appt.status === 'confirmed' ? 'rgba(74,124,89,0.1)' : 'rgba(196,140,40,0.1)',
                       border: `1px solid ${appt.status === 'confirmed' ? 'rgba(74,124,89,0.25)' : 'rgba(196,140,40,0.28)'}`,
-                      borderRadius: 5,
+                      borderRadius: 0,
                       padding: '3px 7px',
                       fontSize: 10.5,
-                      color: appt.status === 'confirmed' ? '#4a7c59' : '#c48c28',
+                      color: appt.status === 'confirmed' ? '#5a7268' : '#c48c28',
                       fontWeight: 500,
                       width: '100%',
                     }}>{appt.client}</div>
@@ -249,21 +249,21 @@ function HrLeavePanel() {
         <div className={styles.widgetTitle}>Leave Requests</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {requests.map((r, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: '#f9f8f6', borderRadius: 8, border: '1px solid #edeae5' }}>
+            <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: '#f5f1ec', borderRadius: 0, border: '1px solid #e8e4de' }}>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 500, color: '#222' }}>{r.name}</div>
-                <div style={{ fontSize: 11.5, color: '#999', marginTop: 2 }}>{r.type} · {r.dates}</div>
+                <div style={{ fontSize: 13, fontWeight: 500, color: '#454647' }}>{r.name}</div>
+                <div style={{ fontSize: 11.5, color: '#959ead', marginTop: 2 }}>{r.type} · {r.dates}</div>
               </div>
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                 <span style={{
-                  fontSize: 10.5, fontWeight: 600, padding: '3px 10px', borderRadius: 20,
-                  background: r.status === 'pending' ? 'rgba(196,140,40,0.1)' : 'rgba(74,124,89,0.1)',
-                  color: r.status === 'pending' ? '#c48c28' : '#4a7c59',
+                  fontSize: 10.5, fontWeight: 600, padding: '3px 10px', borderRadius: 0,
+                  background: r.status === 'pending' ? 'rgba(196,140,40,0.1)' : 'rgba(90,114,104,0.1)',
+                  color: r.status === 'pending' ? '#c48c28' : '#5a7268',
                 }}>{r.status.toUpperCase()}</span>
                 {r.status === 'pending' && (
                   <>
-                    <button style={{ background: '#4a7c59', color: '#fff', border: 'none', borderRadius: 5, padding: '4px 10px', fontSize: 11, cursor: 'pointer', fontFamily: 'inherit' }}>Approve</button>
-                    <button style={{ background: 'transparent', color: '#9c4040', border: '1px solid #f0c0c0', borderRadius: 5, padding: '4px 10px', fontSize: 11, cursor: 'pointer', fontFamily: 'inherit' }}>Deny</button>
+                    <button style={{ background: '#5a7268', color: '#fff', border: 'none', borderRadius: 0, padding: '4px 10px', fontSize: 11, cursor: 'pointer', fontFamily: 'inherit' }}>Approve</button>
+                    <button style={{ background: 'transparent', color: '#9c4040', border: '1px solid #f0c0c0', borderRadius: 0, padding: '4px 10px', fontSize: 11, cursor: 'pointer', fontFamily: 'inherit' }}>Deny</button>
                   </>
                 )}
               </div>
@@ -275,14 +275,14 @@ function HrLeavePanel() {
         <div className={styles.widgetTitle}>Team Availability</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 7, marginTop: 4 }}>
           {[
-            { name: 'Dr. Smit', days: 5, color: '#4a7c59' },
+            { name: 'Dr. Smit', days: 5, color: '#5a7268' },
             { name: 'Dr. van Dijk', days: 0, color: '#9c4040' },
-            { name: 'M. de Vries', days: 4, color: '#4a7c59' },
+            { name: 'M. de Vries', days: 4, color: '#5a7268' },
             { name: 'J. Bakker', days: 3, color: '#c48c28' },
           ].map((m, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <span style={{ fontSize: 12, color: '#555', width: 100, flexShrink: 0 }}>{m.name}</span>
-              <div style={{ flex: 1, height: 6, background: '#f0ede8', borderRadius: 3, overflow: 'hidden' }}>
+              <span style={{ fontSize: 12, color: '#4e565e', width: 100, flexShrink: 0 }}>{m.name}</span>
+              <div style={{ flex: 1, height: 6, background: '#ebe7e1', borderRadius: 3, overflow: 'hidden' }}>
                 <div style={{ width: `${(m.days / 5) * 100}%`, height: '100%', background: m.color, borderRadius: 3 }} />
               </div>
               <span style={{ fontSize: 10.5, fontFamily: 'Space Mono, monospace', color: m.color, width: 30, textAlign: 'right' }}>{m.days}d</span>
@@ -296,9 +296,9 @@ function HrLeavePanel() {
         <div className={styles.widgetMeta}>Staff members</div>
         <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 6 }}>
           {[['Psychologists', '4'], ['Psychiatrists', '2'], ['Counselors', '4'], ['Admin', '2']].map(([role, n]) => (
-            <div key={role} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#666' }}>
+            <div key={role} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#4e565e' }}>
               <span>{role}</span>
-              <span style={{ fontFamily: 'Space Mono, monospace', fontWeight: 600, color: '#333' }}>{n}</span>
+              <span style={{ fontFamily: 'Space Mono, monospace', fontWeight: 600, color: '#454647' }}>{n}</span>
             </div>
           ))}
         </div>
@@ -316,13 +316,13 @@ function AnalyticsPanel() {
     <div className={styles.dashGrid}>
       <div className={styles.widgetCardWide}>
         <div className={styles.widgetTitle}>Revenue — 6 Month Trend</div>
-        <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 26, fontWeight: 700, color: '#4a7c59', marginBottom: 2 }}>€18,430</div>
-        <div style={{ fontSize: 11.5, color: '#4a7c59', marginBottom: 12 }}>↑ 29.8% vs 6 months ago</div>
+        <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 26, fontWeight: 700, color: '#5a7268', marginBottom: 2 }}>€18,430</div>
+        <div style={{ fontSize: 11.5, color: '#5a7268', marginBottom: 12 }}>↑ 29.8% vs 6 months ago</div>
         <svg viewBox="0 0 200 60" preserveAspectRatio="none" style={{ width: '100%', height: 60 }}>
           <defs>
             <linearGradient id="revGrad6" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#4a7c59" stopOpacity="0.15" />
-              <stop offset="100%" stopColor="#4a7c59" stopOpacity="0" />
+              <stop offset="0%" stopColor="#5a7268" stopOpacity="0.15" />
+              <stop offset="100%" stopColor="#5a7268" stopOpacity="0" />
             </linearGradient>
           </defs>
           {(() => {
@@ -332,27 +332,27 @@ function AnalyticsPanel() {
             return (
               <>
                 <path d={`M ${first} L ${pts.join(' L ')} L ${last.split(',')[0]},60 L 0,60 Z`} fill="url(#revGrad6)" />
-                <polyline points={pts.join(' ')} fill="none" stroke="#4a7c59" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <polyline points={pts.join(' ')} fill="none" stroke="#5a7268" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </>
             )
           })()}
         </svg>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4, fontFamily: 'Space Mono, monospace', fontSize: 10, color: '#bbb' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4, fontFamily: 'Space Mono, monospace', fontSize: 10, color: '#b0b7c1' }}>
           {months.map(m => <span key={m}>{m}</span>)}
         </div>
       </div>
       <div className={styles.widgetCard}>
         <div className={styles.widgetTitle}>Declarability</div>
         <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 26, fontWeight: 700, color: '#c48c28', textAlign: 'center', marginTop: 8 }}>78%</div>
-        <div style={{ textAlign: 'center', fontSize: 11, color: '#aaa', marginTop: 2 }}>Target: 80%</div>
+        <div style={{ textAlign: 'center', fontSize: 11, color: '#959ead', marginTop: 2 }}>Target: 80%</div>
         <div style={{ margin: '12px 0 0', display: 'flex', flexDirection: 'column', gap: 5 }}>
           {months.map((m, i) => (
             <div key={m} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ width: 28, fontSize: 10, color: '#bbb', fontFamily: 'Space Mono, monospace' }}>{m}</span>
-              <div style={{ flex: 1, height: 5, background: '#f0ede8', borderRadius: 3, overflow: 'hidden' }}>
-                <div style={{ width: `${declarability[i]}%`, height: '100%', background: declarability[i] >= 80 ? '#4a7c59' : '#c48c28', borderRadius: 3 }} />
+              <span style={{ width: 28, fontSize: 10, color: '#b0b7c1', fontFamily: 'Space Mono, monospace' }}>{m}</span>
+              <div style={{ flex: 1, height: 5, background: '#ebe7e1', borderRadius: 3, overflow: 'hidden' }}>
+                <div style={{ width: `${declarability[i]}%`, height: '100%', background: declarability[i] >= 80 ? '#5a7268' : '#c48c28', borderRadius: 3 }} />
               </div>
-              <span style={{ width: 30, fontSize: 10, color: '#666', fontFamily: 'Space Mono, monospace', textAlign: 'right' }}>{declarability[i]}%</span>
+              <span style={{ width: 30, fontSize: 10, color: '#4e565e', fontFamily: 'Space Mono, monospace', textAlign: 'right' }}>{declarability[i]}%</span>
             </div>
           ))}
         </div>
@@ -361,8 +361,8 @@ function AnalyticsPanel() {
         <div className={styles.widgetTitle}>Sessions This Month</div>
         <div className={styles.widgetValue}>142</div>
         <div className={styles.widgetMetaGood}>↑ 12% vs last month</div>
-        <div style={{ marginTop: 14, fontSize: 12, color: '#666', lineHeight: 1.7 }}>
-          <div>Completed: <strong style={{ color: '#4a7c59', fontFamily: 'Space Mono,monospace' }}>138</strong></div>
+        <div style={{ marginTop: 14, fontSize: 12, color: '#4e565e', lineHeight: 1.7 }}>
+          <div>Completed: <strong style={{ color: '#5a7268', fontFamily: 'Space Mono,monospace' }}>138</strong></div>
           <div>Cancelled: <strong style={{ color: '#9c4040', fontFamily: 'Space Mono,monospace' }}>4</strong></div>
           <div>Avg. duration: <strong style={{ fontFamily: 'Space Mono,monospace' }}>47 min</strong></div>
         </div>
@@ -371,19 +371,19 @@ function AnalyticsPanel() {
         <div className={styles.widgetTitle}>Client Outcomes</div>
         <div className={styles.widgetValue}>78%</div>
         <div className={styles.widgetMeta}>Show measurable improvement</div>
-        <div style={{ marginTop: 10, fontSize: 11, color: '#aaa', lineHeight: 1.6 }}>
+        <div style={{ marginTop: 10, fontSize: 11, color: '#959ead', lineHeight: 1.6 }}>
           National benchmark: 64%<br />
-          GAD-7 avg. improvement: <span style={{ color: '#4a7c59', fontFamily: 'Space Mono,monospace', fontWeight: 600 }}>−4.2 pts</span>
+          GAD-7 avg. improvement: <span style={{ color: '#5a7268', fontFamily: 'Space Mono,monospace', fontWeight: 600 }}>−4.2 pts</span>
         </div>
       </div>
       <div className={styles.widgetCard}>
         <div className={styles.widgetTitle}>Time Savings</div>
         <div className={styles.widgetValue}>4.2h</div>
         <div className={styles.widgetMeta}>saved per therapist / week</div>
-        <div style={{ marginTop: 10, fontSize: 11, color: '#aaa', lineHeight: 1.6 }}>
+        <div style={{ marginTop: 10, fontSize: 11, color: '#959ead', lineHeight: 1.6 }}>
           Documentation: 2m 14s avg<br />
           Manual baseline: 18 min<br />
-          Efficiency gain: <span style={{ color: '#4a7c59', fontFamily: 'Space Mono,monospace', fontWeight: 600 }}>88%</span>
+          Efficiency gain: <span style={{ color: '#5a7268', fontFamily: 'Space Mono,monospace', fontWeight: 600 }}>88%</span>
         </div>
       </div>
     </div>
@@ -393,7 +393,7 @@ function AnalyticsPanel() {
 function CommunicationPanel() {
   const messages = [
     { from: 'Dr. Smit', time: '09:32', text: 'Can someone cover the 14:00 slot tomorrow?', avatar: 'DS', color: '#4a6c9c' },
-    { from: 'M. de Vries', time: '09:35', text: 'I can do it. Already have capacity.', avatar: 'MV', color: '#4a7c59' },
+    { from: 'M. de Vries', time: '09:35', text: 'I can do it. Already have capacity.', avatar: 'MV', color: '#5a7268' },
     { from: 'AskMoody', time: '09:36', text: 'Scheduling confirmed. Calendar updated for both parties.', avatar: '✦', color: '#9c4040', isBot: true },
   ]
 
@@ -407,10 +407,10 @@ function CommunicationPanel() {
               <div style={{ width: 32, height: 32, borderRadius: '50%', background: m.color, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: m.isBot ? 13 : 11, fontWeight: 600, flexShrink: 0 }}>{m.avatar}</div>
               <div>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'baseline', marginBottom: 3 }}>
-                  <span style={{ fontSize: 12, fontWeight: 600, color: '#222' }}>{m.from}</span>
-                  <span style={{ fontSize: 10, color: '#bbb', fontFamily: 'Space Mono, monospace' }}>{m.time}</span>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: '#454647' }}>{m.from}</span>
+                  <span style={{ fontSize: 10, color: '#b0b7c1', fontFamily: 'Space Mono, monospace' }}>{m.time}</span>
                 </div>
-                <div style={{ fontSize: 12.5, color: m.isBot ? '#4a7c59' : '#444', background: m.isBot ? 'rgba(74,124,89,0.07)' : '#f9f8f6', padding: '8px 11px', borderRadius: '0 8px 8px 8px', lineHeight: 1.5 }}>{m.text}</div>
+                <div style={{ fontSize: 12.5, color: m.isBot ? '#5a7268' : '#4e565e', background: m.isBot ? 'rgba(90,114,104,0.07)' : '#f5f1ec', padding: '8px 11px', borderRadius: '0 8px 8px 8px', lineHeight: 1.5 }}>{m.text}</div>
               </div>
             </div>
           ))}
@@ -428,15 +428,15 @@ function CommunicationPanel() {
             { room: 'Room B', status: 'waiting', who: 'J. Bakker (waiting)' },
             { room: 'Room C', status: 'idle', who: 'Available' },
           ].map((r, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '9px 12px', background: '#f9f8f6', borderRadius: 8, border: '1px solid #edeae5' }}>
+            <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '9px 12px', background: '#f5f1ec', borderRadius: 0, border: '1px solid #e8e4de' }}>
               <div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#222' }}>{r.room}</div>
-                <div style={{ fontSize: 11, color: '#aaa', marginTop: 1 }}>{r.who}</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: '#454647' }}>{r.room}</div>
+                <div style={{ fontSize: 11, color: '#959ead', marginTop: 1 }}>{r.who}</div>
               </div>
               <span style={{
-                fontSize: 10, fontWeight: 600, padding: '3px 8px', borderRadius: 20,
-                background: r.status === 'active' ? 'rgba(74,124,89,0.1)' : r.status === 'waiting' ? 'rgba(196,140,40,0.1)' : '#f0ede8',
-                color: r.status === 'active' ? '#4a7c59' : r.status === 'waiting' ? '#c48c28' : '#bbb',
+                fontSize: 10, fontWeight: 600, padding: '3px 8px', borderRadius: 0,
+                background: r.status === 'active' ? 'rgba(90,114,104,0.1)' : r.status === 'waiting' ? 'rgba(196,140,40,0.1)' : '#ebe7e1',
+                color: r.status === 'active' ? '#5a7268' : r.status === 'waiting' ? '#c48c28' : '#b0b7c1',
               }}>{r.status.toUpperCase()}</span>
             </div>
           ))}
@@ -445,7 +445,7 @@ function CommunicationPanel() {
       <div className={styles.widgetCard}>
         <div className={styles.widgetTitle}>Channels</div>
         {['# general', '# clinical', '# admin', '# urgent'].map((c, i) => (
-          <div key={i} style={{ padding: '7px 0', borderBottom: i < 3 ? '1px solid #f0ede8' : 'none', fontSize: 12, color: i === 0 ? '#4a7c59' : '#666', fontWeight: i === 0 ? 600 : 400, display: 'flex', justifyContent: 'space-between' }}>
+          <div key={i} style={{ padding: '7px 0', borderBottom: i < 3 ? '1px solid #ebe7e1' : 'none', fontSize: 12, color: i === 0 ? '#5a7268' : '#4e565e', fontWeight: i === 0 ? 600 : 400, display: 'flex', justifyContent: 'space-between' }}>
             <span>{c}</span>
             {i === 3 && <span style={{ background: '#9c4040', color: '#fff', fontSize: 9, borderRadius: 10, padding: '1px 6px', fontWeight: 700 }}>2</span>}
           </div>
@@ -785,7 +785,7 @@ export default function Design08() {
             </div>
             <div className={styles.dashHeaderRight}>
               <div className={styles.notifBell}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4e565e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                   <path d="M13.73 21a2 2 0 0 1-3.46 0" />
                 </svg>
@@ -826,8 +826,8 @@ export default function Design08() {
                     <svg viewBox="0 0 100 80" preserveAspectRatio="none" className={styles.chartSvg}>
                       <defs>
                         <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#4a7c59" stopOpacity="0.18" />
-                          <stop offset="100%" stopColor="#4a7c59" stopOpacity="0" />
+                          <stop offset="0%" stopColor="#5a7268" stopOpacity="0.18" />
+                          <stop offset="100%" stopColor="#5a7268" stopOpacity="0" />
                         </linearGradient>
                       </defs>
                       <path d={buildAreaPath(REVENUE_POINTS)} fill="url(#revenueGradient)" />
@@ -853,7 +853,7 @@ export default function Design08() {
                 {/* Appointments */}
                 <div className={styles.widgetCard}>
                   <div className={styles.widgetTitle}>Appointments Today</div>
-                  <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 20, fontWeight: 700, color: '#1a1a1a', marginBottom: 8 }}>6</div>
+                  <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 20, fontWeight: 700, color: '#454647', marginBottom: 8 }}>6</div>
                   <div className={styles.apptGrid}>
                     {APPOINTMENTS.map((a, i) => (
                       <div key={i} className={
@@ -918,7 +918,7 @@ export default function Design08() {
                       </div>
                     ))}
                     {TEAM.filter(m => !m.online).map((m, i) => (
-                      <div key={i} className={styles.teamAvatar} style={{ background: '#ddd', color: '#999' }}>
+                      <div key={i} className={styles.teamAvatar} style={{ background: '#ddd', color: '#959ead' }}>
                         {m.initials}
                       </div>
                     ))}
@@ -933,11 +933,11 @@ export default function Design08() {
                   <div className={styles.widgetTitle}>Declarability</div>
                   <div className={styles.gaugeWrap}>
                     <svg viewBox="0 0 120 72" className={styles.gaugeSvg}>
-                      <path d={arcPath(startAngle, endAngle)} fill="none" stroke="#f0ede8" strokeWidth="12" strokeLinecap="round" />
+                      <path d={arcPath(startAngle, endAngle)} fill="none" stroke="#ebe7e1" strokeWidth="12" strokeLinecap="round" />
                       <path
                         d={arcPath(startAngle, endAngle)}
                         fill="none"
-                        stroke="#4a7c59"
+                        stroke="#5a7268"
                         strokeWidth="12"
                         strokeLinecap="round"
                         strokeDasharray={`${circumference}`}
@@ -985,7 +985,7 @@ export default function Design08() {
               </div>
 
               <div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#999', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 10 }}>Audit Log</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: '#959ead', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 10 }}>Audit Log</div>
                 <div className={styles.auditLog}>
                   <div className={styles.auditHeader}>
                     <span>Timestamp</span>

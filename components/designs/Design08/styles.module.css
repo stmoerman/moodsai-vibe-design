@@ -3,19 +3,19 @@
 /* ── Root ── */
 .root {
   min-height: 100vh;
-  background: #f6f4f0;
+  background: #f2eee9;
   font-family: 'Inter', sans-serif;
   display: flex;
   flex-direction: column;
   font-size: 14px;
-  color: #1a1a1a;
+  color: #454647;
 }
 
 /* ── Welcome bar ── */
 .welcomeBar {
   height: 40px;
-  background: #f6f4f0;
-  border-bottom: 1px solid #e0ddd8;
+  background: #f2eee9;
+  border-bottom: 1px solid #ddd9d3;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -27,13 +27,13 @@
 
 .welcomeBarText {
   font-size: 11.5px;
-  color: #666;
+  color: #4e565e;
   font-weight: 400;
   letter-spacing: 0.01em;
 }
 
 .welcomeBarText strong {
-  color: #333;
+  color: #454647;
   font-weight: 500;
 }
 
@@ -44,11 +44,11 @@
 }
 
 .btnSignUp {
-  background: #2a2826;
+  background: #1f1c16;
   color: #fff;
   border: none;
   padding: 5px 14px;
-  border-radius: 5px;
+  border-radius: 0;
   font-size: 11.5px;
   font-weight: 500;
   cursor: pointer;
@@ -60,17 +60,17 @@
 
 .btnLogIn {
   background: transparent;
-  color: #444;
-  border: 1px solid #ccc;
+  color: #4e565e;
+  border: 1px solid #c5c9d0;
   padding: 5px 14px;
-  border-radius: 5px;
+  border-radius: 0;
   font-size: 11.5px;
   font-weight: 400;
   cursor: pointer;
   font-family: inherit;
   transition: border-color 0.15s, color 0.15s;
 }
-.btnLogIn:hover { border-color: #999; color: #222; }
+.btnLogIn:hover { border-color: #959ead; color: #454647; }
 
 /* ── App shell ── */
 .appShell {
@@ -82,7 +82,7 @@
 /* ── Sidebar ── */
 .sidebar {
   width: 240px;
-  background: #2a2826;
+  background: #1f1c16;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -108,7 +108,7 @@
 }
 
 .sidebarLogoText span {
-  color: #7ec8a0;
+  color: #8cb8a0;
 }
 
 .sidebarNav {
@@ -123,7 +123,7 @@
   align-items: center;
   gap: 10px;
   padding: 9px 12px;
-  border-radius: 7px;
+  border-radius: 0;
   cursor: pointer;
   color: rgba(255,255,255,0.55);
   font-size: 13px;
@@ -142,13 +142,13 @@
 }
 
 .navItemActive {
-  background: rgba(126, 200, 160, 0.18);
-  color: #7ec8a0;
+  background: rgba(140, 184, 160, 0.18);
+  color: #8cb8a0;
   font-weight: 500;
 }
 .navItemActive:hover {
-  background: rgba(126, 200, 160,0.22);
-  color: #7ec8a0;
+  background: rgba(140, 184, 160,0.22);
+  color: #8cb8a0;
 }
 
 .navIcon {
@@ -184,7 +184,7 @@
 .mainContent {
   flex: 1;
   overflow-y: auto;
-  background: #f6f4f0;
+  background: #f2eee9;
   min-width: 0;
 }
 
@@ -200,13 +200,13 @@
 .dashTitle {
   font-size: 18px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #454647;
   letter-spacing: -0.02em;
 }
 
 .dashSubtitle {
   font-size: 12px;
-  color: #888;
+  color: #959ead;
   margin-top: 2px;
 }
 
@@ -221,15 +221,15 @@
   width: 36px;
   height: 36px;
   background: #fff;
-  border-radius: 8px;
-  border: 1px solid #e8e5e0;
+  border-radius: 0;
+  border: 1px solid #e2ded8;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: border-color 0.15s;
 }
-.notifBell:hover { border-color: #ccc; }
+.notifBell:hover { border-color: #c5c9d0; }
 
 .notifBadge {
   position: absolute;
@@ -246,14 +246,14 @@
   align-items: center;
   justify-content: center;
   font-family: 'Space Mono', monospace;
-  border: 2px solid #f6f4f0;
+  border: 2px solid #f2eee9;
 }
 
 .userAvatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #4a7c59;
+  background: #5a7268;
   color: #fff;
   font-size: 12px;
   font-weight: 600;
@@ -273,8 +273,8 @@
 
 .widgetCard {
   background: #fff;
-  border-radius: 12px;
-  border: 1px solid #e8e5e0;
+  border-radius: 0;
+  border: 1px solid #e2ded8;
   padding: 18px 20px;
   position: relative;
   overflow: hidden;
@@ -293,7 +293,7 @@
 .widgetTitle {
   font-size: 11px;
   font-weight: 600;
-  color: #999;
+  color: #959ead;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   margin-bottom: 12px;
@@ -303,24 +303,24 @@
   font-family: 'Space Mono', monospace;
   font-size: 28px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #454647;
   line-height: 1;
   margin-bottom: 4px;
 }
 
 .widgetValueGreen {
   composes: widgetValue;
-  color: #4a7c59;
+  color: #5a7268;
 }
 
 .widgetMeta {
   font-size: 11.5px;
-  color: #999;
+  color: #959ead;
 }
 
 .widgetMetaGood {
   composes: widgetMeta;
-  color: #4a7c59;
+  color: #5a7268;
 }
 
 /* ── Revenue chart ── */
@@ -336,7 +336,7 @@
 
 .chartLine {
   fill: none;
-  stroke: #4a7c59;
+  stroke: #5a7268;
   stroke-width: 2.5;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -347,7 +347,7 @@
 }
 
 .chartDot {
-  fill: #4a7c59;
+  fill: #5a7268;
 }
 
 .chartLabels {
@@ -356,7 +356,7 @@
   margin-top: 6px;
   font-family: 'Space Mono', monospace;
   font-size: 10px;
-  color: #bbb;
+  color: #b0b7c1;
 }
 
 /* ── Appointments ── */
@@ -368,21 +368,21 @@
 }
 
 .apptSlot {
-  border-radius: 7px;
+  border-radius: 0;
   padding: 8px 10px;
   font-size: 11px;
 }
 
 .apptSlotEmpty {
   composes: apptSlot;
-  background: #f6f4f0;
-  color: #bbb;
+  background: #f2eee9;
+  color: #b0b7c1;
 }
 
 .apptSlotConfirmed {
   composes: apptSlot;
-  background: rgba(74, 124, 89, 0.12);
-  border: 1px solid rgba(74, 124, 89, 0.25);
+  background: rgba(90, 114, 104, 0.12);
+  border: 1px solid rgba(90, 114, 104, 0.25);
 }
 
 .apptSlotPending {
@@ -395,13 +395,13 @@
   font-family: 'Space Mono', monospace;
   font-weight: 700;
   font-size: 11px;
-  color: #333;
+  color: #454647;
   margin-bottom: 2px;
 }
 
 .apptClient {
   font-size: 10.5px;
-  color: #666;
+  color: #4e565e;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -414,7 +414,7 @@
   letter-spacing: 0.03em;
 }
 
-.apptStatusConfirmed { color: #4a7c59; }
+.apptStatusConfirmed { color: #5a7268; }
 .apptStatusPending { color: #c48c28; }
 
 /* ── AskMoody chat ── */
@@ -426,7 +426,7 @@
 
 .chatBubble {
   background: #f0f8f3;
-  border: 1px solid rgba(74,124,89,0.2);
+  border: 1px solid rgba(90,114,104,0.2);
   border-radius: 10px 10px 10px 2px;
   padding: 10px 12px;
   font-size: 12.5px;
@@ -438,7 +438,7 @@
   display: inline-block;
   width: 2px;
   height: 13px;
-  background: #4a7c59;
+  background: #5a7268;
   margin-left: 2px;
   vertical-align: middle;
   animation: blink 1s step-end infinite;
@@ -457,23 +457,23 @@
 
 .chatInputField {
   flex: 1;
-  background: #f6f4f0;
-  border: 1px solid #e0ddd8;
-  border-radius: 7px;
+  background: #f2eee9;
+  border: 1px solid #ddd9d3;
+  border-radius: 0;
   padding: 7px 10px;
   font-size: 12px;
   font-family: inherit;
-  color: #333;
+  color: #454647;
   outline: none;
 }
-.chatInputField:focus { border-color: #4a7c59; }
-.chatInputField::placeholder { color: #bbb; }
+.chatInputField:focus { border-color: #5a7268; }
+.chatInputField::placeholder { color: #b0b7c1; }
 
 .chatSendBtn {
-  background: #4a7c59;
+  background: #5a7268;
   color: #fff;
   border: none;
-  border-radius: 7px;
+  border-radius: 0;
   padding: 7px 14px;
   font-size: 12px;
   font-weight: 500;
@@ -481,7 +481,7 @@
   font-family: inherit;
   transition: background 0.15s;
 }
-.chatSendBtn:hover { background: #3d6b4a; }
+.chatSendBtn:hover { background: #4a6258; }
 
 /* ── Notifications panel ── */
 .notifList {
@@ -496,9 +496,9 @@
   align-items: flex-start;
   gap: 10px;
   padding: 8px 10px;
-  background: #f9f8f6;
-  border-radius: 8px;
-  border: 1px solid #edeae5;
+  background: #f5f1ec;
+  border-radius: 0;
+  border: 1px solid #e8e4de;
 }
 
 .notifDot {
@@ -511,17 +511,17 @@
 
 .notifDotBlue { background: #4a6c9c; }
 .notifDotAmber { background: #c48c28; }
-.notifDotGreen { background: #4a7c59; }
+.notifDotGreen { background: #5a7268; }
 
 .notifText {
   font-size: 12px;
-  color: #333;
+  color: #454647;
   line-height: 1.4;
 }
 
 .notifTime {
   font-size: 10.5px;
-  color: #aaa;
+  color: #959ead;
   margin-top: 2px;
   font-family: 'Space Mono', monospace;
 }
@@ -560,13 +560,13 @@
 
 .teamMeta {
   font-size: 11.5px;
-  color: #999;
+  color: #959ead;
   margin-top: 10px;
 }
 
 .teamMetaCount {
   font-family: 'Space Mono', monospace;
-  color: #4a7c59;
+  color: #5a7268;
   font-weight: 700;
 }
 
@@ -586,14 +586,14 @@
 
 .gaugeTrack {
   fill: none;
-  stroke: #f0ede8;
+  stroke: #ebe7e1;
   stroke-width: 12;
   stroke-linecap: round;
 }
 
 .gaugeFill {
   fill: none;
-  stroke: #4a7c59;
+  stroke: #5a7268;
   stroke-width: 12;
   stroke-linecap: round;
   transition: stroke-dashoffset 1s ease;
@@ -603,13 +603,13 @@
   font-family: 'Space Mono', monospace;
   font-size: 22px;
   font-weight: 700;
-  fill: #1a1a1a;
+  fill: #454647;
   text-anchor: middle;
 }
 
 .gaugeTarget {
   font-size: 11.5px;
-  color: #999;
+  color: #959ead;
   margin-top: 4px;
   text-align: center;
 }
@@ -629,7 +629,7 @@
 .tabList {
   display: flex;
   gap: 4px;
-  border-bottom: 1px solid #e0ddd8;
+  border-bottom: 1px solid #ddd9d3;
   padding-bottom: 0;
   overflow-x: auto;
   scrollbar-width: none;
@@ -640,7 +640,7 @@
   padding: 9px 16px;
   font-size: 12.5px;
   font-weight: 500;
-  color: #888;
+  color: #959ead;
   cursor: pointer;
   border: none;
   background: transparent;
@@ -649,14 +649,14 @@
   margin-bottom: -1px;
   transition: color 0.15s;
   white-space: nowrap;
-  border-radius: 6px 6px 0 0;
+  border-radius: 0;
 }
-.tab:hover { color: #444; }
+.tab:hover { color: #4e565e; }
 
 .tabActive {
   composes: tab;
-  color: #4a7c59;
-  border-bottom-color: #4a7c59;
+  color: #5a7268;
+  border-bottom-color: #5a7268;
 }
 
 .tabContent {
@@ -666,27 +666,27 @@
 /* ── Settings / Under the Hood ── */
 .section {
   padding: 28px 28px;
-  border-top: 1px solid #e0ddd8;
+  border-top: 1px solid #ddd9d3;
 }
 
 .sectionTitle {
   font-size: 13px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #454647;
   margin-bottom: 4px;
   letter-spacing: -0.01em;
 }
 
 .sectionSubtitle {
   font-size: 11.5px;
-  color: #999;
+  color: #959ead;
   margin-bottom: 20px;
 }
 
 .settingsPanel {
   background: #fff;
-  border-radius: 12px;
-  border: 1px solid #e8e5e0;
+  border-radius: 0;
+  border: 1px solid #e2ded8;
   overflow: hidden;
 }
 
@@ -695,7 +695,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px 20px;
-  border-bottom: 1px solid #f0ede8;
+  border-bottom: 1px solid #ebe7e1;
 }
 .settingsRow:last-child { border-bottom: none; }
 
@@ -714,12 +714,12 @@
 .settingsName {
   font-size: 13px;
   font-weight: 500;
-  color: #222;
+  color: #454647;
 }
 
 .settingsDesc {
   font-size: 11px;
-  color: #aaa;
+  color: #959ead;
   margin-top: 1px;
 }
 
@@ -733,7 +733,7 @@
   width: 36px;
   height: 20px;
   border-radius: 10px;
-  background: #4a7c59;
+  background: #5a7268;
   position: relative;
   cursor: pointer;
 }
@@ -751,7 +751,7 @@
 
 .toggleCheck {
   font-size: 11px;
-  color: #4a7c59;
+  color: #5a7268;
   font-weight: 600;
   font-family: 'Space Mono', monospace;
 }
@@ -759,18 +759,18 @@
 /* Audit log */
 .auditLog {
   background: #fff;
-  border-radius: 12px;
-  border: 1px solid #e8e5e0;
+  border-radius: 0;
+  border: 1px solid #e2ded8;
   overflow: hidden;
   font-family: 'Space Mono', monospace;
 }
 
 .auditHeader {
   padding: 12px 20px;
-  background: #f9f8f6;
-  border-bottom: 1px solid #f0ede8;
+  background: #f5f1ec;
+  border-bottom: 1px solid #ebe7e1;
   font-size: 10.5px;
-  color: #aaa;
+  color: #959ead;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   display: grid;
@@ -780,9 +780,9 @@
 
 .auditRow {
   padding: 10px 20px;
-  border-bottom: 1px solid #f6f4f0;
+  border-bottom: 1px solid #f2eee9;
   font-size: 11px;
-  color: #555;
+  color: #4e565e;
   display: grid;
   grid-template-columns: 140px 1fr 100px;
   gap: 12px;
@@ -790,12 +790,12 @@
 }
 .auditRow:last-child { border-bottom: none; }
 
-.auditTimestamp { color: #aaa; }
+.auditTimestamp { color: #959ead; }
 
-.auditAction { color: #333; }
+.auditAction { color: #454647; }
 
 .auditUser {
-  color: #4a7c59;
+  color: #5a7268;
   text-align: right;
 }
 
@@ -808,8 +808,8 @@
 
 .planCard {
   background: #fff;
-  border: 2px solid #e8e5e0;
-  border-radius: 12px;
+  border: 2px solid #e2ded8;
+  border-radius: 0;
   padding: 22px 20px;
   cursor: pointer;
   transition: border-color 0.15s, box-shadow 0.15s;
@@ -817,8 +817,8 @@
 
 .planCardActive {
   composes: planCard;
-  border-color: #4a7c59;
-  box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.1);
+  border-color: #5a7268;
+  box-shadow: 0 0 0 3px rgba(90, 114, 104, 0.1);
 }
 
 .planHeader {
@@ -832,7 +832,7 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  border: 2px solid #ccc;
+  border: 2px solid #c5c9d0;
   flex-shrink: 0;
   position: relative;
   margin-top: 2px;
@@ -841,7 +841,7 @@
 
 .planRadioActive {
   composes: planRadio;
-  border-color: #4a7c59;
+  border-color: #5a7268;
 }
 .planRadioActive::after {
   content: '';
@@ -852,7 +852,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #4a7c59;
+  background: #5a7268;
 }
 
 .planBadge {
@@ -861,13 +861,13 @@
   letter-spacing: 0.05em;
   text-transform: uppercase;
   padding: 3px 8px;
-  border-radius: 20px;
+  border-radius: 0;
 }
 
 .planBadgePro {
   composes: planBadge;
-  background: rgba(74,124,89,0.12);
-  color: #4a7c59;
+  background: rgba(90,114,104,0.12);
+  color: #5a7268;
 }
 
 .planBadgeLife {
@@ -879,7 +879,7 @@
 .planName {
   font-size: 15px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #454647;
   margin-bottom: 4px;
 }
 
@@ -887,13 +887,13 @@
   font-family: 'Space Mono', monospace;
   font-size: 24px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #454647;
   line-height: 1;
 }
 
 .planPricePer {
   font-size: 11px;
-  color: #aaa;
+  color: #959ead;
   margin-top: 2px;
 }
 
@@ -911,17 +911,17 @@
   align-items: center;
   gap: 7px;
   font-size: 12px;
-  color: #555;
+  color: #4e565e;
 }
 
 .featureCheck {
-  color: #4a7c59;
+  color: #5a7268;
   font-size: 12px;
   flex-shrink: 0;
 }
 
 .featureCross {
-  color: #ccc;
+  color: #c5c9d0;
   font-size: 12px;
   flex-shrink: 0;
 }
@@ -935,11 +935,11 @@
 }
 
 .upgradeBtn {
-  background: #2a2826;
+  background: #1f1c16;
   color: #fff;
   border: none;
   padding: 10px 24px;
-  border-radius: 8px;
+  border-radius: 0;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -950,12 +950,12 @@
 
 .upgradeMeta {
   font-size: 11.5px;
-  color: #aaa;
+  color: #959ead;
 }
 
 /* ── CTA ── */
 .ctaSection {
-  background: #2a2826;
+  background: #1f1c16;
   padding: 56px 28px;
   text-align: center;
   margin-top: 0;
@@ -978,11 +978,11 @@
 
 .ctaBtn {
   display: inline-block;
-  background: #4a7c59;
+  background: #5a7268;
   color: #fff;
   border: none;
   padding: 13px 32px;
-  border-radius: 8px;
+  border-radius: 0;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -990,7 +990,7 @@
   text-decoration: none;
   transition: background 0.15s;
 }
-.ctaBtn:hover { background: #3d6b4a; }
+.ctaBtn:hover { background: #4a6258; }
 
 /* ── Mobile ── */
 @media (max-width: 768px) {
@@ -1001,7 +1001,7 @@
   .mobileSidebar {
     display: flex;
     height: 52px;
-    background: #2a2826;
+    background: #1f1c16;
     overflow-x: auto;
     scrollbar-width: none;
     align-items: center;
@@ -1017,7 +1017,7 @@
     align-items: center;
     gap: 3px;
     padding: 6px 10px;
-    border-radius: 8px;
+    border-radius: 0;
     cursor: pointer;
     color: rgba(255,255,255,0.5);
     font-size: 8px;
@@ -1029,8 +1029,8 @@
 
   .mobileNavItemActive {
     composes: mobileNavItem;
-    background: rgba(126, 200, 160, 0.18);
-    color: #7ec8a0;
+    background: rgba(140, 184, 160, 0.18);
+    color: #8cb8a0;
   }
 
   .mobileNavIcon {
