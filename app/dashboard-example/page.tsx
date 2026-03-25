@@ -69,46 +69,19 @@ function parseHour(time: string): number {
 
 export default function DashboardExample() {
   const [now, setNow] = useState<Date | null>(null);
-  const [bootPhase, setBootPhase] = useState<'typing' | 'drawn' | 'fading' | 'done'>('typing');
-  const [typedChars, setTypedChars] = useState(0);
+  const [bootPhase, setBootPhase] = useState<'visible' | 'fading' | 'done'>('visible');
 
   useEffect(() => {
     setNow(new Date());
-    // Skip boot animation if reduced motion preferred
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       setBootPhase('done');
-      setTypedChars(999);
+      return;
     }
+    // Show for 2s, then fade out over 0.8s
+    const fadeTimer = setTimeout(() => setBootPhase('fading'), 2000);
+    const doneTimer = setTimeout(() => setBootPhase('done'), 2800);
+    return () => { clearTimeout(fadeTimer); clearTimeout(doneTimer); };
   }, []);
-
-  // Boot screen: type name, then draw line, then fade out
-  const fullName = now ? `${getGreeting(now.getHours())}, Nathalie` : 'Good morning, Nathalie';
-
-  useEffect(() => {
-    if (bootPhase !== 'typing') return;
-    if (typedChars < fullName.length) {
-      const speed = fullName[typedChars] === ',' ? 120 : 40 + Math.random() * 30;
-      const t = setTimeout(() => setTypedChars((c) => c + 1), speed);
-      return () => clearTimeout(t);
-    }
-    // Done typing — pause, then draw line
-    const t = setTimeout(() => setBootPhase('drawn'), 200);
-    return () => clearTimeout(t);
-  }, [bootPhase, typedChars, fullName]);
-
-  useEffect(() => {
-    if (bootPhase !== 'drawn') return;
-    // Line draws for 0.8s, then start fading
-    const t = setTimeout(() => setBootPhase('fading'), 1000);
-    return () => clearTimeout(t);
-  }, [bootPhase]);
-
-  useEffect(() => {
-    if (bootPhase !== 'fading') return;
-    // Morph + fade takes 0.8s
-    const t = setTimeout(() => setBootPhase('done'), 800);
-    return () => clearTimeout(t);
-  }, [bootPhase]);
 
   const greeting = now ? getGreeting(now.getHours()) : 'Good morning';
   const dateStr = now ? formatDate(now) : '';
@@ -131,13 +104,12 @@ export default function DashboardExample() {
     <div className={s.root}>
       <div className={s.dotGrid} aria-hidden="true" />
 
-      {/* Boot Screen */}
+      {/* Boot Screen — fade in, hold, fade out */}
       {bootPhase !== 'done' && (
         <div className={`${s.bootScreen} ${bootPhase === 'fading' ? s.bootFading : ''}`}>
           <div className={s.bootContent}>
             <h1 className={s.bootGreeting}>
-              {fullName.slice(0, typedChars)}
-              {bootPhase === 'typing' && <span className={s.bootCursor} />}
+              {now ? `${getGreeting(now.getHours())}, Nathalie` : 'Good morning, Nathalie'}
             </h1>
             <svg
               className={s.bootUnderline}
@@ -148,7 +120,7 @@ export default function DashboardExample() {
             >
               <path
                 d="M0,7 C40,1 80,13 120,6 C160,0 200,12 240,5 C280,-1 320,11 360,6 C400,1 440,11 480,7"
-                className={`${s.bootUnderlinePath} ${bootPhase !== 'typing' ? s.bootUnderlineDrawn : ''}`}
+                className={`${s.bootUnderlinePath} ${s.bootUnderlineDrawn}`}
               />
             </svg>
           </div>
