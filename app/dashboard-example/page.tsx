@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import s from './page.module.css';
 
 function getGreeting(hour: number) {
@@ -191,7 +192,9 @@ export default function DashboardExample() {
 
       {/* Top Bar */}
       <header className={s.topBar}>
-        <Link href="/" className={s.logo}>Oh My Mood</Link>
+        <Link href="/" className={s.logo}>
+          <Image src="/images/logo.png" alt="Oh My Mood" width={120} height={32} className={s.logoImg} />
+        </Link>
         <div className={s.topBarRight}>
           <span className={s.userName}>Amsterdam</span>
           <div className={s.avatar}>JS</div>

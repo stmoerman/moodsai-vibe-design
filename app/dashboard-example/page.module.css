@@ -148,12 +148,15 @@
 }
 
 .logo {
-  font-family: 'Crimson Pro', serif;
-  font-size: 1rem;
-  font-weight: 400;
-  color: #3a3a3a;
+  display: flex;
+  align-items: center;
   text-decoration: none;
-  letter-spacing: 0.02em;
+}
+
+.logoImg {
+  height: 28px;
+  width: auto;
+  object-fit: contain;
 }
 
 .topBarRight {
