@@ -1,207 +1,132 @@
 'use client'
-import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react'
-import styles from './styles.module.css'
+import React, { useRef, useEffect, useState, useCallback } from 'react'
+import s from './styles.module.css'
 
 /* ============================================================
-   Design 12 — "The Sketchbook"
-   ONE CONTINUOUS HAND-DRAWN SVG LINE flows through the entire
-   page, connecting every section, as if someone is sketching
-   the whole story as you scroll.
+   Design 12 — "The Kinetic Page"
+   Every section has its own signature animation.
+   No page-spanning SVG lines. The animations ARE the components.
+   Uses IntersectionObserver only — zero scroll listeners.
    ============================================================ */
 
-// ---- Path Data ----
-// viewBox: 0 0 1200 8000 — organic hand-drawn curves with wobble
-const MAIN_PATH = `
-M 600,20
-C 590,60 615,100 605,140
-C 595,180 570,220 580,280
-C 590,340 620,360 640,400
-C 660,440 680,460 660,500
-C 640,540 590,560 560,600
-C 530,640 500,680 480,720
-C 460,760 440,800 420,840
-C 400,880 380,910 360,940
-C 340,970 310,990 280,1020
-C 250,1050 230,1080 220,1120
-C 210,1160 220,1200 250,1240
-C 280,1280 340,1300 400,1320
-C 460,1340 540,1340 620,1320
-C 700,1300 760,1260 820,1240
-C 880,1220 920,1200 940,1180
-C 960,1160 970,1140 960,1120
-C 950,1100 920,1090 890,1100
-C 860,1110 830,1140 800,1180
-C 770,1220 740,1270 720,1320
-C 700,1370 680,1420 660,1470
-C 640,1520 620,1570 610,1620
-C 600,1670 600,1720 610,1770
-C 620,1820 640,1860 660,1900
-C 680,1940 690,1980 680,2020
-C 670,2060 640,2090 610,2120
-C 580,2150 550,2180 530,2220
-C 510,2260 500,2300 510,2340
-C 520,2380 550,2410 580,2440
-C 610,2470 640,2490 660,2520
-C 680,2550 690,2590 680,2640
-C 670,2690 640,2720 610,2760
-C 580,2800 560,2840 560,2880
-C 560,2920 580,2960 600,3000
-C 620,3040 650,3070 670,3110
-C 690,3150 700,3200 690,3250
-C 680,3300 650,3340 620,3380
-C 590,3420 570,3460 570,3500
-C 570,3540 590,3580 620,3610
-C 650,3640 680,3670 700,3710
-C 720,3750 730,3800 720,3850
-C 710,3900 680,3940 650,3980
-C 620,4020 590,4060 580,4100
-C 570,4140 580,4180 600,4220
-C 620,4260 650,4290 680,4320
-C 710,4350 740,4400 720,4450
-C 700,4500 660,4530 620,4560
-C 580,4590 550,4640 560,4700
-C 570,4760 600,4810 630,4850
-C 660,4890 680,4930 680,4980
-C 680,5030 660,5070 640,5110
-C 620,5150 600,5200 590,5250
-C 580,5300 590,5350 610,5400
-C 630,5450 660,5490 680,5540
-C 700,5590 710,5640 700,5690
-C 690,5740 660,5780 630,5820
-C 600,5860 580,5910 580,5960
-C 580,6010 600,6060 630,6100
-C 660,6140 690,6170 710,6210
-C 730,6250 740,6300 730,6350
-C 720,6400 690,6440 660,6480
-C 630,6520 600,6560 590,6600
-C 580,6640 590,6680 610,6720
-C 630,6760 660,6790 690,6820
-C 720,6850 740,6890 740,6940
-C 740,6990 720,7030 700,7070
-C 680,7110 660,7160 650,7210
-C 640,7260 650,7310 670,7360
-C 690,7410 710,7450 720,7500
-C 730,7550 720,7600 700,7640
-C 680,7680 650,7710 620,7740
-C 590,7770 570,7810 580,7850
-C 590,7890 610,7920 630,7940
-C 650,7960 660,7975 650,7990
-`.trim()
-
-// Branch paths — shorter lines splitting off from main line at section junctions
-const BRANCH_PATHS = [
-  // Hero branches
-  { d: 'M 605,140 C 650,150 720,160 780,155', threshold: 0.02 },
-  { d: 'M 605,140 C 560,150 480,160 420,155', threshold: 0.02 },
-  // Problem branches
-  { d: 'M 280,1020 C 260,1030 230,1040 210,1035', threshold: 0.13 },
-  { d: 'M 940,1180 C 960,1170 980,1160 990,1170', threshold: 0.15 },
-  // Solution branches
-  { d: 'M 610,1770 C 560,1780 490,1790 440,1785', threshold: 0.22 },
-  { d: 'M 610,1770 C 660,1780 730,1790 780,1785', threshold: 0.22 },
-  // Tour branches
-  { d: 'M 660,2520 C 710,2530 780,2540 840,2535', threshold: 0.32 },
-  { d: 'M 610,2760 C 560,2770 480,2780 420,2775', threshold: 0.35 },
-  { d: 'M 620,3380 C 570,3390 490,3400 430,3395', threshold: 0.42 },
-  { d: 'M 700,3710 C 750,3720 820,3730 880,3725', threshold: 0.46 },
-  // AI branches
-  { d: 'M 620,4560 C 570,4570 490,4580 430,4575', threshold: 0.57 },
-  // Security branches
-  { d: 'M 680,4980 C 730,4990 800,5000 860,4995', threshold: 0.62 },
-  { d: 'M 590,5250 C 540,5260 460,5270 400,5265', threshold: 0.66 },
-  // Quotes branches
-  { d: 'M 630,5820 C 580,5830 500,5840 440,5835', threshold: 0.73 },
-  { d: 'M 710,6210 C 760,6220 830,6230 890,6225', threshold: 0.78 },
-  // Pricing branches
-  { d: 'M 660,6480 C 710,6490 780,6500 840,6495', threshold: 0.81 },
-  { d: 'M 590,6600 C 540,6610 460,6620 400,6615', threshold: 0.83 },
-]
-
-// Waypoint positions (approximate Y positions in viewBox / 8000 = scroll threshold)
-const WAYPOINTS = [
-  { id: 'hero', y: 140, label: 'Start', threshold: 0.02, sectionId: 'hero-section' },
-  { id: 'problem', y: 940, label: 'Problem', threshold: 0.12, sectionId: 'problem-section' },
-  { id: 'solution', y: 1770, label: 'Solution', threshold: 0.22, sectionId: 'solution-section' },
-  { id: 'tour', y: 2640, label: 'Tour', threshold: 0.33, sectionId: 'tour-section' },
-  { id: 'ai', y: 4220, label: 'AI', threshold: 0.53, sectionId: 'ai-section' },
-  { id: 'security', y: 4980, label: 'Security', threshold: 0.62, sectionId: 'security-section' },
-  { id: 'quotes', y: 5690, label: 'Quotes', threshold: 0.71, sectionId: 'quotes-section' },
-  { id: 'pricing', y: 6350, label: 'Pricing', threshold: 0.79, sectionId: 'pricing-section' },
-  { id: 'cta', y: 7500, label: 'CTA', threshold: 0.94, sectionId: 'cta-section' },
-]
-
-// Annotations in margins
-const ANNOTATIONS = [
-  { text: 'start here \u2192', y: '4%', side: 'left' as const, threshold: 0.01 },
-  { text: 'the gap', y: '14%', side: 'right' as const, threshold: 0.11 },
-  { text: 'this changes everything', y: '24%', side: 'left' as const, threshold: 0.21 },
-  { text: 'step by step', y: '36%', side: 'right' as const, threshold: 0.33 },
-  { text: 'the magic part', y: '54%', side: 'left' as const, threshold: 0.52 },
-  { text: 'locked down', y: '64%', side: 'right' as const, threshold: 0.61 },
-  { text: 'real stories', y: '73%', side: 'left' as const, threshold: 0.71 },
-  { text: 'fair & simple', y: '82%', side: 'right' as const, threshold: 0.79 },
-  { text: 'your move', y: '94%', side: 'left' as const, threshold: 0.93 },
-]
+// ---- Shared Reveal Hook ----
+function useRevealObserver(rootRef: React.RefObject<HTMLDivElement | null>) {
+  useEffect(() => {
+    const root = rootRef.current
+    if (!root) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            ;(e.target as HTMLElement).classList.add(s.visible)
+            observer.unobserve(e.target)
+          }
+        })
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -60px 0px' }
+    )
+    root.querySelectorAll(`.${s.reveal}`).forEach((el) => observer.observe(el))
+    return () => observer.disconnect()
+  }, [rootRef])
+}
 
 // ---- Data ----
 const WITHOUT_TASKS = [
-  { icon: '\u2717', text: 'Manually typing notes after every session' },
-  { icon: '\u2717', text: 'Printing and entering ROM questionnaires' },
-  { icon: '\u2717', text: 'Formatting treatment plans in Word' },
-  { icon: '\u2717', text: 'Separate calendar, chat, and billing tools' },
-  { icon: '\u2717', text: 'Endless admin on Friday afternoons' },
+  'Manually typing notes after every session',
+  'Printing and entering ROM questionnaires',
+  'Formatting treatment plans in Word',
+  'Separate calendar, chat, and billing tools',
+  'Endless admin on Friday afternoons',
 ]
 
 const WITH_TASKS = [
-  { icon: '\u2713', text: 'AI writes your notes in real time' },
-  { icon: '\u2713', text: 'ROM automatically administered and processed' },
-  { icon: '\u2713', text: 'Treatment plan generated from intake' },
-  { icon: '\u2713', text: 'Everything in one platform, one login' },
-  { icon: '\u2713', text: 'Admin finished before your client walks out the door' },
+  'AI writes your notes in real time',
+  'ROM automatically administered and processed',
+  'Treatment plan generated from intake',
+  'Everything in one platform, one login',
+  'Admin finished before your client walks out',
 ]
 
 const REPLACED_TOOLS = [
   'Pen & paper', 'Word templates', 'Excel ROM', 'Separate calendar',
   'Email', 'Billing app', 'PDF generator', 'Questionnaire tool',
-  'Note-taking app', 'Manual DBC registration',
+  'Note-taking app', 'Manual DBC',
 ]
 
-const TOUR_STEPS = [
+const FEATURE_CARDS = [
   {
-    title: 'Intake',
-    desc: 'Structured intake with AI-powered question support. Treatment plan generated immediately.',
+    title: 'AI Documentation',
+    icon: (
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M8 4h12l6 6v18H8V4z" /><path d="M20 4v6h6" /><path d="M12 18h8M12 22h5" />
+      </svg>
+    ),
+    bullets: ['Real-time session notes', 'Treatment plans from intake', 'One-click finalization'],
   },
   {
-    title: 'Session',
-    desc: 'Have your conversation. Moods listens along and takes real-time notes in the background.',
+    title: 'Practice Management',
+    icon: (
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="4" y="6" width="24" height="22" rx="1" /><path d="M4 12h24" /><path d="M10 6V2M22 6V2" />
+      </svg>
+    ),
+    bullets: ['Calendar & scheduling', 'Client management', 'DBC registration & billing'],
   },
   {
-    title: 'Notes',
-    desc: 'After the session: complete, structured notes ready for review. One click to finalize.',
+    title: 'Video & Communication',
+    icon: (
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="8" width="18" height="16" rx="1" /><path d="M21 14l8-4v12l-8-4" />
+      </svg>
+    ),
+    bullets: ['Secure video sessions', 'In-app messaging', 'Client portal'],
   },
   {
-    title: 'ROM',
-    desc: 'Questionnaires sent automatically, completed by clients, results instantly visible.',
+    title: 'HR & Team',
+    icon: (
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="16" cy="10" r="5" /><path d="M6 28c0-5.5 4.5-10 10-10s10 4.5 10 10" /><circle cx="26" cy="10" r="3" /><circle cx="6" cy="10" r="3" />
+      </svg>
+    ),
+    bullets: ['Team dashboard', 'Role-based access', 'Capacity planning'],
   },
   {
-    title: 'Reporting',
-    desc: 'Progress reports, treatment evaluations, and letters generated from session data.',
+    title: 'Business Intelligence',
+    icon: (
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 28V18M10 28V12M16 28V16M22 28V8M28 28V4" />
+      </svg>
+    ),
+    bullets: ['Revenue insights', 'Practice analytics', 'Custom reports'],
   },
   {
-    title: 'Billing',
-    desc: 'DBC registration and billing automatically updated. Export to your accounting software.',
+    title: 'Security & Compliance',
+    icon: (
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M16 2L4 8v8c0 8 5.3 15.3 12 18 6.7-2.7 12-10 12-18V8L16 2z" /><path d="M12 16l3 3 6-6" />
+      </svg>
+    ),
+    bullets: ['NEN 7510 certified', 'End-to-end encryption', 'GDPR compliant'],
   },
+]
+
+const STATS = [
+  { value: '25→5', suffix: ' min', label: 'Documentation time' },
+  { value: '500', suffix: 'K+', label: 'AI tokens per month' },
+  { value: '99.2', suffix: '%', label: 'Transcription accuracy' },
+  { value: '29', suffix: '', label: 'Per seat per month', prefix: '€' },
 ]
 
 const SECURITY_ITEMS = [
-  'NEN 7510 certified',
-  'Data in Dutch data centers',
-  'End-to-end encryption',
-  'AVG / GDPR compliant',
-  'Two-factor authentication',
-  'Audit logging',
-  'BAA agreements',
-  'ISO 27001 aligned',
+  { title: 'NEN 7510', desc: 'Certified information security for healthcare' },
+  { title: 'Dutch Hosting', desc: 'Data stored in Dutch data centers only' },
+  { title: 'Encryption', desc: 'End-to-end encryption at rest and in transit' },
+  { title: 'GDPR', desc: 'Fully AVG / GDPR compliant by design' },
+  { title: '2FA', desc: 'Two-factor authentication for all users' },
+  { title: 'Audit Logs', desc: 'Complete audit trail of all actions' },
+  { title: 'BAA', desc: 'Business Associate Agreements available' },
+  { title: 'ISO 27001', desc: 'Aligned with ISO 27001 standards' },
+  { title: 'Access Control', desc: 'Role-based permissions and access' },
 ]
 
 const QUOTES = [
@@ -246,474 +171,428 @@ const PRICING_PLANS = [
   },
 ]
 
-// ---- Sub-components ----
+const CHAT_RESPONSE = `Last month's revenue breakdown:
 
-function InkSplash({ active }: { active: boolean }) {
-  const dots = useMemo(() => {
-    return Array.from({ length: 5 }, (_, i) => {
-      const angle = (i / 5) * Math.PI * 2 + (Math.random() - 0.5) * 0.5
-      const dist = 8 + Math.random() * 12
-      return {
-        x: Math.cos(angle) * dist,
-        y: Math.sin(angle) * dist,
+\u2022 Sessions billed: 342
+\u2022 Total revenue: \u20ac48,230
+\u2022 Average per session: \u20ac141
+\u2022 Growth vs. prior month: +8.3%
+
+Your highest-earning day was March 12th with 18 sessions.`
+
+// ---- Counter animation (fires once via rAF) ----
+function useCountUp(
+  targetStr: string,
+  active: boolean,
+  duration = 1500
+): string {
+  const [display, setDisplay] = useState('0')
+  const hasRun = useRef(false)
+
+  useEffect(() => {
+    if (!active || hasRun.current) return
+    hasRun.current = true
+
+    const target = parseFloat(targetStr.replace(/[^0-9.]/g, ''))
+    if (isNaN(target)) {
+      setDisplay(targetStr)
+      return
+    }
+
+    const isDecimal = targetStr.includes('.')
+    const start = performance.now()
+
+    function step(now: number) {
+      const elapsed = now - start
+      const progress = Math.min(elapsed / duration, 1)
+      // Ease out cubic
+      const eased = 1 - Math.pow(1 - progress, 3)
+      const current = eased * target
+
+      if (isDecimal) {
+        setDisplay(current.toFixed(1))
+      } else {
+        setDisplay(Math.round(current).toString())
       }
-    })
+
+      if (progress < 1) {
+        requestAnimationFrame(step)
+      }
+    }
+
+    requestAnimationFrame(step)
+  }, [active, targetStr, duration])
+
+  return display
+}
+
+// ---- Chat typing effect ----
+function ChatSection() {
+  const sectionRef = useRef<HTMLDivElement>(null)
+  const [phase, setPhase] = useState<'idle' | 'user' | 'dots' | 'typing' | 'done'>('idle')
+  const [typed, setTyped] = useState('')
+  const hasTriggered = useRef(false)
+
+  useEffect(() => {
+    const el = sectionRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting && !hasTriggered.current) {
+            hasTriggered.current = true
+            ;(e.target as HTMLElement).classList.add(s.visible)
+            setPhase('user')
+            observer.unobserve(e.target)
+          }
+        })
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -60px 0px' }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    if (phase === 'user') {
+      const t = setTimeout(() => setPhase('dots'), 800)
+      return () => clearTimeout(t)
+    }
+    if (phase === 'dots') {
+      const t = setTimeout(() => setPhase('typing'), 1200)
+      return () => clearTimeout(t)
+    }
+    if (phase === 'typing') {
+      let i = 0
+      const interval = setInterval(() => {
+        i++
+        setTyped(CHAT_RESPONSE.slice(0, i))
+        if (i >= CHAT_RESPONSE.length) {
+          clearInterval(interval)
+          setPhase('done')
+        }
+      }, 20)
+      return () => clearInterval(interval)
+    }
+  }, [phase])
+
+  return (
+    <section className={s.chatSection}>
+      <div className={s.sectionInner}>
+        <div ref={sectionRef} className={`${s.reveal} ${s.chatWindow}`}>
+          <div className={s.chatHeader}>
+            <span className={s.chatDot} />
+            <span className={s.chatTitle}>AskMoody</span>
+          </div>
+          <div className={s.chatBody}>
+            {(phase !== 'idle') && (
+              <div className={s.chatBubbleUser}>
+                What was our revenue last month?
+              </div>
+            )}
+            {phase === 'dots' && (
+              <div className={s.chatBubbleAi}>
+                <span className={s.typingDots}>
+                  <span /><span /><span />
+                </span>
+              </div>
+            )}
+            {(phase === 'typing' || phase === 'done') && (
+              <div className={s.chatBubbleAi}>
+                <pre className={s.chatPre}>{typed}<span className={phase === 'typing' ? s.cursor : ''} /></pre>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ---- Stats section with counter ----
+function StatsSection() {
+  const sectionRef = useRef<HTMLDivElement>(null)
+  const [active, setActive] = useState(false)
+
+  useEffect(() => {
+    const el = sectionRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            setActive(true)
+            ;(e.target as HTMLElement).classList.add(s.visible)
+            observer.unobserve(e.target)
+          }
+        })
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -60px 0px' }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
   }, [])
 
   return (
-    <div className={styles.inkSplash}>
-      {dots.map((dot, i) => (
-        <div
-          key={i}
-          className={`${styles.inkDot} ${active ? styles.animate : ''}`}
-          style={{
-            '--splash-x': `${dot.x}px`,
-            '--splash-y': `${dot.y}px`,
-            animationDelay: `${i * 0.05}s`,
-          } as React.CSSProperties}
-        />
-      ))}
-    </div>
+    <section className={s.statsSection}>
+      <div className={s.sectionInner}>
+        <div ref={sectionRef} className={`${s.reveal} ${s.statsGrid}`}>
+          {STATS.map((stat, i) => (
+            <StatItem key={i} stat={stat} index={i} active={active} />
+          ))}
+        </div>
+      </div>
+    </section>
   )
 }
 
-function Checkmark({ drawn }: { drawn: boolean }) {
-  return (
-    <div className={`${styles.checkmark} ${drawn ? styles.drawn : ''}`}>
-      <svg width="16" height="16" viewBox="0 0 16 16">
-        <path d="M 3,8 L 7,12 L 13,4" />
-      </svg>
-    </div>
-  )
-}
+function StatItem({ stat, index, active }: { stat: typeof STATS[0]; index: number; active: boolean }) {
+  const display = useCountUp(stat.value, active)
+  // Special case for the "25→5" stat
+  const isRange = stat.value.includes('\u2192')
+  const display1 = useCountUp('25', active)
+  const display2 = useCountUp('5', active)
 
-// Static SVG — progress updates happen via direct DOM manipulation in the scroll handler
-const ContinuousLine = React.memo(function ContinuousLine() {
   return (
-    <svg className={styles.lineSvg} viewBox="0 0 1200 8000" preserveAspectRatio="none">
-      <path
-        d={MAIN_PATH}
-        data-role="glow"
-        stroke="#423C38"
-        strokeWidth="6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill="none"
-        opacity="0.06"
-      />
-      <path
-        d={MAIN_PATH}
-        data-role="main"
-        stroke="#423C38"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill="none"
-        opacity="0.8"
-      />
-      {BRANCH_PATHS.map((branch, i) => (
-        <path
-          key={i}
-          d={branch.d}
-          data-role="branch"
-          data-threshold={branch.threshold}
-          stroke="#423C38"
-          strokeWidth="1"
-          strokeLinecap="round"
-          fill="none"
-          opacity="0.3"
-        />
-      ))}
-    </svg>
-  )
-})
-
-function WaypointDot({
-  wp,
-  active,
-  onClick,
-}: {
-  wp: typeof WAYPOINTS[0]
-  active: boolean
-  onClick: () => void
-}) {
-  return (
-    <div
-      className={styles.waypoint}
-      style={{
-        top: `${(wp.y / 8000) * 100}%`,
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-      }}
-      onClick={onClick}
-      title={wp.label}
-    >
-      <div className={`${styles.waypointDot} ${active ? styles.active : ''}`} />
-      <InkSplash active={active} />
+    <div className={s.statItem} style={{ '--delay': `${index * 0.1}s` } as React.CSSProperties}>
+      <div className={s.statNumber}>
+        {stat.prefix && <span>{stat.prefix}</span>}
+        {isRange ? (
+          <>{display1}<span className={s.statArrow}>{'\u2192'}</span>{display2}</>
+        ) : (
+          display
+        )}
+        {stat.suffix && <span className={s.statSuffix}>{stat.suffix}</span>}
+      </div>
+      <div className={s.statLabel}>{stat.label}</div>
     </div>
   )
 }
 
 // ---- Main Component ----
-
 export default function Design12() {
   const pageRef = useRef<HTMLDivElement>(null)
-  const [scrollProgress, setScrollProgress] = useState(0)
-  // SVG line lengths (initialized once)
-  const svgInitRef = useRef(false)
-  const mainLenRef = useRef(0)
-
-  // Scroll handler — throttled with RAF, updates SVG via DOM
-  useEffect(() => {
-    let rafId: number
-    let ticking = false
-
-    const initSvg = () => {
-      if (svgInitRef.current) return
-      const svg = pageRef.current?.querySelector(`.${styles.lineSvg}`)
-      if (!svg) return
-      const mainPath = svg.querySelector('[data-role="main"]') as SVGPathElement | null
-      const glowPath = svg.querySelector('[data-role="glow"]') as SVGPathElement | null
-      const branches = svg.querySelectorAll('[data-role="branch"]') as NodeListOf<SVGPathElement>
-      if (!mainPath) return
-
-      const len = mainPath.getTotalLength()
-      mainLenRef.current = len
-      const lenStr = String(len)
-      mainPath.setAttribute('stroke-dasharray', lenStr)
-      mainPath.setAttribute('stroke-dashoffset', lenStr)
-      if (glowPath) {
-        glowPath.setAttribute('stroke-dasharray', lenStr)
-        glowPath.setAttribute('stroke-dashoffset', lenStr)
-      }
-      branches.forEach((b) => {
-        const bLen = b.getTotalLength()
-        b.setAttribute('stroke-dasharray', String(bLen))
-        b.setAttribute('stroke-dashoffset', String(bLen))
-        b.dataset.len = String(bLen)
-      })
-      svgInitRef.current = true
-    }
-
-    const onScroll = () => {
-      if (ticking) return
-      ticking = true
-      rafId = requestAnimationFrame(() => {
-        ticking = false
-        initSvg()
-
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight
-        const progress = docHeight > 0 ? Math.min(1, Math.max(0, window.scrollY / docHeight)) : 0
-
-        // Update SVG directly (no React re-render)
-        const len = mainLenRef.current
-        if (len > 0) {
-          const offset = String(len * (1 - progress))
-          const svg = pageRef.current?.querySelector(`.${styles.lineSvg}`)
-          if (svg) {
-            const main = svg.querySelector('[data-role="main"]')
-            const glow = svg.querySelector('[data-role="glow"]')
-            main?.setAttribute('stroke-dashoffset', offset)
-            glow?.setAttribute('stroke-dashoffset', offset)
-            svg.querySelectorAll('[data-role="branch"]').forEach((b) => {
-              const el = b as SVGPathElement
-              const threshold = parseFloat(el.dataset.threshold ?? '0')
-              const bLen = parseFloat(el.dataset.len ?? '0')
-              const bp = Math.max(0, Math.min(1, (progress - threshold) / 0.04))
-              el.setAttribute('stroke-dashoffset', String(bLen * (1 - bp)))
-            })
-          }
-        }
-
-        // Only update React state for section reveals (coarse, not per-frame)
-        setScrollProgress(progress)
-      })
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    onScroll()
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      cancelAnimationFrame(rafId)
-    }
-  }, [])
-
-  // Section reveal based on scroll progress
-  const isRevealed = useCallback(
-    (threshold: number) => scrollProgress >= threshold,
-    [scrollProgress]
-  )
-
-  const revealClass = useCallback(
-    (threshold: number) =>
-      `${styles.inkDevelop} ${isRevealed(threshold) ? styles.revealed : ''}`,
-    [isRevealed]
-  )
-
-  const scrollToSection = useCallback((sectionId: string) => {
-    const el = document.getElementById(sectionId)
-    if (el) el.scrollIntoView({ behavior: 'smooth' })
-  }, [])
+  useRevealObserver(pageRef)
 
   return (
-    <div className={styles.page} ref={pageRef}>
-      {/* The continuous SVG line */}
-      <ContinuousLine />
+    <div className={s.page} ref={pageRef}>
 
-      {/* Pen nib and waypoint dots removed for cleaner experience */}
-
-      {/* Margin annotations */}
-      {ANNOTATIONS.map((ann, i) => (
-        <div
-          key={i}
-          className={`${styles.annotation} ${
-            ann.side === 'right' ? styles.annotationRight : styles.annotationLeft
-          } ${isRevealed(ann.threshold) ? styles.visible : ''}`}
-          style={{ top: ann.y }}
-        >
-          {ann.text}
-        </div>
-      ))}
-
-      {/* ============ SECTION 1: HERO ============ */}
-      <section id="hero-section" className={`${styles.section} ${styles.hero}`}>
-        <div className={revealClass(0.0)}>
-          <div className={styles.wordmark}>Moods.ai</div>
-          <h1 className={styles.heroHeadline}>
-            Therapists became therapists to help people.{' '}
-            <em>Not to type reports.</em>
+      {/* ============ SECTION 1: HERO — "The Reveal" ============ */}
+      <section className={s.hero}>
+        <div className={s.heroContent}>
+          <h1 className={s.heroHeadline}>
+            <span className={s.word} style={{ '--i': 0 } as React.CSSProperties}>Therapists</span>{' '}
+            <span className={s.word} style={{ '--i': 1 } as React.CSSProperties}>became</span>{' '}
+            <span className={s.word} style={{ '--i': 2 } as React.CSSProperties}>therapists</span>{' '}
+            <span className={s.word} style={{ '--i': 3 } as React.CSSProperties}>to</span>{' '}
+            <span className={s.word} style={{ '--i': 4 } as React.CSSProperties}>help</span>{' '}
+            <span className={s.word} style={{ '--i': 5 } as React.CSSProperties}>people.</span>{' '}
+            <em className={s.heroItalic}>
+              <span className={s.word} style={{ '--i': 7 } as React.CSSProperties}>Not</span>{' '}
+              <span className={s.word} style={{ '--i': 8 } as React.CSSProperties}>to</span>{' '}
+              <span className={s.word} style={{ '--i': 9 } as React.CSSProperties}>type</span>{' '}
+              <span className={s.word} style={{ '--i': 10 } as React.CSSProperties}>reports.</span>
+            </em>
           </h1>
-          <p className={styles.heroSub}>
-            AI-powered practice management for mental healthcare.
+          <div className={s.heroBrand}>Moods.ai</div>
+          <hr className={s.heroRule} />
+          <p className={s.heroSub}>
+            AI-powered practice management for mental healthcare.<br />
             Less admin. More therapy.
           </p>
-          <a href="#" className={styles.ctaButton}>
-            Start free trial
+          <a href="#" className={s.ctaButton}>
+            <span>Start free trial</span>
+            <span className={s.ctaUnderline} />
           </a>
         </div>
       </section>
 
-      {/* ============ SECTION 2: THE PROBLEM ============ */}
-      <section id="problem-section" className={`${styles.section} ${styles.problem}`}>
-        <div className={styles.sectionInner}>
-          <div className={revealClass(0.1)}>
-            <div className={styles.sectionLabel}>The problem</div>
-            <h2 className={styles.sectionHeading}>
-              Half your work week is spent on administration
-            </h2>
-          </div>
-          <div className={styles.splitGrid}>
-            <div className={`${styles.splitColumn} ${styles.without}`}>
-              <div className={revealClass(0.12)}>
-                <h3>Without Moods</h3>
-                {WITHOUT_TASKS.map((task, i) => (
-                  <div key={i} className={styles.taskItem}>
-                    <span className={styles.icon}>{task.icon}</span>
-                    <span>{task.text}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className={`${styles.splitColumn} ${styles.with}`}>
-              <div className={revealClass(0.14)}>
-                <h3>With Moods</h3>
-                {WITH_TASKS.map((task, i) => (
-                  <div key={i} className={styles.taskItem}>
-                    <span className={styles.icon}>{task.icon}</span>
-                    <span>{task.text}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ============ SECTION 3: THE SOLUTION ============ */}
-      <section id="solution-section" className={`${styles.section} ${styles.solution}`}>
-        <div className={styles.sectionInner}>
-          <div className={revealClass(0.2)}>
-            <div className={styles.sectionLabel}>The solution</div>
-            <h2 className={styles.sectionHeading}>
-              One platform. Not ten.
-            </h2>
-          </div>
-          <div className={`${styles.convergenceContainer} ${revealClass(0.22)}`}>
-            <div className={styles.toolList}>
-              {REPLACED_TOOLS.map((tool, i) => (
-                <span key={i} className={styles.toolChip}>{tool}</span>
+      {/* ============ SECTION 2: "The Split" — Before & After ============ */}
+      <section className={s.splitSection}>
+        <div className={s.sectionInner}>
+          <div className={s.splitGrid}>
+            <div className={`${s.reveal} ${s.splitLeft}`} style={{ '--delay': '0s' } as React.CSSProperties}>
+              <h3 className={s.splitTitle}>
+                <span className={s.xMark}>{'\u2717'}</span> Without Moods
+              </h3>
+              {WITHOUT_TASKS.map((task, i) => (
+                <div key={i} className={s.taskItem}>
+                  <span className={s.taskIcon} style={{ color: '#c44' }}>{'\u2717'}</span>
+                  <span>{task}</span>
+                </div>
               ))}
             </div>
-            <div className={styles.centralNode}>MOODS</div>
-          </div>
-        </div>
-      </section>
-
-      {/* ============ SECTION 4: PRODUCT TOUR ============ */}
-      <section id="tour-section" className={`${styles.section} ${styles.productTour}`}>
-        <div className={styles.sectionInner}>
-          <div className={revealClass(0.3)}>
-            <div className={styles.sectionLabel}>How it works</div>
-            <h2 className={styles.sectionHeading}>From intake to invoice</h2>
-          </div>
-          <div className={styles.timeline}>
-            {TOUR_STEPS.map((step, i) => {
-              const threshold = 0.32 + i * 0.03
-              return (
-                <div key={i} className={styles.timelineNode}>
-                  <div className={i % 2 === 0 ? styles.nodeContent : styles.nodeEmpty}>
-                    {i % 2 === 0 && (
-                      <div className={revealClass(threshold)}>
-                        <h4>{step.title}</h4>
-                        <p>{step.desc}</p>
-                      </div>
-                    )}
-                  </div>
-                  <div className={styles.nodeDot} />
-                  <div className={i % 2 === 1 ? styles.nodeContent : styles.nodeEmpty}>
-                    {i % 2 === 1 && (
-                      <div className={revealClass(threshold)}>
-                        <h4>{step.title}</h4>
-                        <p>{step.desc}</p>
-                      </div>
-                    )}
-                  </div>
+            <div className={`${s.reveal} ${s.splitDivider}`} style={{ '--delay': '0.2s' } as React.CSSProperties} />
+            <div className={`${s.reveal} ${s.splitRight}`} style={{ '--delay': '0.1s' } as React.CSSProperties}>
+              <h3 className={s.splitTitle}>
+                <span className={s.checkMark}>{'\u2713'}</span> With Moods
+              </h3>
+              {WITH_TASKS.map((task, i) => (
+                <div key={i} className={s.taskItem}>
+                  <span className={s.taskIcon} style={{ color: '#5a7268' }}>{'\u2713'}</span>
+                  <span>{task}</span>
                 </div>
-              )
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ============ SECTION 5: AI IN ACTION ============ */}
-      <section id="ai-section" className={`${styles.section} ${styles.aiSection}`}>
-        <div className={styles.sectionInner}>
-          <div className={revealClass(0.5)}>
-            <div className={styles.sectionLabel}>AI in action</div>
-            <h2 className={styles.sectionHeading}>
-              Listen. Process. Document.
-            </h2>
-          </div>
-          <div className={`${styles.waveformContainer} ${revealClass(0.52)}`}>
-            <svg className={styles.waveformSvg} viewBox="0 0 600 80" preserveAspectRatio="xMidYMid meet">
-              <path
-                d="M 0,40 Q 30,10 60,40 Q 90,70 120,40 Q 150,10 180,40 Q 210,65 240,40 Q 270,15 300,40 Q 330,70 360,40 Q 390,10 420,40 Q 450,65 480,40 Q 510,20 540,40 Q 570,60 600,40"
-                stroke="#423C38"
-                strokeWidth="1.5"
-                fill="none"
-                opacity="0.5"
-                strokeLinecap="round"
-              />
-            </svg>
-          </div>
-          <div className={revealClass(0.54)}>
-            <div className={styles.aiFlow}>
-              <div className={styles.aiFlowStep}>
-                <div className={styles.stepIcon}>{'\uD83C\uDFA4'}</div>
-                <div className={styles.stepLabel}>Conversation</div>
-              </div>
-              <div className={styles.aiFlowArrow}>{'\u2192'}</div>
-              <div className={styles.aiFlowStep}>
-                <div className={styles.stepIcon}>{'\uD83E\uDDE0'}</div>
-                <div className={styles.stepLabel}>AI processing</div>
-              </div>
-              <div className={styles.aiFlowArrow}>{'\u2192'}</div>
-              <div className={styles.aiFlowStep}>
-                <div className={styles.stepIcon}>{'\uD83D\uDCCB'}</div>
-                <div className={styles.stepLabel}>Notes</div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* ============ SECTION 6: SECURITY ============ */}
-      <section id="security-section" className={`${styles.section} ${styles.security}`}>
-        <div className={styles.sectionInner}>
-          <div className={revealClass(0.6)}>
-            <div className={styles.sectionLabel}>Security</div>
-            <h2 className={styles.sectionHeading}>
-              Built for the strictest requirements
-            </h2>
+      {/* ============ SECTION 3: "The Collapse" — One Platform ============ */}
+      <section className={s.collapseSection}>
+        <div className={s.sectionInner}>
+          <h2 className={`${s.reveal} ${s.collapseHeading}`}>
+            One platform. <em>Not ten.</em>
+          </h2>
+          <div className={`${s.reveal} ${s.toolScatter}`} style={{ '--delay': '0.2s' } as React.CSSProperties}>
+            {REPLACED_TOOLS.map((tool, i) => (
+              <span
+                key={i}
+                className={s.toolLabel}
+                style={{
+                  '--scatter-x': `${(i % 2 === 0 ? 1 : -1) * (15 + (i * 7) % 40)}px`,
+                  '--scatter-y': `${(i % 3 === 0 ? -1 : 1) * (5 + (i * 11) % 20)}px`,
+                  '--scatter-r': `${(i % 2 === 0 ? 1 : -1) * (2 + (i * 3) % 6)}deg`,
+                  '--strike-delay': `${0.8 + i * 0.06}s`,
+                } as React.CSSProperties}
+              >
+                {tool}
+              </span>
+            ))}
           </div>
-          <div className={styles.securityGrid}>
-            {SECURITY_ITEMS.map((item, i) => {
-              const threshold = 0.62 + i * 0.01
-              return (
-                <div key={i} className={`${styles.securityItem} ${revealClass(threshold)}`}>
-                  <Checkmark drawn={isRevealed(threshold)} />
-                  <span>{item}</span>
-                </div>
-              )
-            })}
+          <div className={`${s.reveal} ${s.collapseBrand}`} style={{ '--delay': '0.6s' } as React.CSSProperties}>
+            Moods.ai
           </div>
         </div>
       </section>
 
-      {/* ============ SECTION 7: SOCIAL PROOF ============ */}
-      <section id="quotes-section" className={`${styles.section} ${styles.socialProof}`}>
-        <div className={styles.sectionInner}>
-          <div className={revealClass(0.7)}>
-            <div className={styles.sectionLabel}>Testimonials</div>
-            <h2 className={styles.sectionHeading}>
-              What practitioners say
-            </h2>
+      {/* ============ SECTION 4: "The Cards" — Product Tour ============ */}
+      <section className={s.cardsSection}>
+        <div className={s.sectionInner}>
+          <div className={`${s.reveal} ${s.cardsSectionHeader}`}>
+            <div className={s.sectionLabel}>What you get</div>
+            <h2 className={s.sectionHeading}>Everything your practice needs</h2>
           </div>
-          <div className={styles.quotesGrid}>
-            {QUOTES.map((quote, i) => (
-              <div key={i} className={`${styles.quoteCard} ${revealClass(0.72 + i * 0.02)}`}>
-                <p className={styles.quoteText}>{quote.text}</p>
-                <div className={styles.quoteAuthor}>{quote.author}</div>
+          <div className={s.cardsGrid}>
+            {FEATURE_CARDS.map((card, i) => (
+              <div
+                key={i}
+                className={`${s.reveal} ${s.featureCard}`}
+                style={{ '--delay': `${i * 0.08}s` } as React.CSSProperties}
+              >
+                <div className={s.cardIcon}>{card.icon}</div>
+                <h3 className={s.cardTitle}>{card.title}</h3>
+                <ul className={s.cardBullets}>
+                  {card.bullets.map((b, j) => (
+                    <li key={j}>{b}</li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ============ SECTION 8: PRICING ============ */}
-      <section id="pricing-section" className={`${styles.section} ${styles.pricing}`}>
-        <div className={styles.sectionInner}>
-          <div className={revealClass(0.78)}>
-            <div className={styles.sectionLabel}>Pricing</div>
-            <h2 className={styles.sectionHeading}>
-              Fair and transparent
-            </h2>
+      {/* ============ SECTION 5: "The Counter" — Stats ============ */}
+      <StatsSection />
+
+      {/* ============ SECTION 6: "The Chat" — AskMoody Demo ============ */}
+      <ChatSection />
+
+      {/* ============ SECTION 7: "The Grid" — Security ============ */}
+      <section className={s.securitySection}>
+        <div className={s.sectionInner}>
+          <div className={`${s.reveal} ${s.securityHeader}`}>
+            <div className={s.sectionLabel}>Security</div>
+            <h2 className={s.sectionHeading}>Built for the strictest requirements</h2>
           </div>
-          <div className={styles.pricingGrid}>
+          <div className={s.securityGrid}>
+            {SECURITY_ITEMS.map((item, i) => (
+              <div
+                key={i}
+                className={`${s.reveal} ${s.securityCell}`}
+                style={{ '--delay': `${i * 0.05}s` } as React.CSSProperties}
+              >
+                <svg className={s.securityCheck} width="20" height="20" viewBox="0 0 20 20" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 10l4 4 8-8" />
+                </svg>
+                <div>
+                  <div className={s.securityTitle}>{item.title}</div>
+                  <div className={s.securityDesc}>{item.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ SECTION 8: "The Quotes" — Testimonials ============ */}
+      <section className={s.quotesSection}>
+        <div className={s.sectionInner}>
+          <div className={`${s.reveal} ${s.quotesHeader}`}>
+            <div className={s.sectionLabel}>Testimonials</div>
+            <h2 className={s.sectionHeading}>What practitioners say</h2>
+          </div>
+          <div className={`${s.reveal} ${s.quotesFan}`} style={{ '--delay': '0.15s' } as React.CSSProperties}>
+            {QUOTES.map((quote, i) => (
+              <div
+                key={i}
+                className={s.quoteCard}
+                style={{ '--fan-i': i } as React.CSSProperties}
+              >
+                <p className={s.quoteText}>{quote.text}</p>
+                <div className={s.quoteAuthor}>{quote.author}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ SECTION 9: "The Pricing" — Clean & Bold ============ */}
+      <section className={s.pricingSection}>
+        <div className={s.sectionInner}>
+          <div className={`${s.reveal} ${s.pricingHeader}`}>
+            <div className={s.sectionLabel}>Pricing</div>
+            <h2 className={s.sectionHeading}>Fair and transparent</h2>
+          </div>
+          <div className={s.pricingGrid}>
             {PRICING_PLANS.map((plan, i) => (
               <div
                 key={i}
-                className={`${styles.pricingCard} ${plan.featured ? styles.featured : ''} ${revealClass(0.8 + i * 0.02)}`}
+                className={`${s.reveal} ${s.pricingCard} ${plan.featured ? s.featured : ''}`}
+                style={{ '--delay': `${i * 0.1}s` } as React.CSSProperties}
               >
-                <div className={styles.planName}>{plan.name}</div>
-                <div className={styles.planPrice}>
+                <div className={s.planName}>{plan.name}</div>
+                <div className={s.planPrice}>
                   {plan.price}
-                  {plan.period && <span>{plan.period}</span>}
+                  {plan.period && <span className={s.planPeriod}>{plan.period}</span>}
                 </div>
-                <div className={styles.planDesc}>{plan.desc}</div>
-                {plan.features.map((f, j) => (
-                  <div key={j} className={styles.pricingFeature}>{f}</div>
-                ))}
+                <div className={s.planDesc}>{plan.desc}</div>
+                <ul className={s.planFeatures}>
+                  {plan.features.map((f, j) => (
+                    <li key={j}>{f}</li>
+                  ))}
+                </ul>
+                <a href="#" className={plan.featured ? s.planCtaFeatured : s.planCta}>
+                  Get started
+                </a>
               </div>
             ))}
           </div>
+          <p className={s.pricingNote}>14 days free. No credit card.</p>
         </div>
       </section>
 
-      {/* ============ SECTION 9: CTA ============ */}
-      <section id="cta-section" className={styles.ctaSection}>
-        <div className={revealClass(0.92)}>
-          <h2 className={styles.ctaHeadline}>
-            Ready to transform your practice?
-          </h2>
-          <p className={styles.ctaSub}>
-            Try Moods free for 14 days. No credit card required.
-          </p>
-          <a href="#" className={styles.ctaButtonLight}>
-            Start free
-          </a>
-          <p className={styles.ctaNote}>
-            Average time saved: 12 hours per week per practitioner
-          </p>
+      {/* ============ SECTION 10: CTA — "The Close" ============ */}
+      <section className={s.closeSection}>
+        <div className={s.sectionInner}>
+          <div className={`${s.reveal} ${s.closeContent}`}>
+            <h2 className={s.closeHeadline}>Your practice deserves better.</h2>
+            <a href="#" className={s.closeButton}>
+              Start free trial
+            </a>
+            <p className={s.closeNote}>Moods AI &middot; Amsterdam</p>
+          </div>
         </div>
       </section>
     </div>
