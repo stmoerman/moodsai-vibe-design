@@ -79,15 +79,15 @@ const WIDGET_TITLES: Record<string, string> = {
 
 /* ── Default grid layout ── */
 const DEFAULT_LAYOUT: Layout = [
-  { i: 'stat-revenue', x: 0, y: 0, w: 3, h: 3, minW: 2, minH: 2 },
-  { i: 'stat-clients', x: 3, y: 0, w: 3, h: 3, minW: 2, minH: 2 },
-  { i: 'stat-hours', x: 6, y: 0, w: 3, h: 3, minW: 2, minH: 2 },
-  { i: 'stat-declarability', x: 9, y: 0, w: 3, h: 3, minW: 2, minH: 2 },
-  { i: 'chart-revenue', x: 0, y: 3, w: 9, h: 6, minW: 4, minH: 4 },
-  { i: 'breakdown-revenue', x: 9, y: 3, w: 3, h: 6, minW: 2, minH: 3 },
-  { i: 'declaration-control', x: 0, y: 9, w: 6, h: 5, minW: 3, minH: 3 },
-  { i: 'client-flow', x: 6, y: 9, w: 6, h: 5, minW: 3, minH: 3 },
-  { i: 'table-revenue', x: 0, y: 14, w: 12, h: 5, minW: 6, minH: 3 },
+  { i: 'stat-revenue', x: 0, y: 0, w: 3, h: 5, minW: 2, minH: 4 },
+  { i: 'stat-clients', x: 3, y: 0, w: 3, h: 5, minW: 2, minH: 4 },
+  { i: 'stat-hours', x: 6, y: 0, w: 3, h: 5, minW: 2, minH: 4 },
+  { i: 'stat-declarability', x: 9, y: 0, w: 3, h: 5, minW: 2, minH: 4 },
+  { i: 'chart-revenue', x: 0, y: 5, w: 9, h: 8, minW: 4, minH: 6 },
+  { i: 'breakdown-revenue', x: 9, y: 5, w: 3, h: 8, minW: 2, minH: 5 },
+  { i: 'declaration-control', x: 0, y: 13, w: 6, h: 6, minW: 3, minH: 4 },
+  { i: 'client-flow', x: 6, y: 13, w: 6, h: 6, minW: 3, minH: 4 },
+  { i: 'table-revenue', x: 0, y: 19, w: 12, h: 7, minW: 6, minH: 5 },
 ];
 
 /* ── Sparkline SVG data ── */
