@@ -153,7 +153,7 @@ export default function DashboardExample3() {
   });
   const [flowPeriod, setFlowPeriod] = useState<'Week' | 'Month' | 'Quarter'>('Month');
   const [textSize, setTextSize] = useState(0);
-  const [colorful, setColorful] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
 
   // react-grid-layout state
   const [layout, setLayout] = useState<Layout>(DEFAULT_LAYOUT);
@@ -290,10 +290,10 @@ export default function DashboardExample3() {
                   return (
                     <div className={s.barGroup} key={w.week}>
                       <div className={s.stackedBar} style={{ height: `${(total / maxBarTotal) * 100}%` }}>
-                        <div className={s.barSegment} style={{ background: colorful ? '#7c3aed' : '#d0cdc6', flex: w.ehealth }} />
-                        <div className={s.barSegment} style={{ background: colorful ? '#d97706' : '#b8a898', flex: w.workshop }} />
-                        <div className={s.barSegment} style={{ background: colorful ? '#059669' : '#8b6d4f', flex: w.treatment }} />
-                        <div className={s.barSegment} style={{ background: colorful ? '#2563eb' : '#3a3a3a', flex: w.diagnostics }} />
+                        <div className={s.barSegment} style={{ background: darkMode ? '#a08060' : '#d0cdc6', flex: w.ehealth }} />
+                        <div className={s.barSegment} style={{ background: darkMode ? '#c4a070' : '#b8a898', flex: w.workshop }} />
+                        <div className={s.barSegment} style={{ background: darkMode ? '#e8e4dd' : '#8b6d4f', flex: w.treatment }} />
+                        <div className={s.barSegment} style={{ background: darkMode ? '#9a9490' : '#3a3a3a', flex: w.diagnostics }} />
                       </div>
                     </div>
                   );
@@ -306,10 +306,10 @@ export default function DashboardExample3() {
               </div>
               <div className={s.chartLegend}>
                 {[
-                  { color: colorful ? '#2563eb' : '#3a3a3a', label: 'Diagnostics' },
-                  { color: colorful ? '#059669' : '#8b6d4f', label: 'Treatment' },
-                  { color: colorful ? '#d97706' : '#b8a898', label: 'Workshop' },
-                  { color: colorful ? '#7c3aed' : '#d0cdc6', label: 'eHealth' },
+                  { color: darkMode ? '#9a9490' : '#3a3a3a', label: 'Diagnostics' },
+                  { color: darkMode ? '#e8e4dd' : '#8b6d4f', label: 'Treatment' },
+                  { color: darkMode ? '#c4a070' : '#b8a898', label: 'Workshop' },
+                  { color: darkMode ? '#a08060' : '#d0cdc6', label: 'eHealth' },
                 ].map((l) => (
                   <div className={s.legendItem} key={l.label}>
                     <div className={s.legendSwatch} style={{ background: l.color }} />
@@ -399,11 +399,11 @@ export default function DashboardExample3() {
             </div>
             <div className={s.flowLegend}>
               <div className={s.legendItem}>
-                <div className={s.legendSwatch} style={{ background: colorful ? '#2563eb' : '#3a3a3a' }} />
+                <div className={s.legendSwatch} style={{ background: darkMode ? '#e8e4dd' : '#3a3a3a' }} />
                 <span className={s.legendLabel}>New clients</span>
               </div>
               <div className={s.legendItem}>
-                <div className={s.legendSwatch} style={{ background: colorful ? '#f59e0b' : '#d0cdc6' }} />
+                <div className={s.legendSwatch} style={{ background: darkMode ? '#6a6460' : '#d0cdc6' }} />
                 <span className={s.legendLabel}>Closed trajectories</span>
               </div>
             </div>
@@ -447,7 +447,7 @@ export default function DashboardExample3() {
   }
 
   return (
-    <div className={`${s.root} ${colorful ? s.colorfulTheme : ''} ${textSize !== 0 ? s[`size${textSize > 0 ? 'Up' : 'Down'}${Math.abs(textSize)}`] || '' : ''}`}>
+    <div className={`${s.root} ${darkMode ? s.darkTheme : ''} ${textSize !== 0 ? s[`size${textSize > 0 ? 'Up' : 'Down'}${Math.abs(textSize)}`] || '' : ''}`}>
       <div className={s.dotGrid} aria-hidden="true" />
 
       {/* ── Top Bar ── */}
@@ -478,14 +478,23 @@ export default function DashboardExample3() {
 
           {/* Theme toggle */}
           <button
-            className={`${s.themeToggle} ${colorful ? s.themeToggleActive : ''}`}
-            onClick={() => setColorful((v) => !v)}
-            title={colorful ? 'Klassiek thema' : 'Kleurrijk thema'}
+            className={`${s.themeToggle} ${darkMode ? s.themeToggleActive : ''}`}
+            onClick={() => setDarkMode((v) => !v)}
+            title={darkMode ? 'Licht thema' : 'Donker thema'}
           >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" stroke="currentColor">
-              <circle cx="8" cy="8" r="6" />
-              <path d="M8 2a6 6 0 0 1 0 12" fill="currentColor" stroke="none" />
-            </svg>
+            {darkMode ? (
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                <circle cx="8" cy="8" r="3.5" />
+                <line x1="8" y1="1" x2="8" y2="3" />
+                <line x1="8" y1="13" x2="8" y2="15" />
+                <line x1="1" y1="8" x2="3" y2="8" />
+                <line x1="13" y1="8" x2="15" y2="8" />
+              </svg>
+            ) : (
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                <path d="M13.5 8.5a5.5 5.5 0 1 1-7-7 4.5 4.5 0 0 0 7 7z" />
+              </svg>
+            )}
           </button>
 
           <span className={s.userName}>Amsterdam</span>

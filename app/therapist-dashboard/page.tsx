@@ -162,7 +162,7 @@ export default function DashboardExample() {
   const [isAgendaExpanded, setIsAgendaExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState('agenda');
   const [textSize, setTextSize] = useState(0);
-  const [colorful, setColorful] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
     setNow(new Date());
@@ -397,7 +397,7 @@ export default function DashboardExample() {
   );
 
   return (
-    <div className={`${s.root} ${colorful ? s.colorfulTheme : ''} ${textSize !== 0 ? s[`size${textSize > 0 ? 'Up' : 'Down'}${Math.abs(textSize)}`] || '' : ''}`}>
+    <div className={`${s.root} ${darkMode ? s.darkTheme : ''} ${textSize !== 0 ? s[`size${textSize > 0 ? 'Up' : 'Down'}${Math.abs(textSize)}`] || '' : ''}`}>
       <div className={s.dotGrid} aria-hidden="true" />
 
       {/* Top Bar */}
@@ -410,8 +410,24 @@ export default function DashboardExample() {
             <button className={s.sizeBtn} onClick={() => setTextSize((v) => Math.max(-2, v - 1))} disabled={textSize <= -2} title="Kleiner">A<span className={s.sizeBtnMinus}>−</span></button>
             <button className={s.sizeBtn} onClick={() => setTextSize((v) => Math.min(2, v + 1))} disabled={textSize >= 2} title="Groter">A<span className={s.sizeBtnPlus}>+</span></button>
           </div>
-          <button className={`${s.themeToggle} ${colorful ? s.themeToggleActive : ''}`} onClick={() => setColorful((v) => !v)} title={colorful ? 'Klassiek thema' : 'Kleurrijk thema'}>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" stroke="currentColor"><circle cx="8" cy="8" r="6" /><path d="M8 2a6 6 0 0 1 0 12" fill="currentColor" stroke="none" /></svg>
+          <button
+            className={`${s.themeToggle} ${darkMode ? s.themeToggleActive : ''}`}
+            onClick={() => setDarkMode((v) => !v)}
+            title={darkMode ? 'Licht thema' : 'Donker thema'}
+          >
+            {darkMode ? (
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                <circle cx="8" cy="8" r="3.5" />
+                <line x1="8" y1="1" x2="8" y2="3" />
+                <line x1="8" y1="13" x2="8" y2="15" />
+                <line x1="1" y1="8" x2="3" y2="8" />
+                <line x1="13" y1="8" x2="15" y2="8" />
+              </svg>
+            ) : (
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                <path d="M13.5 8.5a5.5 5.5 0 1 1-7-7 4.5 4.5 0 0 0 7 7z" />
+              </svg>
+            )}
           </button>
           <span className={s.userName}>Amsterdam</span>
           <div className={s.avatar}>JS</div>

@@ -157,113 +157,181 @@
 }
 
 .themeToggleActive {
-  background: #8b6d4f;
-  border-color: #8b6d4f;
-  color: #eeeae3;
+  background: #e8e4dd;
+  border-color: #e8e4dd;
+  color: #1a1815;
 }
 
 .themeToggleActive:hover {
-  background: #7a5e42;
+  background: #d0cdc6;
 }
 
 /* ═══════════════════════════════════════════
-   Colorful Theme Override
+   Dark Theme Override
    ═══════════════════════════════════════════ */
-.colorfulTheme {
-  background: #f0f4f8;
+.darkTheme {
+  background: #1a1815;
+  color: #e8e4dd;
 }
 
-.colorfulTheme .dotGrid {
-  background-image: radial-gradient(circle, #c8d4e0 0.6px, transparent 0.6px);
+.darkTheme .dotGrid {
+  background-image: radial-gradient(circle, #2a2625 0.6px, transparent 0.6px);
 }
 
-.colorfulTheme .topBar {
-  background: #f0f4f8;
-  border-bottom-color: #d4dce6;
+.darkTheme .topBar {
+  background: #1a1815;
+  border-bottom-color: #3a3530;
 }
 
-/* Stat widgets get colored accents */
-.colorfulTheme .widgetCard:nth-child(1) {
-  border-left: 3px solid #2563eb;
+.darkTheme .greeting {
+  color: #c4a070;
 }
 
-.colorfulTheme .widgetCard:nth-child(2) {
-  border-left: 3px solid #059669;
+.darkTheme .greetingUnderlinePath {
+  stroke: #c4a070;
 }
 
-.colorfulTheme .widgetCard:nth-child(3) {
-  border-left: 3px solid #d97706;
+.darkTheme .userName { color: #6a6460; }
+.darkTheme .avatar { background: #3a3530; color: #9a9490; }
+
+.darkTheme .dateTime { color: #6a6460; }
+
+.darkTheme .navTab { color: #6a6460; }
+.darkTheme .navTab:hover { color: #9a9490; }
+.darkTheme .navTabActive { color: #e8e4dd; border-bottom-color: #e8e4dd; }
+.darkTheme .navTabs { border-bottom-color: #3a3530; }
+
+/* Widget cards */
+.darkTheme .widgetCard {
+  background: #252220;
+  border-color: #3a3530;
 }
 
-.colorfulTheme .widgetCard:nth-child(4) {
-  border-left: 3px solid #7c3aed;
+.darkTheme .widgetCustomizing {
+  box-shadow: 0 0 0 2px #3a3530;
 }
 
-/* Chart bars get color */
-.colorfulTheme .barDiag { background: #2563eb; }
-.colorfulTheme .barTreat { background: #059669; }
-.colorfulTheme .barWork { background: #d97706; }
-.colorfulTheme .barEhealth { background: #7c3aed; }
+.darkTheme .widgetTitle { color: #6a6460; }
 
-/* Flow chart bars */
-.colorfulTheme .flowBarInflow { background: #2563eb; }
-.colorfulTheme .flowBarOutflow { background: #f59e0b; }
+.darkTheme .statValue { color: #e8e4dd; }
+.darkTheme .statLabel { color: #6a6460; }
 
-/* Card surfaces */
-.colorfulTheme .widgetCard {
-  background: #ffffff;
-  border-color: #d4dce6;
+.darkTheme .statTrend { color: #9a9490; }
+.darkTheme .trendPositive { color: #5aad78; }
+.darkTheme .trendWarning { color: #d4a030; }
+.darkTheme .trendNegative { color: #e05050; }
+
+.darkTheme .sparklinePath {
+  stroke: #c4a070;
+  opacity: 0.5;
 }
 
-/* Active filter */
-.colorfulTheme .filterOptionActive {
-  background: #2563eb;
-  border-color: #2563eb;
-  color: #fff;
+/* Chart area */
+.darkTheme .chartContainer {
+  border-bottom-color: #3a3530;
+  border-left-color: #3a3530;
 }
 
-/* Text stays dark for readability */
-.colorfulTheme .statValue {
-  color: #0f172a;
+.darkTheme .yLabel { color: #6a6460; }
+.darkTheme .xLabel { color: #6a6460; }
+.darkTheme .legendLabel { color: #6a6460; }
+
+/* Revenue summary */
+.darkTheme .revLargeValue { color: #e8e4dd; }
+.darkTheme .revBreakdownRow { border-bottom-color: #2a2625; }
+.darkTheme .revBreakdownLabel { color: #9a9490; }
+.darkTheme .revBreakdownAmount { color: #e8e4dd; }
+.darkTheme .revBreakdownPct { color: #6a6460; }
+
+/* Declaration control */
+.darkTheme .declLargeValue { color: #e8e4dd; }
+.darkTheme .declDeviation { color: #d4a030; }
+.darkTheme .declRow { border-bottom-color: #2a2625; }
+.darkTheme .declLabel { color: #6a6460; }
+.darkTheme .declValue { color: #9a9490; }
+.darkTheme .declFootnote { color: #4a4540; }
+
+/* Client flow */
+.darkTheme .flowToggle { border-color: #3a3530; color: #6a6460; }
+.darkTheme .flowToggleActive { background: #e8e4dd; color: #1a1815; border-color: #e8e4dd; }
+.darkTheme .flowChartContainer { border-bottom-color: #3a3530; }
+.darkTheme .flowBarInflow { background: #e8e4dd; }
+.darkTheme .flowBarOutflow { background: #6a6460; }
+.darkTheme .flowXLabel { color: #6a6460; }
+
+/* Data table */
+.darkTheme .dataTable thead th {
+  color: #6a6460;
+  border-bottom-color: #e8e4dd;
+}
+.darkTheme .dataTable tbody td {
+  color: #9a9490;
+  border-bottom-color: #2a2625;
 }
 
-/* AskMoody dot */
-.colorfulTheme .askMoodyDot {
-  background: #059669;
+/* Filters */
+.darkTheme .filterBtn {
+  background: #252220;
+  border-color: #3a3530;
+  color: #e8e4dd;
 }
+.darkTheme .filterBtn:hover { border-color: #6a6460; }
+.darkTheme .filterBtnOpen { border-color: #6a6460; background: #1a1815; }
+.darkTheme .filterBtnLabel { color: #6a6460; }
+.darkTheme .filterBtnChevron { color: #6a6460; }
+.darkTheme .filterMenu { background: #252220; border-color: #3a3530; }
+.darkTheme .filterOption { color: #9a9490; }
+.darkTheme .filterOption:hover { background: #2a2625; }
+.darkTheme .filterOptionActive { background: #e8e4dd; color: #1a1815; }
+.darkTheme .filterOptionActive:hover { background: #d0cdc6; }
+.darkTheme .filterReset { border-color: #3a3530; color: #6a6460; }
+.darkTheme .filterReset:hover { background: #e8e4dd; color: #1a1815; }
 
-/* Module active border */
-.colorfulTheme .moduleTileActive {
-  border-left: 3px solid #2563eb;
-}
+/* AskMoody inline */
+.darkTheme .askMoodyInline { background: #252220; border-color: #3a3530; }
+.darkTheme .askMoodyInline:focus-within { border-color: #c4a070; }
+.darkTheme .askMoodyDot { color: #c4a070; }
+.darkTheme .askMoodyLabel { color: #6a6460; }
+.darkTheme .askMoodyInput { color: #e8e4dd; }
+.darkTheme .askMoodyInput::placeholder { color: #4a4540; }
+.darkTheme .askMoodyShortcut { color: #4a4540; }
 
-/* Warmer greeting */
-.colorfulTheme .greeting {
-  color: #2563eb;
-}
+/* Customize controls */
+.darkTheme .customizeBtn { border-color: #3a3530; color: #6a6460; }
+.darkTheme .customizeBtn:hover { border-color: #6a6460; color: #9a9490; }
+.darkTheme .customizeBtnActive { background: #e8e4dd; color: #1a1815; border-color: #e8e4dd; }
+.darkTheme .resetBtn { border-color: #3a3530; }
 
-/* Sparklines get color */
-.colorfulTheme .sparklinePath {
-  stroke: #2563eb;
-  opacity: 0.6;
-}
+/* Widget toolbar */
+.darkTheme .widgetToolbar { border-bottom-color: #3a3530; }
+.darkTheme .hideWidgetBtn { border-color: #3a3530; color: #6a6460; }
 
-/* Revenue breakdown colors */
-.colorfulTheme .revenueRow:nth-child(1) .revenuePct { color: #2563eb; }
-.colorfulTheme .revenueRow:nth-child(2) .revenuePct { color: #059669; }
-.colorfulTheme .revenueRow:nth-child(3) .revenuePct { color: #d97706; }
-.colorfulTheme .revenueRow:nth-child(4) .revenuePct { color: #7c3aed; }
+/* Hidden panel */
+.darkTheme .hiddenPanelLabel { color: #6a6460; }
+.darkTheme .hiddenItem { border-color: #3a3530; color: #6a6460; }
+.darkTheme .hiddenItem span { color: #c4a070; }
+.darkTheme .hiddenItem:hover { background: #252220; border-color: #c4a070; }
 
-/* Table header accent */
-.colorfulTheme .dataTable th {
-  color: #475569;
-}
+/* AI button */
+.darkTheme .aiButton { color: #3a3530; }
+.darkTheme .aiButton:hover { color: #e8e4dd; }
+.darkTheme .aiTooltip { background: #e8e4dd; color: #1a1815; }
 
-/* Tabs accent */
-.colorfulTheme .navTabActive {
-  color: #2563eb;
-  border-bottom-color: #2563eb;
-}
+/* Module tiles */
+.darkTheme .moduleTile { border-color: #3a3530; }
+.darkTheme .moduleTile:hover { background: #252220; border-color: #6a6460; }
+.darkTheme .moduleName { color: #9a9490; }
+.darkTheme .moduleMetric { color: #e8e4dd; }
+.darkTheme .moduleTrend { color: #5aad78; }
+.darkTheme .moduleTrendNeg { color: #e05050; }
+.darkTheme .moduleActive { background: #5aad78; }
+.darkTheme .moduleInactive { background: #3a3530; }
+
+/* Size + theme buttons */
+.darkTheme .sizeBtn { border-color: #3a3530; color: #9a9490; }
+.darkTheme .sizeBtn:hover:not(:disabled) { background: #e8e4dd; color: #1a1815; }
+.darkTheme .themeToggle { border-color: #3a3530; color: #9a9490; }
+.darkTheme .themeToggle:hover { background: #e8e4dd; color: #1a1815; }
 
 .userName {
   font-family: 'Space Mono', monospace;
