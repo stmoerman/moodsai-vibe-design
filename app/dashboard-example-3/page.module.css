@@ -83,6 +83,153 @@
   gap: 12px;
 }
 
+/* ── Text size controls ── */
+.sizeControls {
+  display: flex;
+  gap: 2px;
+}
+
+.sizeBtn {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  color: #3a3a3a;
+  background: none;
+  border: 1px solid #d0cdc6;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  position: relative;
+  padding: 0;
+}
+
+.sizeBtn:hover:not(:disabled) {
+  background: #3a3a3a;
+  color: #eeeae3;
+}
+
+.sizeBtn:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.sizeBtnMinus,
+.sizeBtnPlus {
+  font-size: 0.5rem;
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  line-height: 1;
+}
+
+/* ── Theme toggle ── */
+.themeToggle {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid #d0cdc6;
+  color: #7a746e;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.themeToggle:hover {
+  background: #3a3a3a;
+  color: #eeeae3;
+}
+
+.themeToggleActive {
+  background: #8b6d4f;
+  border-color: #8b6d4f;
+  color: #eeeae3;
+}
+
+.themeToggleActive:hover {
+  background: #7a5e42;
+}
+
+/* ═══════════════════════════════════════════
+   Colorful Theme Override
+   ═══════════════════════════════════════════ */
+.colorfulTheme {
+  background: #f0f4f8;
+}
+
+.colorfulTheme .dotGrid {
+  background-image: radial-gradient(circle, #c8d4e0 0.6px, transparent 0.6px);
+}
+
+.colorfulTheme .topBar {
+  background: #f0f4f8;
+  border-bottom-color: #d4dce6;
+}
+
+/* Stat widgets get colored accents */
+.colorfulTheme .widgetCard:nth-child(1) {
+  border-left: 3px solid #2563eb;
+}
+
+.colorfulTheme .widgetCard:nth-child(2) {
+  border-left: 3px solid #059669;
+}
+
+.colorfulTheme .widgetCard:nth-child(3) {
+  border-left: 3px solid #d97706;
+}
+
+.colorfulTheme .widgetCard:nth-child(4) {
+  border-left: 3px solid #7c3aed;
+}
+
+/* Chart bars get color */
+.colorfulTheme .barDiag { background: #2563eb; }
+.colorfulTheme .barTreat { background: #059669; }
+.colorfulTheme .barWork { background: #d97706; }
+.colorfulTheme .barEhealth { background: #7c3aed; }
+
+/* Flow chart bars */
+.colorfulTheme .flowBarIn { background: #2563eb; }
+.colorfulTheme .flowBarOut { background: #f59e0b; }
+
+/* Card surfaces */
+.colorfulTheme .widgetCard {
+  background: #ffffff;
+  border-color: #d4dce6;
+}
+
+/* Active filter */
+.colorfulTheme .filterPillActive {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+
+/* Text stays dark for readability */
+.colorfulTheme .statValue {
+  color: #0f172a;
+}
+
+/* AskMoody dot */
+.colorfulTheme .askMoodyDot {
+  background: #059669;
+}
+
+/* Module active border */
+.colorfulTheme .moduleTileActive {
+  border-left: 3px solid #2563eb;
+}
+
+/* Warmer greeting */
+.colorfulTheme .greeting {
+  color: #2563eb;
+}
+
 .userName {
   font-family: 'Space Mono', monospace;
   font-size: 0.7rem;

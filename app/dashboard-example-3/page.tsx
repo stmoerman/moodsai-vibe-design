@@ -122,6 +122,8 @@ export default function DashboardExample3() {
     week: 'All weeks',
   });
   const [flowPeriod, setFlowPeriod] = useState<'Week' | 'Month' | 'Quarter'>('Month');
+  const [textSize, setTextSize] = useState(0); // -2 to +2 range
+  const [colorful, setColorful] = useState(false);
   const widgetRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   // Live clock — update every 60s
@@ -189,7 +191,7 @@ export default function DashboardExample3() {
   let widgetIdx = 0;
 
   return (
-    <div className={s.root}>
+    <div className={`${s.root} ${colorful ? s.colorfulTheme : ''}`} style={{ fontSize: `${100 + textSize * 10}%` }}>
       <div className={s.dotGrid} aria-hidden="true" />
 
       {/* ── Top Bar ── */}
@@ -198,6 +200,38 @@ export default function DashboardExample3() {
           <Image src="/images/logo.png" alt="Oh My Mood" width={120} height={32} className={s.logoImg} />
         </Link>
         <div className={s.topBarRight}>
+          {/* Text size controls */}
+          <div className={s.sizeControls}>
+            <button
+              className={s.sizeBtn}
+              onClick={() => setTextSize((v) => Math.max(-2, v - 1))}
+              disabled={textSize <= -2}
+              title="Kleiner"
+            >
+              A<span className={s.sizeBtnMinus}>−</span>
+            </button>
+            <button
+              className={s.sizeBtn}
+              onClick={() => setTextSize((v) => Math.min(2, v + 1))}
+              disabled={textSize >= 2}
+              title="Groter"
+            >
+              A<span className={s.sizeBtnPlus}>+</span>
+            </button>
+          </div>
+
+          {/* Theme toggle */}
+          <button
+            className={`${s.themeToggle} ${colorful ? s.themeToggleActive : ''}`}
+            onClick={() => setColorful((v) => !v)}
+            title={colorful ? 'Klassiek thema' : 'Kleurrijk thema'}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" stroke="currentColor">
+              <circle cx="8" cy="8" r="6" />
+              <path d="M8 2a6 6 0 0 1 0 12" fill="currentColor" stroke="none" />
+            </svg>
+          </button>
+
           <span className={s.userName}>Amsterdam</span>
           <div className={s.avatar}>JS</div>
         </div>
