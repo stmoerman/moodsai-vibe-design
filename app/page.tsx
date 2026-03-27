@@ -10,8 +10,8 @@ const designs = [
 ]
 
 const dashboards = [
-  { href: '/dashboard-example', name: 'Therapist Dashboard', desc: 'Day view with interactive agenda, team chat, client management' },
-  { href: '/dashboard-example-3', name: 'BI Dashboard', desc: 'Revenue charts, declaration control, client flow, analytics widgets' },
+  { href: '/therapist-dashboard', name: 'Therapist Dashboard', desc: 'Day view with interactive agenda, team chat, client management' },
+  { href: '/bi-dashboard', name: 'BI Dashboard', desc: 'Revenue charts, declaration control, client flow, analytics widgets' },
 ]
 
 export default function Home() {

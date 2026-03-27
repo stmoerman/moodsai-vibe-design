@@ -229,6 +229,19 @@
 .colorfulTheme .messagesSection,
 .colorfulTheme .statBlock { background: #ffffff; border-color: #d4dce6; }
 
+/* Agenda appointment blocks */
+.colorfulTheme .aptConfirmed { background: #f8fafc; border-left-color: #2563eb; }
+.colorfulTheme .aptPending { background: #f8fafc; border-left-color: #d97706; }
+.colorfulTheme .aptAvailable { border-color: #cbd5e1; }
+.colorfulTheme .aptBreak { background: #f1f5f9; }
+.colorfulTheme .aptConfirmed:hover,
+.colorfulTheme .aptPending:hover { background: #eff6ff; }
+
+/* Agenda elements */
+.colorfulTheme .agendaSection { background: #ffffff; border-color: #d4dce6; }
+.colorfulTheme .scheduleRow:hover { background: #f1f5f9; }
+.colorfulTheme .askMoodyMsg { background: #f1f5f9; border-color: #e2e8f0; }
+
 /* Active schedule row */
 .colorfulTheme .scheduleRowActive { border-left-color: #2563eb; }
 
