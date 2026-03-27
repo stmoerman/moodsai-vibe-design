@@ -161,6 +161,8 @@ export default function DashboardExample() {
   const [viewMode, setViewMode] = useState<'dag' | 'week'>('dag');
   const [isAgendaExpanded, setIsAgendaExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState('agenda');
+  const [textSize, setTextSize] = useState(0);
+  const [colorful, setColorful] = useState(false);
 
   useEffect(() => {
     setNow(new Date());
@@ -395,7 +397,7 @@ export default function DashboardExample() {
   );
 
   return (
-    <div className={s.root}>
+    <div className={`${s.root} ${colorful ? s.colorfulTheme : ''} ${textSize !== 0 ? s[`size${textSize > 0 ? 'Up' : 'Down'}${Math.abs(textSize)}`] || '' : ''}`}>
       <div className={s.dotGrid} aria-hidden="true" />
 
       {/* Top Bar */}
@@ -404,6 +406,13 @@ export default function DashboardExample() {
           <Image src="/images/logo.png" alt="Oh My Mood" width={120} height={32} className={s.logoImg} />
         </Link>
         <div className={s.topBarRight}>
+          <div className={s.sizeControls}>
+            <button className={s.sizeBtn} onClick={() => setTextSize((v) => Math.max(-2, v - 1))} disabled={textSize <= -2} title="Kleiner">A<span className={s.sizeBtnMinus}>−</span></button>
+            <button className={s.sizeBtn} onClick={() => setTextSize((v) => Math.min(2, v + 1))} disabled={textSize >= 2} title="Groter">A<span className={s.sizeBtnPlus}>+</span></button>
+          </div>
+          <button className={`${s.themeToggle} ${colorful ? s.themeToggleActive : ''}`} onClick={() => setColorful((v) => !v)} title={colorful ? 'Klassiek thema' : 'Kleurrijk thema'}>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" stroke="currentColor"><circle cx="8" cy="8" r="6" /><path d="M8 2a6 6 0 0 1 0 12" fill="currentColor" stroke="none" /></svg>
+          </button>
           <span className={s.userName}>Amsterdam</span>
           <div className={s.avatar}>JS</div>
         </div>

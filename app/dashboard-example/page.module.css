@@ -112,6 +112,12 @@
   font-size: 0.9rem;
 }
 
+/* ── Text size scaling ── */
+.sizeUp1 { font-size: 110%; }
+.sizeUp2 { font-size: 120%; }
+.sizeDown1 { font-size: 90%; }
+.sizeDown2 { font-size: 80%; }
+
 /* ── Root ── */
 .root {
   position: relative;
@@ -166,6 +172,85 @@
   align-items: center;
   gap: 12px;
 }
+
+/* ── Size & Theme Controls ── */
+.sizeControls { display: flex; gap: 2px; }
+
+.sizeBtn {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  color: #3a3a3a;
+  background: none;
+  border: 1px solid #d0cdc6;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  padding: 0;
+  transition: background 0.15s, color 0.15s;
+}
+.sizeBtn:hover:not(:disabled) { background: #3a3a3a; color: #eeeae3; }
+.sizeBtn:disabled { opacity: 0.25; cursor: default; }
+.sizeBtnMinus, .sizeBtnPlus { font-size: 0.5rem; position: absolute; bottom: 2px; right: 2px; line-height: 1; }
+
+.themeToggle {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: 1px solid #d0cdc6;
+  color: #7a746e; cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.themeToggle:hover { background: #3a3a3a; color: #eeeae3; }
+.themeToggleActive { background: #8b6d4f; border-color: #8b6d4f; color: #eeeae3; }
+.themeToggleActive:hover { background: #7a5e42; }
+
+/* ═══════════════════════════════════════════
+   Colorful Theme
+   ═══════════════════════════════════════════ */
+.colorfulTheme { background: #f0f4f8; }
+.colorfulTheme .dotGrid { background-image: radial-gradient(circle, #c8d4e0 0.6px, transparent 0.6px); }
+.colorfulTheme .topBar { background: #f0f4f8; border-bottom-color: #d4dce6; }
+.colorfulTheme .greeting { color: #2563eb; }
+.colorfulTheme .greetingUnderlinePath { stroke: #2563eb; }
+.colorfulTheme .navTabActive { color: #2563eb; border-bottom-color: #2563eb; }
+
+/* Stat cards */
+.colorfulTheme .statBlock:nth-child(1) { border-left: 3px solid #2563eb; }
+.colorfulTheme .statBlock:nth-child(2) { border-left: 3px solid #059669; }
+.colorfulTheme .statBlock:nth-child(3) { border-left: 3px solid #d97706; }
+
+/* Cards */
+.colorfulTheme .scheduleSection,
+.colorfulTheme .askMoody,
+.colorfulTheme .notesSection,
+.colorfulTheme .messagesSection,
+.colorfulTheme .statBlock { background: #ffffff; border-color: #d4dce6; }
+
+/* Active schedule row */
+.colorfulTheme .scheduleRowActive { border-left-color: #2563eb; }
+
+/* Now marker */
+.colorfulTheme .nowDot { background: #2563eb; }
+.colorfulTheme .nowLine { background: #2563eb; }
+
+/* Toggle pills */
+.colorfulTheme .togglePillActive { background: #2563eb; color: #fff; border-color: #2563eb; }
+
+/* AskMoody */
+.colorfulTheme .askMoodyDot { background: #059669; }
+
+/* Messages unread */
+.colorfulTheme .roomLinkCard { background: #1e3a5f; }
+.colorfulTheme .roomLinkCard:hover { background: #2563eb; }
+
+/* Message badge */
+.colorfulTheme .messageBadge { background: #2563eb; }
+
+/* Quick action accent */
+.colorfulTheme .quickActionAccent { color: #2563eb; }
 
 .userName {
   font-family: 'Space Mono', monospace;
@@ -314,7 +399,7 @@
 
 .statLabel {
   font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
+  font-size: 0.7em;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #7a746e;
@@ -323,7 +408,7 @@
 
 .statValue {
   font-family: 'Space Mono', monospace;
-  font-size: 2rem;
+  font-size: 2em;
   font-weight: 700;
   color: #1a1815;
   line-height: 1.2;
@@ -331,7 +416,7 @@
 
 .statSub {
   font-family: 'Space Mono', monospace;
-  font-size: 0.65rem;
+  font-size: 0.65em;
   color: #7a746e;
   margin-top: 4px;
   letter-spacing: 0.02em;
@@ -899,7 +984,7 @@
 
 .askMoodyMsg {
   font-family: 'Crimson Pro', serif;
-  font-size: 1rem;
+  font-size: 0.95em;
   color: #3a3a3a;
   line-height: 1.5;
   margin: 0;
@@ -937,7 +1022,7 @@
 
 .sectionHeading {
   font-family: 'Crimson Pro', serif;
-  font-size: 1.2rem;
+  font-size: 1.15em;
   font-weight: 400;
   color: #3a3a3a;
   margin: 0 0 10px 0;
@@ -957,7 +1042,7 @@
 
 .noteText {
   font-family: 'Crimson Pro', serif;
-  font-size: 0.9rem;
+  font-size: 0.9em;
   color: #3a3a3a;
   line-height: 1.4;
 }
@@ -1012,7 +1097,7 @@
 
 .messageName {
   font-family: 'Crimson Pro', serif;
-  font-size: 0.9rem;
+  font-size: 0.9em;
   color: #3a3a3a;
   flex-shrink: 0;
   margin-right: 8px;
@@ -1020,7 +1105,7 @@
 
 .messagePreview {
   font-family: 'Crimson Pro', serif;
-  font-size: 0.9rem;
+  font-size: 0.9em;
   color: #7a746e;
   flex: 1;
   min-width: 0;
