@@ -619,15 +619,18 @@
 }
 
 .trendPositive {
-  color: #5a7268;
+  color: #2d7a4f;
+  font-weight: 500;
 }
 
 .trendWarning {
-  color: #8a6318;
+  color: #b8751a;
+  font-weight: 500;
 }
 
 .trendNegative {
-  color: #a33636;
+  color: #c43030;
+  font-weight: 500;
 }
 
 .sparkline {
@@ -1034,19 +1037,26 @@
 }
 
 /* ── AskMoody Bottom Bar ── */
-.askMoodyBar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 48px;
-  background: #f5f2ec;
-  border-top: 1px solid #d0cdc6;
+/* Old fixed bottom bar — replaced by inline */
+.askMoodyBar { display: none; }
+
+.askMoodyInline {
+  position: relative;
+  z-index: 1;
+  max-width: 1536px; /* 1600 - 2*32 padding */
+  margin: 0 auto 20px;
+  padding: 0 20px;
   display: flex;
   align-items: center;
-  padding: 0 32px;
-  z-index: 50;
-  gap: 16px;
+  gap: 12px;
+  background: #f5f2ec;
+  border: 1px solid #d0cdc6;
+  height: 48px;
+  transition: border-color 0.15s;
+}
+
+.askMoodyInline:focus-within {
+  border-color: #8b6d4f;
 }
 
 .askMoodyLeft {

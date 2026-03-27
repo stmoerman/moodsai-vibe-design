@@ -531,6 +531,21 @@ export default function DashboardExample3() {
         </div>
       </div>
 
+      {/* ── AskMoody Inline ── */}
+      <div className={s.askMoodyInline}>
+        <div className={s.askMoodyLeft}>
+          <span className={s.askMoodyDot}>&#x2726;</span>
+          <span className={s.askMoodyLabel}>AskMoody</span>
+        </div>
+        <input
+          type="text"
+          className={s.askMoodyInput}
+          placeholder="Vraag iets over je praktijkdata..."
+          readOnly
+        />
+        <span className={s.askMoodyShortcut}>&#x2318;K</span>
+      </div>
+
       {/* ── Widget Grid ── */}
       <div className={s.widgetGridArea}>
         <div className={s.customizeRow}>
@@ -624,20 +639,7 @@ export default function DashboardExample3() {
         ))}
       </div>
 
-      {/* ── AskMoody Bottom Bar ── */}
-      <div className={s.askMoodyBar}>
-        <div className={s.askMoodyLeft}>
-          <span className={s.askMoodyDot}>&#x2726;</span>
-          <span className={s.askMoodyLabel}>AskMoody</span>
-        </div>
-        <input
-          type="text"
-          className={s.askMoodyInput}
-          placeholder="Ask about your practice data..."
-          readOnly
-        />
-        <span className={s.askMoodyShortcut}>&#x2318;K</span>
-      </div>
+      {/* AskMoody moved to inline position above widget grid */}
     </div>
   );
 }
