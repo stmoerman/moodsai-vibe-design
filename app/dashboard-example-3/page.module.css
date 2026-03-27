@@ -24,6 +24,10 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes drawGreetingLine {
+  to { stroke-dashoffset: 0; }
+}
+
 /* ── Root ── */
 .root {
   position: relative;
@@ -54,43 +58,23 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  max-width: 1600px;
+  margin: 0 auto;
   padding: 0 32px;
   border-bottom: 1px solid #d0cdc6;
   background: #eeeae3;
 }
 
-.topBarLeft {
-  display: flex;
-  align-items: center;
-}
-
 .logo {
-  font-family: 'Crimson Pro', serif;
-  font-size: 1rem;
-  font-weight: 400;
-  color: #3a3a3a;
-  text-decoration: none;
-  letter-spacing: 0.02em;
-}
-
-.topBarCenter {
   display: flex;
   align-items: center;
-  gap: 10px;
+  text-decoration: none;
 }
 
-.liveClock {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.8rem;
-  color: #3a3a3a;
-  letter-spacing: 0.04em;
-}
-
-.liveDate {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  color: #7a746e;
-  letter-spacing: 0.04em;
+.logoImg {
+  height: 28px;
+  width: auto;
+  object-fit: contain;
 }
 
 .topBarRight {
@@ -99,7 +83,7 @@
   gap: 12px;
 }
 
-.orgName {
+.userName {
   font-family: 'Space Mono', monospace;
   font-size: 0.7rem;
   color: #7a746e;
@@ -120,25 +104,104 @@
   letter-spacing: 0.04em;
 }
 
-/* ── Welcome + Filters Row ── */
-.welcomeRow {
+/* ── Welcome Hero ── */
+.welcomeHero {
   position: relative;
   z-index: 1;
-  max-width: 1200px;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 20px 32px 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  animation: slideDown 0.4s ease 0.1s both;
+  padding: 28px 32px 16px;
 }
 
 .greeting {
   font-family: 'Crimson Pro', serif;
-  font-size: 1.3rem;
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
   font-weight: 400;
   color: #8b6d4f;
   letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.greetingUnderline {
+  display: block;
+  margin-top: 4px;
+  margin-bottom: 10px;
+  overflow: visible;
+}
+
+.greetingUnderlinePath {
+  fill: none;
+  stroke: #8b6d4f;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 320;
+  stroke-dashoffset: 320;
+  animation: drawGreetingLine 0.8s ease-out forwards 0.6s;
+}
+
+.dateTime {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  color: #7a746e;
+  letter-spacing: 0.04em;
+}
+
+/* ── Navigation Tabs ── */
+.navTabs {
+  position: relative;
+  z-index: 1;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 32px;
+  border-bottom: 1px solid #d0cdc6;
+}
+
+.navTabsInner {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.navTabsInner::-webkit-scrollbar {
+  display: none;
+}
+
+.navTab {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #7a746e;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 12px 20px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.navTab:hover {
+  color: #3a3a3a;
+}
+
+.navTabActive {
+  color: #3a3a3a;
+  border-bottom-color: #3a3a3a;
+}
+
+/* ── Filters Row ── */
+.filtersRow {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 32px 8px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .filters {
@@ -150,11 +213,12 @@
 .filterPill {
   font-family: 'Space Mono', monospace;
   font-size: 0.65rem;
-  letter-spacing: 0.04em;
-  padding: 5px 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 12px;
   border: 1px solid #d0cdc6;
   background: transparent;
-  color: #3a3a3a;
+  color: #7a746e;
   cursor: pointer;
   transition: background 0.15s, color 0.15s, border-color 0.15s;
   line-height: 1.4;
@@ -162,6 +226,7 @@
 
 .filterPill:hover {
   border-color: #3a3a3a;
+  color: #3a3a3a;
 }
 
 .filterPillActive {
@@ -844,15 +909,16 @@
     padding: 0 16px;
   }
 
-  .topBarCenter {
-    display: none;
+  .welcomeHero {
+    padding: 16px 16px 8px;
   }
 
-  .welcomeRow {
-    padding: 16px 16px 8px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
+  .navTabs {
+    padding: 0 16px;
+  }
+
+  .filtersRow {
+    padding: 12px 16px 8px;
   }
 
   .filters {
@@ -914,13 +980,18 @@
 /* ── Reduced Motion ── */
 @media (prefers-reduced-motion: reduce) {
   .dotGrid,
-  .welcomeRow,
+  .welcomeHero,
   .widget,
   .modulesRow,
-  .reveal {
+  .reveal,
+  .greetingUnderlinePath {
     animation: none;
     opacity: 1;
     transform: none;
     transition: none;
+  }
+
+  .greetingUnderlinePath {
+    stroke-dashoffset: 0;
   }
 }

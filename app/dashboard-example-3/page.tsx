@@ -2,21 +2,23 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import s from './page.module.css';
 
 /* ── Helpers ── */
 function getGreeting(hour: number) {
-  if (hour < 12) return 'Good morning';
-  if (hour < 18) return 'Good afternoon';
-  return 'Good evening';
+  if (hour < 12) return 'Goedemorgen';
+  if (hour < 18) return 'Goedemiddag';
+  return 'Goedenavond';
 }
 
-function formatClock(date: Date) {
-  return date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-}
-
-function formatDateShort(date: Date) {
-  return date.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+function formatDate(date: Date) {
+  const days = ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za'];
+  const months = [
+    'januari', 'februari', 'maart', 'april', 'mei', 'juni',
+    'juli', 'augustus', 'september', 'oktober', 'november', 'december',
+  ];
+  return `${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]}`;
 }
 
 /* ── Mock data ── */
@@ -101,10 +103,19 @@ function WidgetHeader({
   );
 }
 
+const navTabs = [
+  { label: 'Overzicht', id: 'overzicht' },
+  { label: 'Omzet', id: 'omzet' },
+  { label: 'Declaraties', id: 'declaraties' },
+  { label: 'Cliëntenstroom', id: 'clientenstroom' },
+  { label: 'Modules', id: 'modules' },
+];
+
 /* ── Main Component ── */
 export default function DashboardExample3() {
   const [now, setNow] = useState<Date | null>(null);
   const [customizing, setCustomizing] = useState(false);
+  const [activeTab, setActiveTab] = useState('overzicht');
   const [activeFilters, setActiveFilters] = useState({
     year: '2026',
     month: 'March',
@@ -155,9 +166,8 @@ export default function DashboardExample3() {
     return () => observerRef.current?.disconnect();
   }, []);
 
-  const greeting = now ? getGreeting(now.getHours()) : 'Good afternoon';
-  const clockStr = now ? formatClock(now) : '16:14';
-  const dateStr = now ? formatDateShort(now) : 'Wed 25 Mar';
+  const greeting = now ? getGreeting(now.getHours()) : 'Goedemiddag';
+  const dateStr = now ? formatDate(now) : '';
 
   const maxBarTotal = Math.max(...weeklyRevenue.map((w) => w.diagnostics + w.treatment + w.workshop + w.ehealth));
   const maxFlow = Math.max(...clientFlow.flatMap((c) => [c.inflow, c.outflow]));
@@ -184,22 +194,44 @@ export default function DashboardExample3() {
 
       {/* ── Top Bar ── */}
       <header className={s.topBar}>
-        <div className={s.topBarLeft}>
-          <Link href="/" className={s.logo}>Moods.ai</Link>
-        </div>
-        <div className={s.topBarCenter}>
-          <span className={s.liveClock}>{clockStr}</span>
-          <span className={s.liveDate}>{dateStr}</span>
-        </div>
+        <Link href="/" className={s.logo}>
+          <Image src="/images/logo.png" alt="Oh My Mood" width={120} height={32} className={s.logoImg} />
+        </Link>
         <div className={s.topBarRight}>
-          <span className={s.orgName}>GGZ Noord</span>
-          <div className={s.avatar}>JV</div>
+          <span className={s.userName}>Amsterdam</span>
+          <div className={s.avatar}>JS</div>
         </div>
       </header>
 
-      {/* ── Welcome + Filters ── */}
-      <div className={s.welcomeRow}>
-        <span className={s.greeting}>{greeting}, Jaime</span>
+      {/* ── Welcome ── */}
+      <div className={s.welcomeHero}>
+        <h1 className={s.greeting}>{greeting}, Jaime</h1>
+        <svg className={s.greetingUnderline} width="280" height="12" viewBox="0 0 280 12" aria-hidden="true">
+          <path
+            d="M0,6 C23,1 46,11 70,5 C93,0 116,10 140,4 C163,-1 186,9 210,5 C233,1 256,9 280,6"
+            className={s.greetingUnderlinePath}
+          />
+        </svg>
+        <span className={s.dateTime}>BI Dashboard &middot; Amsterdam &middot; {dateStr}</span>
+      </div>
+
+      {/* ── Navigation Tabs ── */}
+      <nav className={s.navTabs}>
+        <div className={s.navTabsInner}>
+          {navTabs.map((tab) => (
+            <button
+              key={tab.id}
+              className={`${s.navTab} ${activeTab === tab.id ? s.navTabActive : ''}`}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </nav>
+
+      {/* ── Filters ── */}
+      <div className={s.filtersRow}>
         <div className={s.filters}>
           <button
             className={`${s.filterPill} ${s.filterPillActive}`}
@@ -229,7 +261,7 @@ export default function DashboardExample3() {
             className={`${s.customizeBtn} ${customizing ? s.customizeBtnActive : ''}`}
             onClick={() => setCustomizing(!customizing)}
           >
-            {customizing ? 'Done' : 'Customize'}
+            {customizing ? 'Klaar' : 'Aanpassen'}
           </button>
         </div>
 
