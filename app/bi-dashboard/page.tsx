@@ -149,8 +149,8 @@ export default function DashboardExample3() {
   const [activeFilters, setActiveFilters] = useState({
     year: '2026',
     month: 'Maart',
-    week: 'Alle weken',
   });
+  const [selectedWeeks, setSelectedWeeks] = useState<Set<string>>(new Set());
   const [flowPeriod, setFlowPeriod] = useState<'Week' | 'Month' | 'Quarter'>('Month');
   const [textSize, setTextSize] = useState(0);
   const [darkMode, setDarkMode] = useState(false);
@@ -185,16 +185,37 @@ export default function DashboardExample3() {
   const filterOptions: Record<string, string[]> = {
     year: ['2024', '2025', '2026'],
     month: ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'],
-    week: ['Alle weken', 'W01', 'W02', 'W03', 'W04', 'W05', 'W06', 'W07', 'W08', 'W09', 'W10'],
   };
+
+  const weekOptions = ['W01', 'W02', 'W03', 'W04', 'W05', 'W06', 'W07', 'W08', 'W09', 'W10'];
 
   function selectFilter(key: string, value: string) {
     setActiveFilters((prev) => ({ ...prev, [key]: value }));
     setOpenDropdown(null);
   }
 
+  function toggleWeek(week: string) {
+    setSelectedWeeks((prev) => {
+      const next = new Set(prev);
+      if (next.has(week)) next.delete(week);
+      else next.add(week);
+      return next;
+    });
+  }
+
+  function selectAllWeeks() {
+    setSelectedWeeks(new Set());
+  }
+
+  const weekLabel = selectedWeeks.size === 0
+    ? 'Alle weken'
+    : selectedWeeks.size === 1
+      ? Array.from(selectedWeeks)[0]
+      : `${selectedWeeks.size} weken`;
+
   function resetFilters() {
-    setActiveFilters({ year: '2026', month: 'Maart', week: 'Alle weken' });
+    setActiveFilters({ year: '2026', month: 'Maart' });
+    setSelectedWeeks(new Set());
     setOpenDropdown(null);
   }
 
@@ -539,15 +560,14 @@ export default function DashboardExample3() {
       {/* ── Filters ── */}
       <div className={s.filtersRow}>
         <div className={s.filters}>
-          {(['year', 'month', 'week'] as const).map((key) => (
+          {/* Year + Month dropdowns */}
+          {(['year', 'month'] as const).map((key) => (
             <div key={key} className={s.filterDropdown}>
               <button
                 className={`${s.filterBtn} ${openDropdown === key ? s.filterBtnOpen : ''}`}
                 onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === key ? null : key); }}
               >
-                <span className={s.filterBtnLabel}>
-                  {key === 'year' ? 'Jaar' : key === 'month' ? 'Maand' : 'Week'}
-                </span>
+                <span className={s.filterBtnLabel}>{key === 'year' ? 'Jaar' : 'Maand'}</span>
                 <span className={s.filterBtnValue}>{activeFilters[key]}</span>
                 <svg className={s.filterBtnChevron} width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                   <path d="M3 4l2 2 2-2" />
@@ -568,6 +588,41 @@ export default function DashboardExample3() {
               )}
             </div>
           ))}
+
+          {/* Week multi-select dropdown */}
+          <div className={s.filterDropdown}>
+            <button
+              className={`${s.filterBtn} ${openDropdown === 'week' ? s.filterBtnOpen : ''}`}
+              onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === 'week' ? null : 'week'); }}
+            >
+              <span className={s.filterBtnLabel}>Week</span>
+              <span className={s.filterBtnValue}>{weekLabel}</span>
+              <svg className={s.filterBtnChevron} width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                <path d="M3 4l2 2 2-2" />
+              </svg>
+            </button>
+            {openDropdown === 'week' && (
+              <div className={s.filterMenu} onClick={(e) => e.stopPropagation()}>
+                <button
+                  className={`${s.filterOption} ${selectedWeeks.size === 0 ? s.filterOptionActive : ''}`}
+                  onClick={selectAllWeeks}
+                >
+                  Alle weken
+                </button>
+                {weekOptions.map((w) => (
+                  <label key={w} className={s.filterCheckOption}>
+                    <input
+                      type="checkbox"
+                      checked={selectedWeeks.has(w)}
+                      onChange={() => toggleWeek(w)}
+                      className={s.filterCheckbox}
+                    />
+                    <span>{w}</span>
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
           <button className={s.filterReset} onClick={resetFilters} title="Filters herstellen">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
               <path d="M1 1l10 10M11 1L1 11" />

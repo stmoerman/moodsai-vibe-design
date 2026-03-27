@@ -284,6 +284,9 @@
 .darkTheme .filterOption:hover { background: #2a2625; }
 .darkTheme .filterOptionActive { background: #e8e4dd; color: #1a1815; }
 .darkTheme .filterOptionActive:hover { background: #d0cdc6; }
+.darkTheme .filterCheckOption { color: #e8e4dd; }
+.darkTheme .filterCheckOption:hover { background: #3a3530; }
+.darkTheme .filterCheckbox { accent-color: #c4a070; }
 .darkTheme .filterReset { border-color: #3a3530; color: #6a6460; }
 .darkTheme .filterReset:hover { background: #e8e4dd; color: #1a1815; }
 
@@ -550,6 +553,30 @@
 
 .filterOptionActive:hover {
   background: #2a2826;
+}
+
+.filterCheckOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: #3a3a3a;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.filterCheckOption:hover {
+  background: #ece8e1;
+}
+
+.filterCheckbox {
+  width: 14px;
+  height: 14px;
+  accent-color: #3a3a3a;
+  cursor: pointer;
+  flex-shrink: 0;
 }
 
 .filterReset {
