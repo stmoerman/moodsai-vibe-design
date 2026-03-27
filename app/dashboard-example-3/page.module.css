@@ -28,6 +28,12 @@
   to { stroke-dashoffset: 0; }
 }
 
+/* ── Text size scaling ── */
+.sizeUp1 { font-size: 110%; }
+.sizeUp2 { font-size: 120%; }
+.sizeDown1 { font-size: 90%; }
+.sizeDown2 { font-size: 80%; }
+
 /* ── Root ── */
 .root {
   position: relative;
@@ -194,8 +200,8 @@
 .colorfulTheme .barEhealth { background: #7c3aed; }
 
 /* Flow chart bars */
-.colorfulTheme .flowBarIn { background: #2563eb; }
-.colorfulTheme .flowBarOut { background: #f59e0b; }
+.colorfulTheme .flowBarInflow { background: #2563eb; }
+.colorfulTheme .flowBarOutflow { background: #f59e0b; }
 
 /* Card surfaces */
 .colorfulTheme .widgetCard {
@@ -228,6 +234,29 @@
 /* Warmer greeting */
 .colorfulTheme .greeting {
   color: #2563eb;
+}
+
+/* Sparklines get color */
+.colorfulTheme .sparklinePath {
+  stroke: #2563eb;
+  opacity: 0.6;
+}
+
+/* Revenue breakdown colors */
+.colorfulTheme .revenueRow:nth-child(1) .revenuePct { color: #2563eb; }
+.colorfulTheme .revenueRow:nth-child(2) .revenuePct { color: #059669; }
+.colorfulTheme .revenueRow:nth-child(3) .revenuePct { color: #d97706; }
+.colorfulTheme .revenueRow:nth-child(4) .revenuePct { color: #7c3aed; }
+
+/* Table header accent */
+.colorfulTheme .dataTable th {
+  color: #475569;
+}
+
+/* Tabs accent */
+.colorfulTheme .navTabActive {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
 }
 
 .userName {
@@ -458,7 +487,7 @@
 
 .widgetTitle {
   font-family: 'Space Mono', monospace;
-  font-size: 0.65rem;
+  font-size: 0.65em;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #7a746e;
@@ -537,7 +566,7 @@
 /* ── Stat Widget ── */
 .statValue {
   font-family: 'Space Mono', monospace;
-  font-size: 1.75rem;
+  font-size: 2em;
   font-weight: 700;
   color: #1a1815;
   line-height: 1.2;
@@ -546,7 +575,7 @@
 
 .statLabel {
   font-family: 'Space Mono', monospace;
-  font-size: 0.6rem;
+  font-size: 0.7em;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #7a746e;
@@ -934,7 +963,7 @@
 
 .moduleName {
   font-family: 'Space Mono', monospace;
-  font-size: 0.6rem;
+  font-size: 0.65em;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: #3a3a3a;

@@ -191,7 +191,7 @@ export default function DashboardExample3() {
   let widgetIdx = 0;
 
   return (
-    <div className={`${s.root} ${colorful ? s.colorfulTheme : ''}`} style={{ fontSize: `${100 + textSize * 10}%` }}>
+    <div className={`${s.root} ${colorful ? s.colorfulTheme : ''} ${textSize !== 0 ? s[`size${textSize > 0 ? 'Up' : 'Down'}${Math.abs(textSize)}`] || '' : ''}`}>
       <div className={s.dotGrid} aria-hidden="true" />
 
       {/* ── Top Bar ── */}
@@ -370,10 +370,10 @@ export default function DashboardExample3() {
                   return (
                     <div className={s.barGroup} key={w.week}>
                       <div className={s.stackedBar} style={{ height: `${(total / maxBarTotal) * 100}%` }}>
-                        <div className={s.barSegment} style={{ background: '#d0cdc6', flex: w.ehealth }} />
-                        <div className={s.barSegment} style={{ background: '#b8a898', flex: w.workshop }} />
-                        <div className={s.barSegment} style={{ background: '#8b6d4f', flex: w.treatment }} />
-                        <div className={s.barSegment} style={{ background: '#3a3a3a', flex: w.diagnostics }} />
+                        <div className={s.barSegment} style={{ background: colorful ? '#7c3aed' : '#d0cdc6', flex: w.ehealth }} />
+                        <div className={s.barSegment} style={{ background: colorful ? '#d97706' : '#b8a898', flex: w.workshop }} />
+                        <div className={s.barSegment} style={{ background: colorful ? '#059669' : '#8b6d4f', flex: w.treatment }} />
+                        <div className={s.barSegment} style={{ background: colorful ? '#2563eb' : '#3a3a3a', flex: w.diagnostics }} />
                       </div>
                     </div>
                   );
@@ -386,10 +386,10 @@ export default function DashboardExample3() {
               </div>
               <div className={s.chartLegend}>
                 {[
-                  { color: '#3a3a3a', label: 'Diagnostics' },
-                  { color: '#8b6d4f', label: 'Treatment' },
-                  { color: '#b8a898', label: 'Workshop' },
-                  { color: '#d0cdc6', label: 'eHealth' },
+                  { color: colorful ? '#2563eb' : '#3a3a3a', label: 'Diagnostics' },
+                  { color: colorful ? '#059669' : '#8b6d4f', label: 'Treatment' },
+                  { color: colorful ? '#d97706' : '#b8a898', label: 'Workshop' },
+                  { color: colorful ? '#7c3aed' : '#d0cdc6', label: 'eHealth' },
                 ].map((l) => (
                   <div className={s.legendItem} key={l.label}>
                     <div className={s.legendSwatch} style={{ background: l.color }} />
@@ -483,11 +483,11 @@ export default function DashboardExample3() {
             </div>
             <div className={s.flowLegend}>
               <div className={s.legendItem}>
-                <div className={s.legendSwatch} style={{ background: '#3a3a3a' }} />
+                <div className={s.legendSwatch} style={{ background: colorful ? '#2563eb' : '#3a3a3a' }} />
                 <span className={s.legendLabel}>New clients</span>
               </div>
               <div className={s.legendItem}>
-                <div className={s.legendSwatch} style={{ background: '#d0cdc6' }} />
+                <div className={s.legendSwatch} style={{ background: colorful ? '#f59e0b' : '#d0cdc6' }} />
                 <span className={s.legendLabel}>Closed trajectories</span>
               </div>
             </div>
