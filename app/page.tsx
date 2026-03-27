@@ -9,6 +9,11 @@ const designs = [
   { id: 13, name: 'The Impossible', desc: 'Full creative mode — pushing the boundaries of what a SaaS page can be' },
 ]
 
+const dashboards = [
+  { href: '/dashboard-example', name: 'Therapist Dashboard', desc: 'Day view with interactive agenda, team chat, client management' },
+  { href: '/dashboard-example-3', name: 'BI Dashboard', desc: 'Revenue charts, declaration control, client flow, analytics widgets' },
+]
+
 export default function Home() {
   return (
     <div className={styles.root}>
@@ -18,6 +23,19 @@ export default function Home() {
         {designs.map(d => (
           <Link key={d.id} href={`/designs/${d.id}`} className={styles.card}>
             <div className={styles.cardNum}>{String(d.id).padStart(2, '0')}</div>
+            <div className={styles.cardName}>{d.name}</div>
+            <div className={styles.cardDesc}>{d.desc}</div>
+            <span className={styles.cardArrow}>→</span>
+          </Link>
+        ))}
+      </div>
+
+      <div className={styles.sectionDivider} />
+
+      <div className={styles.sub}>2 Dashboard Directions</div>
+      <div className={styles.grid}>
+        {dashboards.map(d => (
+          <Link key={d.href} href={d.href} className={styles.card}>
             <div className={styles.cardName}>{d.name}</div>
             <div className={styles.cardDesc}>{d.desc}</div>
             <span className={styles.cardArrow}>→</span>

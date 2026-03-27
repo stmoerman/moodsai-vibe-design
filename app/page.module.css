@@ -84,3 +84,11 @@
 .card:hover .cardArrow {
   opacity: 1;
 }
+
+.sectionDivider {
+  width: 100%;
+  height: 1px;
+  background: #d0cdc6;
+  margin: 48px 0 40px;
+  max-width: 1200px;
+}
