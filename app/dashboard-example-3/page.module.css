@@ -197,7 +197,7 @@
 .filtersRow {
   position: relative;
   z-index: 1;
-  max-width: 1200px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 16px 32px 8px;
   display: flex;
@@ -239,7 +239,7 @@
 .widgetGridArea {
   position: relative;
   z-index: 1;
-  max-width: 1200px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 0 32px;
 }
@@ -753,7 +753,7 @@
 .modulesRow {
   position: relative;
   z-index: 1;
-  max-width: 1200px;
+  max-width: 1600px;
   margin: 24px auto 0;
   padding: 0 32px;
   display: grid;
