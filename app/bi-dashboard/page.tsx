@@ -1,12 +1,11 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ResponsiveGridLayout, useContainerWidth } from 'react-grid-layout';
-import type { Layout } from 'react-grid-layout';
-import 'react-grid-layout/css/styles.css';
-import 'react-resizable/css/styles.css';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragOverlay } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, rectSortingStrategy, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import s from './page.module.css';
 
 /* ── Helpers ── */
@@ -65,7 +64,7 @@ const modules = [
 ];
 
 /* ── Widget titles map ── */
-const widgetTitles: Record<string, string> = {
+const WIDGET_TITLES: Record<string, string> = {
   'stat-revenue': 'Revenue this week',
   'stat-clients': 'Clients',
   'stat-hours': 'Direct hours',
@@ -77,17 +76,25 @@ const widgetTitles: Record<string, string> = {
   'table-revenue': 'Revenue table',
 };
 
-/* ── Default layout for react-grid-layout ── */
-const DEFAULT_LAYOUT: ReactGridLayout.Layout[] = [
-  { i: 'stat-revenue', x: 0, y: 0, w: 1, h: 2 },
-  { i: 'stat-clients', x: 1, y: 0, w: 1, h: 2 },
-  { i: 'stat-hours', x: 2, y: 0, w: 1, h: 2 },
-  { i: 'stat-declarability', x: 3, y: 0, w: 1, h: 2 },
-  { i: 'chart-revenue', x: 0, y: 2, w: 3, h: 4 },
-  { i: 'breakdown-revenue', x: 3, y: 2, w: 1, h: 4 },
-  { i: 'declaration-control', x: 0, y: 6, w: 2, h: 3 },
-  { i: 'client-flow', x: 2, y: 6, w: 2, h: 3 },
-  { i: 'table-revenue', x: 0, y: 9, w: 4, h: 4 },
+/* ── Widget column spans ── */
+const WIDGET_SPANS: Record<string, number> = {
+  'stat-revenue': 1,
+  'stat-clients': 1,
+  'stat-hours': 1,
+  'stat-declarability': 1,
+  'chart-revenue': 3,
+  'breakdown-revenue': 1,
+  'declaration-control': 2,
+  'client-flow': 2,
+  'table-revenue': 4,
+};
+
+/* ── Default widget order ── */
+const DEFAULT_ORDER = [
+  'stat-revenue', 'stat-clients', 'stat-hours', 'stat-declarability',
+  'chart-revenue', 'breakdown-revenue',
+  'declaration-control', 'client-flow',
+  'table-revenue',
 ];
 
 /* ── Sparkline SVG data ── */
@@ -141,20 +148,47 @@ const navTabs = [
   { label: 'Modules', id: 'modules' },
 ];
 
-/* ── Eye icons ── */
-function EyeOffIcon() {
+/* ── SortableWidget Component ── */
+function SortableWidget({ id, customizing, toggleHide, children }: { id: string; customizing: boolean; toggleHide: (id: string) => void; children: React.ReactNode }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id, disabled: !customizing });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 100 : 'auto',
+    gridColumn: `span ${WIDGET_SPANS[id] || 1}`,
+  };
+
   return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
-      <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
-      <line x1="1" y1="1" x2="23" y2="23" />
-    </svg>
+    <div ref={setNodeRef} style={style} className={`${s.widgetCard} ${customizing ? s.widgetCustomizing : ''} ${isDragging ? s.widgetDragging : ''}`}>
+      {customizing && (
+        <div className={s.widgetToolbar}>
+          <button {...attributes} {...listeners} className={s.dragHandle}>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <circle cx="5" cy="4" r="1.5" />
+              <circle cx="11" cy="4" r="1.5" />
+              <circle cx="5" cy="8" r="1.5" />
+              <circle cx="11" cy="8" r="1.5" />
+              <circle cx="5" cy="12" r="1.5" />
+              <circle cx="11" cy="12" r="1.5" />
+            </svg>
+          </button>
+          <button onClick={() => toggleHide(id)} className={s.hideWidgetBtn}>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <line x1="2" y1="2" x2="12" y2="12" />
+              <line x1="12" y1="2" x2="2" y2="12" />
+            </svg>
+          </button>
+        </div>
+      )}
+      {children}
+    </div>
   );
 }
 
 /* ── Main Component ── */
 export default function DashboardExample3() {
-  const { width, containerRef, mounted } = useContainerWidth();
   const [now, setNow] = useState<Date | null>(null);
   const [customizing, setCustomizing] = useState(false);
   const [activeTab, setActiveTab] = useState('overzicht');
@@ -167,9 +201,15 @@ export default function DashboardExample3() {
   const [textSize, setTextSize] = useState(0);
   const [colorful, setColorful] = useState(false);
 
-  // react-grid-layout state
-  const [layout, setLayout] = useState(DEFAULT_LAYOUT);
+  // @dnd-kit state
+  const [widgetOrder, setWidgetOrder] = useState(DEFAULT_ORDER);
   const [hiddenWidgets, setHiddenWidgets] = useState<Set<string>>(new Set());
+  const [activeId, setActiveId] = useState<string | null>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
 
   // Live clock
   useEffect(() => {
@@ -216,6 +256,25 @@ export default function DashboardExample3() {
       return next;
     });
   }, []);
+
+  function handleReset() {
+    setWidgetOrder(DEFAULT_ORDER);
+    setHiddenWidgets(new Set());
+  }
+
+  function handleDragEnd(event: any) {
+    const { active, over } = event;
+    if (active.id !== over?.id) {
+      setWidgetOrder((items) => {
+        const oldIndex = items.indexOf(active.id);
+        const newIndex = items.indexOf(over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+    setActiveId(null);
+  }
+
+  const visibleWidgets = widgetOrder.filter((id) => !hiddenWidgets.has(id));
 
   /* ── renderWidget: returns the content for each widget ID ── */
   function renderWidget(id: string) {
@@ -539,10 +598,7 @@ export default function DashboardExample3() {
       <div className={s.widgetGridArea}>
         <div className={s.customizeRow}>
           {customizing && (
-            <button
-              onClick={() => { setLayout(DEFAULT_LAYOUT); setHiddenWidgets(new Set()); }}
-              className={s.resetBtn}
-            >
+            <button onClick={handleReset} className={s.resetBtn}>
               Herstellen
             </button>
           )}
@@ -554,45 +610,34 @@ export default function DashboardExample3() {
           </button>
         </div>
 
-        <div ref={containerRef as React.RefObject<HTMLDivElement>}>
-        {mounted && <ResponsiveGridLayout
-          className={s.widgetGrid}
-          layouts={{ lg: layout }}
-          breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-          cols={{ lg: 4, md: 4, sm: 2, xs: 1, xxs: 1 }}
-          rowHeight={80}
-          width={width}
-          dragConfig={{ enabled: customizing, handle: '.drag-handle' }}
-          resizeConfig={{ enabled: customizing }}
-          onLayoutChange={(currentLayout: any) => setLayout(Array.isArray(currentLayout) ? currentLayout : [])}
-          margin={[16, 16] as [number, number]}
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragStart={(e) => setActiveId(String(e.active.id))}
+          onDragEnd={handleDragEnd}
         >
-          {layout.filter(item => !hiddenWidgets.has(item.i)).map(item => (
-            <div key={item.i} className={`${s.widgetCard} ${customizing ? s.widgetCustomizing : ''}`}>
-              {customizing && (
-                <div className={s.widgetControls}>
-                  <span className="drag-handle" style={{ cursor: 'grab', fontSize: '1rem', color: '#d0cdc6', userSelect: 'none', lineHeight: 1 }}>&#x2807;</span>
-                  <button className={s.hideBtn} onClick={() => toggleHide(item.i)} title="Verbergen">
-                    <EyeOffIcon />
-                  </button>
-                </div>
-              )}
-              {renderWidget(item.i)}
+          <SortableContext items={visibleWidgets} strategy={rectSortingStrategy}>
+            <div className={s.widgetGrid}>
+              {visibleWidgets.map((id) => (
+                <SortableWidget key={id} id={id} customizing={customizing} toggleHide={toggleHide}>
+                  {renderWidget(id)}
+                </SortableWidget>
+              ))}
             </div>
-          ))}
-        </ResponsiveGridLayout>}
-        </div>
+          </SortableContext>
+        </DndContext>
 
         {/* ── Hidden Widgets Panel ── */}
         {customizing && hiddenWidgets.size > 0 && (
           <div className={s.hiddenPanel}>
-            <span className={s.hiddenPanelLabel}>Verborgen widgets</span>
-            {Array.from(hiddenWidgets).map(id => (
-              <div key={id} className={s.hiddenWidget}>
-                <span>{widgetTitles[id]}</span>
-                <button onClick={() => restoreWidget(id)} className={s.hiddenWidgetBtn}>Tonen</button>
-              </div>
-            ))}
+            <div className={s.hiddenPanelLabel}>Verborgen widgets</div>
+            <div className={s.hiddenPanelItems}>
+              {Array.from(hiddenWidgets).map((id) => (
+                <button key={id} className={s.hiddenItem} onClick={() => restoreWidget(id)}>
+                  {WIDGET_TITLES[id]} <span>+ Tonen</span>
+                </button>
+              ))}
+            </div>
           </div>
         )}
       </div>
