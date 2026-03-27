@@ -477,9 +477,8 @@
 
 /* ── Agenda Section ── */
 .agendaSection {
-  background: #f5f2ec;
-  border: 1px solid #d0cdc6;
-  padding: 16px 20px 0;
+  background: transparent;
+  padding: 16px 0 0;
   flex: 1;
   display: flex;
   flex-direction: column;

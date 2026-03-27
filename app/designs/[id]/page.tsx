@@ -1,4 +1,7 @@
+'use client'
+
 import { notFound } from 'next/navigation'
+import { use } from 'react'
 import dynamic from 'next/dynamic'
 import DesignNav from '@/components/DesignNav'
 
@@ -18,15 +21,11 @@ const designMap: Record<number, ReturnType<typeof dynamic>> = {
   13: dynamic(() => import('@/components/designs/Design13'), { ssr: false }),
 }
 
-// Featured designs shown in gallery and nav
 const FEATURED_IDS = [1, 10, 11, 12, 13]
 
-export function generateStaticParams() {
-  return Array.from({ length: 13 }, (_, i) => ({ id: String(i + 1) }))
-}
-
-export default function DesignPage({ params }: { params: { id: string } }) {
-  const id = parseInt(params.id)
+export default function DesignPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id: idStr } = use(params)
+  const id = parseInt(idStr)
   const DesignComponent = designMap[id]
   if (!DesignComponent) notFound()
 
