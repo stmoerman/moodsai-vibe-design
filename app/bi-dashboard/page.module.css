@@ -606,6 +606,50 @@
   color: #eeeae3;
 }
 
+.toolbarRight {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.resizeControls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.resizeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background: none;
+  border: 1px solid #d0cdc6;
+  color: #7a746e;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  padding: 0;
+}
+
+.resizeBtn:hover:not(:disabled) {
+  background: #3a3a3a;
+  color: #eeeae3;
+}
+
+.resizeBtn:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.resizeLabel {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.55rem;
+  color: #7a746e;
+  min-width: 24px;
+  text-align: center;
+}
+
 /* ── Stat Widget ── */
 .statValue {
   font-family: 'Space Mono', monospace;

@@ -149,7 +149,14 @@ const navTabs = [
 ];
 
 /* ── SortableWidget Component ── */
-function SortableWidget({ id, customizing, toggleHide, children }: { id: string; customizing: boolean; toggleHide: (id: string) => void; children: React.ReactNode }) {
+function SortableWidget({ id, span, customizing, toggleHide, onResize, children }: {
+  id: string;
+  span: number;
+  customizing: boolean;
+  toggleHide: (id: string) => void;
+  onResize: (id: string, delta: number) => void;
+  children: React.ReactNode;
+}) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id, disabled: !customizing });
 
   const style: React.CSSProperties = {
@@ -157,7 +164,7 @@ function SortableWidget({ id, customizing, toggleHide, children }: { id: string;
     transition,
     opacity: isDragging ? 0.5 : 1,
     zIndex: isDragging ? 100 : 'auto',
-    gridColumn: `span ${WIDGET_SPANS[id] || 1}`,
+    gridColumn: `span ${span}`,
   };
 
   return (
@@ -174,12 +181,23 @@ function SortableWidget({ id, customizing, toggleHide, children }: { id: string;
               <circle cx="11" cy="12" r="1.5" />
             </svg>
           </button>
-          <button onClick={() => toggleHide(id)} className={s.hideWidgetBtn}>
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-              <line x1="2" y1="2" x2="12" y2="12" />
-              <line x1="12" y1="2" x2="2" y2="12" />
-            </svg>
-          </button>
+          <div className={s.toolbarRight}>
+            <div className={s.resizeControls}>
+              <button className={s.resizeBtn} onClick={() => onResize(id, -1)} disabled={span <= 1} title="Kleiner">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><line x1="3" y1="6" x2="9" y2="6" /></svg>
+              </button>
+              <span className={s.resizeLabel}>{span}/{4}</span>
+              <button className={s.resizeBtn} onClick={() => onResize(id, 1)} disabled={span >= 4} title="Groter">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><line x1="6" y1="3" x2="6" y2="9" /><line x1="3" y1="6" x2="9" y2="6" /></svg>
+              </button>
+            </div>
+            <button onClick={() => toggleHide(id)} className={s.hideWidgetBtn}>
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                <line x1="2" y1="2" x2="12" y2="12" />
+                <line x1="12" y1="2" x2="2" y2="12" />
+              </svg>
+            </button>
+          </div>
         </div>
       )}
       {children}
@@ -205,6 +223,7 @@ export default function DashboardExample3() {
   const [widgetOrder, setWidgetOrder] = useState(DEFAULT_ORDER);
   const [hiddenWidgets, setHiddenWidgets] = useState<Set<string>>(new Set());
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [widgetSpans, setWidgetSpans] = useState<Record<string, number>>({ ...WIDGET_SPANS });
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -260,6 +279,15 @@ export default function DashboardExample3() {
   function handleReset() {
     setWidgetOrder(DEFAULT_ORDER);
     setHiddenWidgets(new Set());
+    setWidgetSpans({ ...WIDGET_SPANS });
+  }
+
+  function handleResize(id: string, delta: number) {
+    setWidgetSpans((prev) => {
+      const current = prev[id] || 1;
+      const next = Math.max(1, Math.min(4, current + delta));
+      return { ...prev, [id]: next };
+    });
   }
 
   function handleDragEnd(event: any) {
@@ -619,7 +647,7 @@ export default function DashboardExample3() {
           <SortableContext items={visibleWidgets} strategy={rectSortingStrategy}>
             <div className={s.widgetGrid}>
               {visibleWidgets.map((id) => (
-                <SortableWidget key={id} id={id} customizing={customizing} toggleHide={toggleHide}>
+                <SortableWidget key={id} id={id} span={widgetSpans[id] || 1} customizing={customizing} toggleHide={toggleHide} onResize={handleResize}>
                   {renderWidget(id)}
                 </SortableWidget>
               ))}
