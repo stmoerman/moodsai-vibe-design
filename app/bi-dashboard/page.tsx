@@ -477,7 +477,6 @@ export default function DashboardExample3() {
             const isHidden = hiddenWidgets.has(wId);
             const idx = widgetIdx++;
             const commonProps = {
-              key: wId,
               id: wId,
               title: def.title,
               hidden: isHidden,
@@ -497,7 +496,7 @@ export default function DashboardExample3() {
             switch (wId) {
               case 'stat-revenue':
                 return (
-                  <DraggableWidget {...commonProps}>
+                  <DraggableWidget key={wId} {...commonProps}>
                     <WidgetHeader title="Revenue this week" customizing={customizing} />
                     <div className={s.statValue}>&euro;155,068</div>
                     <div className={s.statLabel}>This week total</div>
@@ -508,7 +507,7 @@ export default function DashboardExample3() {
 
               case 'stat-clients':
                 return (
-                  <DraggableWidget {...commonProps}>
+                  <DraggableWidget key={wId} {...commonProps}>
                     <WidgetHeader title="Clients" customizing={customizing} />
                     <div className={s.statValue}>1,587</div>
                     <div className={s.statLabel}>Total active</div>
@@ -519,7 +518,7 @@ export default function DashboardExample3() {
 
               case 'stat-hours':
                 return (
-                  <DraggableWidget {...commonProps}>
+                  <DraggableWidget key={wId} {...commonProps}>
                     <WidgetHeader title="Direct hours" customizing={customizing} />
                     <div className={s.statValue}>23,528</div>
                     <div className={s.statLabel}>Indirect: 2,396</div>
@@ -530,7 +529,7 @@ export default function DashboardExample3() {
 
               case 'stat-declarability':
                 return (
-                  <DraggableWidget {...commonProps}>
+                  <DraggableWidget key={wId} {...commonProps}>
                     <WidgetHeader title="Declarability" customizing={customizing} />
                     <div className={s.statValue}>78%</div>
                     <div className={s.statLabel}>Target: 80%</div>
@@ -541,7 +540,7 @@ export default function DashboardExample3() {
 
               case 'chart-revenue':
                 return (
-                  <DraggableWidget {...commonProps}>
+                  <DraggableWidget key={wId} {...commonProps}>
                     <WidgetHeader title="Revenue per week" customizing={customizing} />
                     <div className={s.chartArea}>
                       <div className={s.chartContainer}>
@@ -589,7 +588,7 @@ export default function DashboardExample3() {
 
               case 'breakdown-revenue':
                 return (
-                  <DraggableWidget {...commonProps}>
+                  <DraggableWidget key={wId} {...commonProps}>
                     <WidgetHeader title="Current month" customizing={customizing} />
                     <div className={s.revSummary}>
                       <div className={s.revLargeValue}>&euro;152,631</div>
@@ -613,7 +612,7 @@ export default function DashboardExample3() {
 
               case 'declaration-control':
                 return (
-                  <DraggableWidget {...commonProps}>
+                  <DraggableWidget key={wId} {...commonProps}>
                     <WidgetHeader title="Declaration control" customizing={customizing} />
                     <div className={s.declLargeValue}>&euro;95,575 <span className={`${s.statTrend} ${s.trendPositive}`}>&uarr;</span></div>
                     <div className={s.declDeviation}>Deviation: +5.45%</div>
@@ -631,7 +630,7 @@ export default function DashboardExample3() {
 
               case 'client-flow':
                 return (
-                  <DraggableWidget {...commonProps}>
+                  <DraggableWidget key={wId} {...commonProps}>
                     <WidgetHeader title="Client flow" customizing={customizing} />
                     <div className={s.flowToggles}>
                       {(['Week', 'Month', 'Quarter'] as const).map((p) => (
@@ -678,7 +677,7 @@ export default function DashboardExample3() {
 
               case 'table-revenue':
                 return (
-                  <DraggableWidget {...commonProps}>
+                  <DraggableWidget key={wId} {...commonProps}>
                     <WidgetHeader title="Revenue per week" customizing={customizing} />
                     <table className={s.dataTable}>
                       <thead>
