@@ -1,8 +1,12 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback, DragEvent, ReactNode } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { ResponsiveGridLayout, useContainerWidth } from 'react-grid-layout';
+import type { Layout } from 'react-grid-layout';
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
 import s from './page.module.css';
 
 /* ── Helpers ── */
@@ -60,6 +64,32 @@ const modules = [
   { name: 'Newsletter', metric: 'Not active', trend: null, active: false },
 ];
 
+/* ── Widget titles map ── */
+const widgetTitles: Record<string, string> = {
+  'stat-revenue': 'Revenue this week',
+  'stat-clients': 'Clients',
+  'stat-hours': 'Direct hours',
+  'stat-declarability': 'Declarability',
+  'chart-revenue': 'Revenue per week',
+  'breakdown-revenue': 'Current month',
+  'declaration-control': 'Declaration control',
+  'client-flow': 'Client flow',
+  'table-revenue': 'Revenue table',
+};
+
+/* ── Default layout for react-grid-layout ── */
+const DEFAULT_LAYOUT: ReactGridLayout.Layout[] = [
+  { i: 'stat-revenue', x: 0, y: 0, w: 1, h: 2 },
+  { i: 'stat-clients', x: 1, y: 0, w: 1, h: 2 },
+  { i: 'stat-hours', x: 2, y: 0, w: 1, h: 2 },
+  { i: 'stat-declarability', x: 3, y: 0, w: 1, h: 2 },
+  { i: 'chart-revenue', x: 0, y: 2, w: 3, h: 4 },
+  { i: 'breakdown-revenue', x: 3, y: 2, w: 1, h: 4 },
+  { i: 'declaration-control', x: 0, y: 6, w: 2, h: 3 },
+  { i: 'client-flow', x: 2, y: 6, w: 2, h: 3 },
+  { i: 'table-revenue', x: 0, y: 9, w: 4, h: 4 },
+];
+
 /* ── Sparkline SVG data ── */
 function Sparkline({ points, className }: { points: number[]; className?: string }) {
   const max = Math.max(...points);
@@ -107,41 +137,11 @@ const navTabs = [
   { label: 'Overzicht', id: 'overzicht' },
   { label: 'Omzet', id: 'omzet' },
   { label: 'Declaraties', id: 'declaraties' },
-  { label: 'Cliëntenstroom', id: 'clientenstroom' },
+  { label: 'Cli\u00ebntenstroom', id: 'clientenstroom' },
   { label: 'Modules', id: 'modules' },
 ];
 
-/* ── Widget definitions ── */
-interface WidgetDef {
-  id: string;
-  title: string;
-  span: number; // grid-column span
-}
-
-const WIDGET_DEFS: WidgetDef[] = [
-  { id: 'stat-revenue', title: 'Revenue this week', span: 1 },
-  { id: 'stat-clients', title: 'Clients', span: 1 },
-  { id: 'stat-hours', title: 'Direct hours', span: 1 },
-  { id: 'stat-declarability', title: 'Declarability', span: 1 },
-  { id: 'chart-revenue', title: 'Revenue per week', span: 3 },
-  { id: 'breakdown-revenue', title: 'Current month', span: 1 },
-  { id: 'declaration-control', title: 'Declaration control', span: 2 },
-  { id: 'client-flow', title: 'Client flow', span: 2 },
-  { id: 'table-revenue', title: 'Revenue table', span: 4 },
-];
-
-const DEFAULT_ORDER = WIDGET_DEFS.map((w) => w.id);
-
 /* ── Eye icons ── */
-function EyeIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-      <circle cx="12" cy="12" r="3" />
-    </svg>
-  );
-}
-
 function EyeOffIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -152,79 +152,9 @@ function EyeOffIcon() {
   );
 }
 
-/* ── DraggableWidget wrapper ── */
-function DraggableWidget({
-  id,
-  title,
-  hidden,
-  customizing,
-  dragging,
-  dragOver,
-  span,
-  onToggle,
-  onDragStart,
-  onDragOver,
-  onDrop,
-  onDragEnd,
-  widgetRef,
-  revealIdx,
-  children,
-}: {
-  id: string;
-  title: string;
-  hidden: boolean;
-  customizing: boolean;
-  dragging: boolean;
-  dragOver: boolean;
-  span: number;
-  onToggle: (id: string) => void;
-  onDragStart: (e: DragEvent<HTMLDivElement>, id: string) => void;
-  onDragOver: (e: DragEvent<HTMLDivElement>, id: string) => void;
-  onDrop: (e: DragEvent<HTMLDivElement>, id: string) => void;
-  onDragEnd: () => void;
-  widgetRef: (el: HTMLDivElement | null) => void;
-  revealIdx: number;
-  children: ReactNode;
-}) {
-  if (hidden && !customizing) return null;
-
-  const spanClass = span === 2 ? s.widgetSpan2 : span === 3 ? s.widgetSpan3 : span === 4 ? s.widgetSpan4 : '';
-
-  if (hidden && customizing) {
-    return (
-      <div className={`${s.hiddenWidget} ${spanClass}`}>
-        <span>{title}</span>
-        <button className={s.hiddenWidgetBtn} onClick={() => onToggle(id)}>Tonen</button>
-      </div>
-    );
-  }
-
-  return (
-    <div
-      ref={widgetRef}
-      draggable={customizing}
-      onDragStart={(e) => onDragStart(e, id)}
-      onDragOver={(e) => onDragOver(e, id)}
-      onDrop={(e) => onDrop(e, id)}
-      onDragEnd={onDragEnd}
-      className={`${s.widget} ${spanClass} ${s.reveal} ${customizing ? s.widgetCustomizing : ''} ${dragging ? s.widgetDragging : ''} ${dragOver ? s.widgetDropTarget : ''}`}
-      style={{ animationDelay: `${0.1 + revealIdx * 0.05}s` }}
-    >
-      {customizing && (
-        <div className={s.widgetControls}>
-          <span className={s.dragHandle}>&#x2807;</span>
-          <button className={s.hideBtn} onClick={() => onToggle(id)} title="Verbergen">
-            <EyeOffIcon />
-          </button>
-        </div>
-      )}
-      {children}
-    </div>
-  );
-}
-
 /* ── Main Component ── */
 export default function DashboardExample3() {
+  const { width, containerRef, mounted } = useContainerWidth();
   const [now, setNow] = useState<Date | null>(null);
   const [customizing, setCustomizing] = useState(false);
   const [activeTab, setActiveTab] = useState('overzicht');
@@ -234,56 +164,18 @@ export default function DashboardExample3() {
     week: 'All weeks',
   });
   const [flowPeriod, setFlowPeriod] = useState<'Week' | 'Month' | 'Quarter'>('Month');
-  const [textSize, setTextSize] = useState(0); // -2 to +2 range
+  const [textSize, setTextSize] = useState(0);
   const [colorful, setColorful] = useState(false);
-  const widgetRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  // Drag-and-drop + visibility state
-  const [widgetOrder, setWidgetOrder] = useState<string[]>(DEFAULT_ORDER);
+  // react-grid-layout state
+  const [layout, setLayout] = useState(DEFAULT_LAYOUT);
   const [hiddenWidgets, setHiddenWidgets] = useState<Set<string>>(new Set());
-  const [draggedWidget, setDraggedWidget] = useState<string | null>(null);
-  const [dropTargetWidget, setDropTargetWidget] = useState<string | null>(null);
 
-  // Live clock — update every 60s
+  // Live clock
   useEffect(() => {
     setNow(new Date());
     const id = setInterval(() => setNow(new Date()), 60_000);
     return () => clearInterval(id);
-  }, []);
-
-  // IntersectionObserver for stagger reveal
-  const observerRef = useRef<IntersectionObserver | null>(null);
-
-  const setWidgetRef = useCallback((el: HTMLDivElement | null, idx: number) => {
-    widgetRefs.current[idx] = el;
-  }, []);
-
-  useEffect(() => {
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReduced) {
-      widgetRefs.current.forEach((el) => {
-        if (el) el.classList.add(s.revealVisible);
-      });
-      return;
-    }
-
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            (entry.target as HTMLElement).classList.add(s.revealVisible);
-            observerRef.current?.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    widgetRefs.current.forEach((el) => {
-      if (el) observerRef.current?.observe(el);
-    });
-
-    return () => observerRef.current?.disconnect();
   }, []);
 
   const greeting = now ? getGreeting(now.getHours()) : 'Goedemiddag';
@@ -305,46 +197,7 @@ export default function DashboardExample3() {
     });
   }
 
-  // Drag handlers
-  const handleDragStart = useCallback((e: DragEvent<HTMLDivElement>, id: string) => {
-    setDraggedWidget(id);
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', id);
-  }, []);
-
-  const handleDragOver = useCallback((e: DragEvent<HTMLDivElement>, id: string) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    setDropTargetWidget(id);
-  }, []);
-
-  const handleDrop = useCallback((e: DragEvent<HTMLDivElement>, targetId: string) => {
-    e.preventDefault();
-    const sourceId = draggedWidget;
-    if (!sourceId || sourceId === targetId) {
-      setDraggedWidget(null);
-      setDropTargetWidget(null);
-      return;
-    }
-    setWidgetOrder((prev) => {
-      const newOrder = [...prev];
-      const srcIdx = newOrder.indexOf(sourceId);
-      const tgtIdx = newOrder.indexOf(targetId);
-      if (srcIdx === -1 || tgtIdx === -1) return prev;
-      newOrder.splice(srcIdx, 1);
-      newOrder.splice(tgtIdx, 0, sourceId);
-      return newOrder;
-    });
-    setDraggedWidget(null);
-    setDropTargetWidget(null);
-  }, [draggedWidget]);
-
-  const handleDragEnd = useCallback(() => {
-    setDraggedWidget(null);
-    setDropTargetWidget(null);
-  }, []);
-
-  const toggleWidgetVisibility = useCallback((id: string) => {
+  const toggleHide = useCallback((id: string) => {
     setHiddenWidgets((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
@@ -356,10 +209,233 @@ export default function DashboardExample3() {
     });
   }, []);
 
-  // Build a map from widget ID to its definition
-  const widgetDefMap = Object.fromEntries(WIDGET_DEFS.map((w) => [w.id, w]));
+  const restoreWidget = useCallback((id: string) => {
+    setHiddenWidgets((prev) => {
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
+  }, []);
 
-  let widgetIdx = 0;
+  /* ── renderWidget: returns the content for each widget ID ── */
+  function renderWidget(id: string) {
+    switch (id) {
+      case 'stat-revenue':
+        return (
+          <>
+            <WidgetHeader title="Revenue this week" customizing={customizing} />
+            <div className={s.statValue}>&euro;155,068</div>
+            <div className={s.statLabel}>This week total</div>
+            <div className={`${s.statTrend} ${s.trendPositive}`}>&uarr; 1.6%</div>
+            <Sparkline points={[120, 128, 118, 135, 142, 148, 155]} />
+          </>
+        );
+
+      case 'stat-clients':
+        return (
+          <>
+            <WidgetHeader title="Clients" customizing={customizing} />
+            <div className={s.statValue}>1,587</div>
+            <div className={s.statLabel}>Total active</div>
+            <div className={`${s.statTrend} ${s.trendPositive}`}>+12 this month</div>
+            <Sparkline points={[1540, 1548, 1555, 1562, 1570, 1578, 1587]} />
+          </>
+        );
+
+      case 'stat-hours':
+        return (
+          <>
+            <WidgetHeader title="Direct hours" customizing={customizing} />
+            <div className={s.statValue}>23,528</div>
+            <div className={s.statLabel}>Indirect: 2,396</div>
+            <div className={`${s.statTrend} ${s.trendPositive}`}>&uarr; 3.2%</div>
+            <Sparkline points={[22100, 22400, 22800, 23000, 23100, 23350, 23528]} />
+          </>
+        );
+
+      case 'stat-declarability':
+        return (
+          <>
+            <WidgetHeader title="Declarability" customizing={customizing} />
+            <div className={s.statValue}>78%</div>
+            <div className={s.statLabel}>Target: 80%</div>
+            <div className={`${s.statTrend} ${s.trendWarning}`}>&minus;2% below target</div>
+            <Sparkline points={[76, 77, 79, 78, 77, 78, 78]} />
+          </>
+        );
+
+      case 'chart-revenue':
+        return (
+          <>
+            <WidgetHeader title="Revenue per week" customizing={customizing} />
+            <div className={s.chartArea}>
+              <div className={s.chartContainer}>
+                <div className={s.yAxis}>
+                  <span className={s.yLabel}>150k</span>
+                  <span className={s.yLabel}>100k</span>
+                  <span className={s.yLabel}>50k</span>
+                  <span className={s.yLabel}>0</span>
+                </div>
+                {weeklyRevenue.map((w) => {
+                  const total = w.diagnostics + w.treatment + w.workshop + w.ehealth;
+                  return (
+                    <div className={s.barGroup} key={w.week}>
+                      <div className={s.stackedBar} style={{ height: `${(total / maxBarTotal) * 100}%` }}>
+                        <div className={s.barSegment} style={{ background: colorful ? '#7c3aed' : '#d0cdc6', flex: w.ehealth }} />
+                        <div className={s.barSegment} style={{ background: colorful ? '#d97706' : '#b8a898', flex: w.workshop }} />
+                        <div className={s.barSegment} style={{ background: colorful ? '#059669' : '#8b6d4f', flex: w.treatment }} />
+                        <div className={s.barSegment} style={{ background: colorful ? '#2563eb' : '#3a3a3a', flex: w.diagnostics }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className={s.xLabels}>
+                {weeklyRevenue.map((w) => (
+                  <span className={s.xLabel} key={w.week}>{w.week}</span>
+                ))}
+              </div>
+              <div className={s.chartLegend}>
+                {[
+                  { color: colorful ? '#2563eb' : '#3a3a3a', label: 'Diagnostics' },
+                  { color: colorful ? '#059669' : '#8b6d4f', label: 'Treatment' },
+                  { color: colorful ? '#d97706' : '#b8a898', label: 'Workshop' },
+                  { color: colorful ? '#7c3aed' : '#d0cdc6', label: 'eHealth' },
+                ].map((l) => (
+                  <div className={s.legendItem} key={l.label}>
+                    <div className={s.legendSwatch} style={{ background: l.color }} />
+                    <span className={s.legendLabel}>{l.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        );
+
+      case 'breakdown-revenue':
+        return (
+          <>
+            <WidgetHeader title="Current month" customizing={customizing} />
+            <div className={s.revSummary}>
+              <div className={s.revLargeValue}>&euro;152,631</div>
+              {[
+                { label: 'Diagnostiek', amount: '€19,253', pct: '13%' },
+                { label: 'Behandeling', amount: '€108,114', pct: '68%' },
+                { label: 'Workshop', amount: '€736', pct: '1%' },
+                { label: 'E-health', amount: '€3,026', pct: '2%' },
+              ].map((row) => (
+                <div className={s.revBreakdownRow} key={row.label}>
+                  <span className={s.revBreakdownLabel}>{row.label}</span>
+                  <div className={s.revBreakdownValues}>
+                    <span className={s.revBreakdownAmount}>{row.amount}</span>
+                    <span className={s.revBreakdownPct}>{row.pct}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        );
+
+      case 'declaration-control':
+        return (
+          <>
+            <WidgetHeader title="Declaration control" customizing={customizing} />
+            <div className={s.declLargeValue}>&euro;95,575 <span className={`${s.statTrend} ${s.trendPositive}`}>&uarr;</span></div>
+            <div className={s.declDeviation}>Deviation: +5.45%</div>
+            <div className={s.declRow}>
+              <span className={s.declLabel}>Submitted</span>
+              <span className={s.declValue}>&euro;1,754,571</span>
+            </div>
+            <div className={s.declRow}>
+              <span className={s.declLabel}>Approved</span>
+              <span className={s.declValue}>&euro;1,659,000</span>
+            </div>
+            <div className={s.declFootnote}>10,812 declarations &middot; 2,349 deviations found</div>
+          </>
+        );
+
+      case 'client-flow':
+        return (
+          <>
+            <WidgetHeader title="Client flow" customizing={customizing} />
+            <div className={s.flowToggles}>
+              {(['Week', 'Month', 'Quarter'] as const).map((p) => (
+                <button
+                  key={p}
+                  className={`${s.flowToggle} ${flowPeriod === p ? s.flowToggleActive : ''}`}
+                  onClick={() => setFlowPeriod(p)}
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
+            <div className={s.flowChartContainer}>
+              {clientFlow.map((c) => (
+                <div className={s.flowBarGroup} key={c.month}>
+                  <div
+                    className={`${s.flowBar} ${s.flowBarInflow}`}
+                    style={{ height: `${(c.inflow / maxFlow) * 100}%` }}
+                  />
+                  <div
+                    className={`${s.flowBar} ${s.flowBarOutflow}`}
+                    style={{ height: `${(c.outflow / maxFlow) * 100}%` }}
+                  />
+                </div>
+              ))}
+            </div>
+            <div className={s.flowXLabels}>
+              {clientFlow.map((c) => (
+                <span className={s.flowXLabel} key={c.month}>{c.month}</span>
+              ))}
+            </div>
+            <div className={s.flowLegend}>
+              <div className={s.legendItem}>
+                <div className={s.legendSwatch} style={{ background: colorful ? '#2563eb' : '#3a3a3a' }} />
+                <span className={s.legendLabel}>New clients</span>
+              </div>
+              <div className={s.legendItem}>
+                <div className={s.legendSwatch} style={{ background: colorful ? '#f59e0b' : '#d0cdc6' }} />
+                <span className={s.legendLabel}>Closed trajectories</span>
+              </div>
+            </div>
+          </>
+        );
+
+      case 'table-revenue':
+        return (
+          <>
+            <WidgetHeader title="Revenue per week" customizing={customizing} />
+            <table className={s.dataTable}>
+              <thead>
+                <tr>
+                  <th>Week</th>
+                  <th>Total</th>
+                  <th>Diagnostics</th>
+                  <th>Treatment</th>
+                  <th>Workshop</th>
+                  <th>eHealth</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tableData.map((row) => (
+                  <tr key={row.week}>
+                    <td>{row.week}</td>
+                    <td>{row.total}</td>
+                    <td>{row.diagnostics}</td>
+                    <td>{row.treatment}</td>
+                    <td>{row.workshop}</td>
+                    <td>{row.ehealth}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        );
+
+      default:
+        return null;
+    }
+  }
 
   return (
     <div className={`${s.root} ${colorful ? s.colorfulTheme : ''} ${textSize !== 0 ? s[`size${textSize > 0 ? 'Up' : 'Down'}${Math.abs(textSize)}`] || '' : ''}`}>
@@ -462,6 +538,14 @@ export default function DashboardExample3() {
       {/* ── Widget Grid ── */}
       <div className={s.widgetGridArea}>
         <div className={s.customizeRow}>
+          {customizing && (
+            <button
+              onClick={() => { setLayout(DEFAULT_LAYOUT); setHiddenWidgets(new Set()); }}
+              className={s.resetBtn}
+            >
+              Herstellen
+            </button>
+          )}
           <button
             className={`${s.customizeBtn} ${customizing ? s.customizeBtnActive : ''}`}
             onClick={() => setCustomizing(!customizing)}
@@ -470,247 +554,47 @@ export default function DashboardExample3() {
           </button>
         </div>
 
-        <div className={s.widgetGrid}>
-          {widgetOrder.map((wId) => {
-            const def = widgetDefMap[wId];
-            if (!def) return null;
-            const isHidden = hiddenWidgets.has(wId);
-            const idx = widgetIdx++;
-            const commonProps = {
-              id: wId,
-              title: def.title,
-              hidden: isHidden,
-              customizing,
-              dragging: draggedWidget === wId,
-              dragOver: dropTargetWidget === wId && draggedWidget !== wId,
-              span: def.span,
-              onToggle: toggleWidgetVisibility,
-              onDragStart: handleDragStart,
-              onDragOver: handleDragOver,
-              onDrop: handleDrop,
-              onDragEnd: handleDragEnd,
-              widgetRef: (el: HTMLDivElement | null) => setWidgetRef(el, idx),
-              revealIdx: idx,
-            };
-
-            switch (wId) {
-              case 'stat-revenue':
-                return (
-                  <DraggableWidget key={wId} {...commonProps}>
-                    <WidgetHeader title="Revenue this week" customizing={customizing} />
-                    <div className={s.statValue}>&euro;155,068</div>
-                    <div className={s.statLabel}>This week total</div>
-                    <div className={`${s.statTrend} ${s.trendPositive}`}>&uarr; 1.6%</div>
-                    <Sparkline points={[120, 128, 118, 135, 142, 148, 155]} />
-                  </DraggableWidget>
-                );
-
-              case 'stat-clients':
-                return (
-                  <DraggableWidget key={wId} {...commonProps}>
-                    <WidgetHeader title="Clients" customizing={customizing} />
-                    <div className={s.statValue}>1,587</div>
-                    <div className={s.statLabel}>Total active</div>
-                    <div className={`${s.statTrend} ${s.trendPositive}`}>+12 this month</div>
-                    <Sparkline points={[1540, 1548, 1555, 1562, 1570, 1578, 1587]} />
-                  </DraggableWidget>
-                );
-
-              case 'stat-hours':
-                return (
-                  <DraggableWidget key={wId} {...commonProps}>
-                    <WidgetHeader title="Direct hours" customizing={customizing} />
-                    <div className={s.statValue}>23,528</div>
-                    <div className={s.statLabel}>Indirect: 2,396</div>
-                    <div className={`${s.statTrend} ${s.trendPositive}`}>&uarr; 3.2%</div>
-                    <Sparkline points={[22100, 22400, 22800, 23000, 23100, 23350, 23528]} />
-                  </DraggableWidget>
-                );
-
-              case 'stat-declarability':
-                return (
-                  <DraggableWidget key={wId} {...commonProps}>
-                    <WidgetHeader title="Declarability" customizing={customizing} />
-                    <div className={s.statValue}>78%</div>
-                    <div className={s.statLabel}>Target: 80%</div>
-                    <div className={`${s.statTrend} ${s.trendWarning}`}>&minus;2% below target</div>
-                    <Sparkline points={[76, 77, 79, 78, 77, 78, 78]} />
-                  </DraggableWidget>
-                );
-
-              case 'chart-revenue':
-                return (
-                  <DraggableWidget key={wId} {...commonProps}>
-                    <WidgetHeader title="Revenue per week" customizing={customizing} />
-                    <div className={s.chartArea}>
-                      <div className={s.chartContainer}>
-                        <div className={s.yAxis}>
-                          <span className={s.yLabel}>150k</span>
-                          <span className={s.yLabel}>100k</span>
-                          <span className={s.yLabel}>50k</span>
-                          <span className={s.yLabel}>0</span>
-                        </div>
-                        {weeklyRevenue.map((w) => {
-                          const total = w.diagnostics + w.treatment + w.workshop + w.ehealth;
-                          return (
-                            <div className={s.barGroup} key={w.week}>
-                              <div className={s.stackedBar} style={{ height: `${(total / maxBarTotal) * 100}%` }}>
-                                <div className={s.barSegment} style={{ background: colorful ? '#7c3aed' : '#d0cdc6', flex: w.ehealth }} />
-                                <div className={s.barSegment} style={{ background: colorful ? '#d97706' : '#b8a898', flex: w.workshop }} />
-                                <div className={s.barSegment} style={{ background: colorful ? '#059669' : '#8b6d4f', flex: w.treatment }} />
-                                <div className={s.barSegment} style={{ background: colorful ? '#2563eb' : '#3a3a3a', flex: w.diagnostics }} />
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                      <div className={s.xLabels}>
-                        {weeklyRevenue.map((w) => (
-                          <span className={s.xLabel} key={w.week}>{w.week}</span>
-                        ))}
-                      </div>
-                      <div className={s.chartLegend}>
-                        {[
-                          { color: colorful ? '#2563eb' : '#3a3a3a', label: 'Diagnostics' },
-                          { color: colorful ? '#059669' : '#8b6d4f', label: 'Treatment' },
-                          { color: colorful ? '#d97706' : '#b8a898', label: 'Workshop' },
-                          { color: colorful ? '#7c3aed' : '#d0cdc6', label: 'eHealth' },
-                        ].map((l) => (
-                          <div className={s.legendItem} key={l.label}>
-                            <div className={s.legendSwatch} style={{ background: l.color }} />
-                            <span className={s.legendLabel}>{l.label}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </DraggableWidget>
-                );
-
-              case 'breakdown-revenue':
-                return (
-                  <DraggableWidget key={wId} {...commonProps}>
-                    <WidgetHeader title="Current month" customizing={customizing} />
-                    <div className={s.revSummary}>
-                      <div className={s.revLargeValue}>&euro;152,631</div>
-                      {[
-                        { label: 'Diagnostiek', amount: '€19,253', pct: '13%' },
-                        { label: 'Behandeling', amount: '€108,114', pct: '68%' },
-                        { label: 'Workshop', amount: '€736', pct: '1%' },
-                        { label: 'E-health', amount: '€3,026', pct: '2%' },
-                      ].map((row) => (
-                        <div className={s.revBreakdownRow} key={row.label}>
-                          <span className={s.revBreakdownLabel}>{row.label}</span>
-                          <div className={s.revBreakdownValues}>
-                            <span className={s.revBreakdownAmount}>{row.amount}</span>
-                            <span className={s.revBreakdownPct}>{row.pct}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </DraggableWidget>
-                );
-
-              case 'declaration-control':
-                return (
-                  <DraggableWidget key={wId} {...commonProps}>
-                    <WidgetHeader title="Declaration control" customizing={customizing} />
-                    <div className={s.declLargeValue}>&euro;95,575 <span className={`${s.statTrend} ${s.trendPositive}`}>&uarr;</span></div>
-                    <div className={s.declDeviation}>Deviation: +5.45%</div>
-                    <div className={s.declRow}>
-                      <span className={s.declLabel}>Submitted</span>
-                      <span className={s.declValue}>&euro;1,754,571</span>
-                    </div>
-                    <div className={s.declRow}>
-                      <span className={s.declLabel}>Approved</span>
-                      <span className={s.declValue}>&euro;1,659,000</span>
-                    </div>
-                    <div className={s.declFootnote}>10,812 declarations &middot; 2,349 deviations found</div>
-                  </DraggableWidget>
-                );
-
-              case 'client-flow':
-                return (
-                  <DraggableWidget key={wId} {...commonProps}>
-                    <WidgetHeader title="Client flow" customizing={customizing} />
-                    <div className={s.flowToggles}>
-                      {(['Week', 'Month', 'Quarter'] as const).map((p) => (
-                        <button
-                          key={p}
-                          className={`${s.flowToggle} ${flowPeriod === p ? s.flowToggleActive : ''}`}
-                          onClick={() => setFlowPeriod(p)}
-                        >
-                          {p}
-                        </button>
-                      ))}
-                    </div>
-                    <div className={s.flowChartContainer}>
-                      {clientFlow.map((c) => (
-                        <div className={s.flowBarGroup} key={c.month}>
-                          <div
-                            className={`${s.flowBar} ${s.flowBarInflow}`}
-                            style={{ height: `${(c.inflow / maxFlow) * 100}%` }}
-                          />
-                          <div
-                            className={`${s.flowBar} ${s.flowBarOutflow}`}
-                            style={{ height: `${(c.outflow / maxFlow) * 100}%` }}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                    <div className={s.flowXLabels}>
-                      {clientFlow.map((c) => (
-                        <span className={s.flowXLabel} key={c.month}>{c.month}</span>
-                      ))}
-                    </div>
-                    <div className={s.flowLegend}>
-                      <div className={s.legendItem}>
-                        <div className={s.legendSwatch} style={{ background: colorful ? '#2563eb' : '#3a3a3a' }} />
-                        <span className={s.legendLabel}>New clients</span>
-                      </div>
-                      <div className={s.legendItem}>
-                        <div className={s.legendSwatch} style={{ background: colorful ? '#f59e0b' : '#d0cdc6' }} />
-                        <span className={s.legendLabel}>Closed trajectories</span>
-                      </div>
-                    </div>
-                  </DraggableWidget>
-                );
-
-              case 'table-revenue':
-                return (
-                  <DraggableWidget key={wId} {...commonProps}>
-                    <WidgetHeader title="Revenue per week" customizing={customizing} />
-                    <table className={s.dataTable}>
-                      <thead>
-                        <tr>
-                          <th>Week</th>
-                          <th>Total</th>
-                          <th>Diagnostics</th>
-                          <th>Treatment</th>
-                          <th>Workshop</th>
-                          <th>eHealth</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {tableData.map((row) => (
-                          <tr key={row.week}>
-                            <td>{row.week}</td>
-                            <td>{row.total}</td>
-                            <td>{row.diagnostics}</td>
-                            <td>{row.treatment}</td>
-                            <td>{row.workshop}</td>
-                            <td>{row.ehealth}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </DraggableWidget>
-                );
-
-              default:
-                return null;
-            }
-          })}
+        <div ref={containerRef as React.RefObject<HTMLDivElement>}>
+        {mounted && <ResponsiveGridLayout
+          className={s.widgetGrid}
+          layouts={{ lg: layout }}
+          breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+          cols={{ lg: 4, md: 4, sm: 2, xs: 1, xxs: 1 }}
+          rowHeight={80}
+          width={width}
+          dragConfig={{ enabled: customizing, handle: '.drag-handle' }}
+          resizeConfig={{ enabled: customizing }}
+          onLayoutChange={(currentLayout: any) => setLayout(Array.isArray(currentLayout) ? currentLayout : [])}
+          margin={[16, 16] as [number, number]}
+        >
+          {layout.filter(item => !hiddenWidgets.has(item.i)).map(item => (
+            <div key={item.i} className={`${s.widgetCard} ${customizing ? s.widgetCustomizing : ''}`}>
+              {customizing && (
+                <div className={s.widgetControls}>
+                  <span className="drag-handle" style={{ cursor: 'grab', fontSize: '1rem', color: '#d0cdc6', userSelect: 'none', lineHeight: 1 }}>&#x2807;</span>
+                  <button className={s.hideBtn} onClick={() => toggleHide(item.i)} title="Verbergen">
+                    <EyeOffIcon />
+                  </button>
+                </div>
+              )}
+              {renderWidget(item.i)}
+            </div>
+          ))}
+        </ResponsiveGridLayout>}
         </div>
+
+        {/* ── Hidden Widgets Panel ── */}
+        {customizing && hiddenWidgets.size > 0 && (
+          <div className={s.hiddenPanel}>
+            <span className={s.hiddenPanelLabel}>Verborgen widgets</span>
+            {Array.from(hiddenWidgets).map(id => (
+              <div key={id} className={s.hiddenWidget}>
+                <span>{widgetTitles[id]}</span>
+                <button onClick={() => restoreWidget(id)} className={s.hiddenWidgetBtn}>Tonen</button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* ── Module Cards ── */}
