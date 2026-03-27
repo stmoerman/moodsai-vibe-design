@@ -538,9 +538,7 @@
   position: relative;
 }
 
-.widgetCustomizing:hover {
-  animation: wiggle 0.4s ease-in-out;
-}
+/* wiggle removed — conflicts with react-grid-layout transforms */
 
 /* ── Widget Toolbar (drag handle + hide button) ── */
 .widgetToolbar {
@@ -1245,14 +1243,9 @@
 }
 
 /* Grid item transitions */
-:global(.react-grid-item) {
-  transition: all 200ms ease !important;
-}
-
 :global(.react-grid-item.react-draggable-dragging) {
-  transition: none !important;
   opacity: 0.7;
-  z-index: 100;
+  z-index: 100 !important;
   box-shadow: 0 8px 24px rgba(0,0,0,0.15);
 }
 
