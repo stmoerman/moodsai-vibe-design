@@ -216,7 +216,7 @@
 }
 
 /* Active filter */
-.colorfulTheme .filterPillActive {
+.colorfulTheme .filterOptionActive {
   background: #2563eb;
   border-color: #2563eb;
   color: #fff;
@@ -392,29 +392,114 @@
   gap: 8px;
 }
 
-.filterPill {
+/* ── Filter Dropdowns ── */
+.filterDropdown {
+  position: relative;
+}
+
+.filterBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-family: 'Space Mono', monospace;
   font-size: 0.65rem;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
+  padding: 6px 12px;
+  border: 1px solid #d0cdc6;
+  background: #f5f2ec;
+  color: #3a3a3a;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.filterBtn:hover {
+  border-color: #3a3a3a;
+}
+
+.filterBtnOpen {
+  border-color: #3a3a3a;
+  background: #eeeae3;
+}
+
+.filterBtnLabel {
+  color: #7a746e;
+  font-size: 0.55rem;
   text-transform: uppercase;
-  padding: 4px 12px;
+  letter-spacing: 0.08em;
+}
+
+.filterBtnValue {
+  font-weight: 700;
+}
+
+.filterBtnChevron {
+  color: #7a746e;
+  flex-shrink: 0;
+  transition: transform 0.15s;
+}
+
+.filterBtnOpen .filterBtnChevron {
+  transform: rotate(180deg);
+}
+
+.filterMenu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 140px;
+  max-height: 240px;
+  overflow-y: auto;
+  background: #f5f2ec;
+  border: 1px solid #d0cdc6;
+  z-index: 50;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  scrollbar-width: thin;
+  scrollbar-color: #d0cdc6 transparent;
+}
+
+.filterOption {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  color: #3a3a3a;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.filterOption:hover {
+  background: #ece8e1;
+}
+
+.filterOptionActive {
+  background: #3a3a3a;
+  color: #eeeae3;
+}
+
+.filterOptionActive:hover {
+  background: #2a2826;
+}
+
+.filterReset {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
   border: 1px solid #d0cdc6;
   background: transparent;
   color: #7a746e;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
-  line-height: 1.4;
+  transition: background 0.15s, color 0.15s;
 }
 
-.filterPill:hover {
-  border-color: #3a3a3a;
-  color: #3a3a3a;
-}
-
-.filterPillActive {
+.filterReset:hover {
   background: #3a3a3a;
   color: #eeeae3;
-  border-color: #3a3a3a;
 }
 
 /* ── Widget Grid Area ── */
