@@ -423,7 +423,7 @@
   z-index: 1;
   max-width: 1600px;
   margin: 0 auto;
-  padding: 0 32px;
+  padding: 0 32px 24px;
 }
 
 .customizeRow {
@@ -457,20 +457,15 @@
   border-color: #3a3a3a;
 }
 
-/* ── Widget Grid (CSS Grid + @dnd-kit) ── */
-.widgetGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-}
+/* ── Widget Grid Area (react-grid-layout handles positioning) ── */
 
 /* ── Widget Card ── */
 .widgetCard {
   background: #f5f2ec;
   border: 1px solid #d0cdc6;
-  padding: 16px 20px;
-  position: relative;
+  padding: 16px;
   overflow: hidden;
+  height: 100%;
 }
 
 .widgetHeader {
@@ -547,20 +542,13 @@
   animation: wiggle 0.4s ease-in-out;
 }
 
-.widgetDragging {
-  opacity: 0.6;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  transform: scale(1.02);
-}
-
 /* ── Widget Toolbar (drag handle + hide button) ── */
 .widgetToolbar {
   display: flex;
   justify-content: space-between;
   padding: 6px 8px;
   border-bottom: 1px solid #e8e4dd;
-  margin: -16px -20px 12px;
-  padding: 6px 8px;
+  margin: -16px -16px 12px;
 }
 
 .dragHandle {
@@ -606,49 +594,6 @@
   color: #eeeae3;
 }
 
-.toolbarRight {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.resizeControls {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-}
-
-.resizeBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  background: none;
-  border: 1px solid #d0cdc6;
-  color: #7a746e;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-  padding: 0;
-}
-
-.resizeBtn:hover:not(:disabled) {
-  background: #3a3a3a;
-  color: #eeeae3;
-}
-
-.resizeBtn:disabled {
-  opacity: 0.25;
-  cursor: default;
-}
-
-.resizeLabel {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.55rem;
-  color: #7a746e;
-  min-width: 24px;
-  text-align: center;
-}
 
 /* ── Stat Widget ── */
 .statValue {
@@ -1241,10 +1186,6 @@
     padding: 0 16px;
   }
 
-  .widgetGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .modulesRow {
     padding: 0 16px;
     grid-template-columns: repeat(3, 1fr);
@@ -1268,17 +1209,51 @@
 }
 
 @media (max-width: 480px) {
-  .widgetGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .widgetCard {
-    grid-column: span 1 !important;
-  }
-
   .modulesRow {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+/* ── react-grid-layout resize handle ── */
+:global(.react-resizable-handle) {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  bottom: 4px;
+  right: 4px;
+  cursor: se-resize;
+  z-index: 5;
+}
+
+:global(.react-resizable-handle::after) {
+  content: '';
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid #d0cdc6;
+  border-bottom: 2px solid #d0cdc6;
+}
+
+/* Placeholder during drag */
+:global(.react-grid-placeholder) {
+  background: rgba(139, 109, 79, 0.1) !important;
+  border: 2px dashed #8b6d4f !important;
+  border-radius: 0 !important;
+  opacity: 1 !important;
+}
+
+/* Grid item transitions */
+:global(.react-grid-item) {
+  transition: all 200ms ease !important;
+}
+
+:global(.react-grid-item.react-draggable-dragging) {
+  transition: none !important;
+  opacity: 0.7;
+  z-index: 100;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
 }
 
 /* ── Reduced Motion ── */

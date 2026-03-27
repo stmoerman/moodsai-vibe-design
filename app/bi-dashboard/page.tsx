@@ -3,9 +3,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragOverlay } from '@dnd-kit/core';
-import { arrayMove, SortableContext, sortableKeyboardCoordinates, rectSortingStrategy, useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { ResponsiveGridLayout, useContainerWidth } from 'react-grid-layout';
+import type { Layout, LayoutItem } from 'react-grid-layout';
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
 import s from './page.module.css';
 
 /* ── Helpers ── */
@@ -76,25 +77,17 @@ const WIDGET_TITLES: Record<string, string> = {
   'table-revenue': 'Revenue table',
 };
 
-/* ── Widget column spans ── */
-const WIDGET_SPANS: Record<string, number> = {
-  'stat-revenue': 1,
-  'stat-clients': 1,
-  'stat-hours': 1,
-  'stat-declarability': 1,
-  'chart-revenue': 3,
-  'breakdown-revenue': 1,
-  'declaration-control': 2,
-  'client-flow': 2,
-  'table-revenue': 4,
-};
-
-/* ── Default widget order ── */
-const DEFAULT_ORDER = [
-  'stat-revenue', 'stat-clients', 'stat-hours', 'stat-declarability',
-  'chart-revenue', 'breakdown-revenue',
-  'declaration-control', 'client-flow',
-  'table-revenue',
+/* ── Default grid layout ── */
+const DEFAULT_LAYOUT: Layout = [
+  { i: 'stat-revenue', x: 0, y: 0, w: 3, h: 3, minW: 2, minH: 2 },
+  { i: 'stat-clients', x: 3, y: 0, w: 3, h: 3, minW: 2, minH: 2 },
+  { i: 'stat-hours', x: 6, y: 0, w: 3, h: 3, minW: 2, minH: 2 },
+  { i: 'stat-declarability', x: 9, y: 0, w: 3, h: 3, minW: 2, minH: 2 },
+  { i: 'chart-revenue', x: 0, y: 3, w: 9, h: 6, minW: 4, minH: 4 },
+  { i: 'breakdown-revenue', x: 9, y: 3, w: 3, h: 6, minW: 2, minH: 3 },
+  { i: 'declaration-control', x: 0, y: 9, w: 6, h: 5, minW: 3, minH: 3 },
+  { i: 'client-flow', x: 6, y: 9, w: 6, h: 5, minW: 3, minH: 3 },
+  { i: 'table-revenue', x: 0, y: 14, w: 12, h: 5, minW: 6, minH: 3 },
 ];
 
 /* ── Sparkline SVG data ── */
@@ -148,63 +141,6 @@ const navTabs = [
   { label: 'Modules', id: 'modules' },
 ];
 
-/* ── SortableWidget Component ── */
-function SortableWidget({ id, span, customizing, toggleHide, onResize, children }: {
-  id: string;
-  span: number;
-  customizing: boolean;
-  toggleHide: (id: string) => void;
-  onResize: (id: string, delta: number) => void;
-  children: React.ReactNode;
-}) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id, disabled: !customizing });
-
-  const style: React.CSSProperties = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-    zIndex: isDragging ? 100 : 'auto',
-    gridColumn: `span ${span}`,
-  };
-
-  return (
-    <div ref={setNodeRef} style={style} className={`${s.widgetCard} ${customizing ? s.widgetCustomizing : ''} ${isDragging ? s.widgetDragging : ''}`}>
-      {customizing && (
-        <div className={s.widgetToolbar}>
-          <button {...attributes} {...listeners} className={s.dragHandle}>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-              <circle cx="5" cy="4" r="1.5" />
-              <circle cx="11" cy="4" r="1.5" />
-              <circle cx="5" cy="8" r="1.5" />
-              <circle cx="11" cy="8" r="1.5" />
-              <circle cx="5" cy="12" r="1.5" />
-              <circle cx="11" cy="12" r="1.5" />
-            </svg>
-          </button>
-          <div className={s.toolbarRight}>
-            <div className={s.resizeControls}>
-              <button className={s.resizeBtn} onClick={() => onResize(id, -1)} disabled={span <= 1} title="Kleiner">
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><line x1="3" y1="6" x2="9" y2="6" /></svg>
-              </button>
-              <span className={s.resizeLabel}>{span}/{4}</span>
-              <button className={s.resizeBtn} onClick={() => onResize(id, 1)} disabled={span >= 4} title="Groter">
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><line x1="6" y1="3" x2="6" y2="9" /><line x1="3" y1="6" x2="9" y2="6" /></svg>
-              </button>
-            </div>
-            <button onClick={() => toggleHide(id)} className={s.hideWidgetBtn}>
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                <line x1="2" y1="2" x2="12" y2="12" />
-                <line x1="12" y1="2" x2="2" y2="12" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      )}
-      {children}
-    </div>
-  );
-}
-
 /* ── Main Component ── */
 export default function DashboardExample3() {
   const [now, setNow] = useState<Date | null>(null);
@@ -219,16 +155,10 @@ export default function DashboardExample3() {
   const [textSize, setTextSize] = useState(0);
   const [colorful, setColorful] = useState(false);
 
-  // @dnd-kit state
-  const [widgetOrder, setWidgetOrder] = useState(DEFAULT_ORDER);
+  // react-grid-layout state
+  const [layout, setLayout] = useState<Layout>(DEFAULT_LAYOUT);
   const [hiddenWidgets, setHiddenWidgets] = useState<Set<string>>(new Set());
-  const [activeId, setActiveId] = useState<string | null>(null);
-  const [widgetSpans, setWidgetSpans] = useState<Record<string, number>>({ ...WIDGET_SPANS });
-
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
-  );
+  const { width, containerRef, mounted } = useContainerWidth();
 
   // Live clock
   useEffect(() => {
@@ -277,32 +207,11 @@ export default function DashboardExample3() {
   }, []);
 
   function handleReset() {
-    setWidgetOrder(DEFAULT_ORDER);
+    setLayout(DEFAULT_LAYOUT);
     setHiddenWidgets(new Set());
-    setWidgetSpans({ ...WIDGET_SPANS });
   }
 
-  function handleResize(id: string, delta: number) {
-    setWidgetSpans((prev) => {
-      const current = prev[id] || 1;
-      const next = Math.max(1, Math.min(4, current + delta));
-      return { ...prev, [id]: next };
-    });
-  }
-
-  function handleDragEnd(event: any) {
-    const { active, over } = event;
-    if (active.id !== over?.id) {
-      setWidgetOrder((items) => {
-        const oldIndex = items.indexOf(active.id);
-        const newIndex = items.indexOf(over.id);
-        return arrayMove(items, oldIndex, newIndex);
-      });
-    }
-    setActiveId(null);
-  }
-
-  const visibleWidgets = widgetOrder.filter((id) => !hiddenWidgets.has(id));
+  const visibleLayout = layout.filter((l) => !hiddenWidgets.has(l.i));
 
   /* ── renderWidget: returns the content for each widget ID ── */
   function renderWidget(id: string) {
@@ -638,22 +547,48 @@ export default function DashboardExample3() {
           </button>
         </div>
 
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragStart={(e) => setActiveId(String(e.active.id))}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext items={visibleWidgets} strategy={rectSortingStrategy}>
-            <div className={s.widgetGrid}>
-              {visibleWidgets.map((id) => (
-                <SortableWidget key={id} id={id} span={widgetSpans[id] || 1} customizing={customizing} toggleHide={toggleHide} onResize={handleResize}>
-                  {renderWidget(id)}
-                </SortableWidget>
+        <div ref={containerRef as React.RefObject<HTMLDivElement>}>
+          {mounted && (
+            <ResponsiveGridLayout
+              layouts={{ lg: visibleLayout as LayoutItem[] }}
+              breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+              cols={{ lg: 12, md: 12, sm: 6, xs: 4, xxs: 2 }}
+              rowHeight={40}
+              width={width}
+              dragConfig={{ enabled: customizing, handle: '.rgl-drag-handle' }}
+              resizeConfig={{ enabled: customizing }}
+              onLayoutChange={(currentLayout: Layout) => {
+                setLayout((prev) => {
+                  const hiddenItems = prev.filter((l) => hiddenWidgets.has(l.i));
+                  return [...currentLayout, ...hiddenItems];
+                });
+              }}
+              margin={[16, 16] as [number, number]}
+            >
+              {visibleLayout.map((item) => (
+                <div key={item.i} className={`${s.widgetCard} ${customizing ? s.widgetCustomizing : ''}`}>
+                  {customizing && (
+                    <div className={s.widgetToolbar}>
+                      <span className="rgl-drag-handle" style={{ cursor: 'grab' }}>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="#d0cdc6">
+                          <circle cx="5" cy="4" r="1.5" /><circle cx="11" cy="4" r="1.5" />
+                          <circle cx="5" cy="8" r="1.5" /><circle cx="11" cy="8" r="1.5" />
+                          <circle cx="5" cy="12" r="1.5" /><circle cx="11" cy="12" r="1.5" />
+                        </svg>
+                      </span>
+                      <button onClick={() => toggleHide(item.i)} className={s.hideWidgetBtn}>
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                          <line x1="2" y1="2" x2="12" y2="12" /><line x1="12" y1="2" x2="2" y2="12" />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
+                  {renderWidget(item.i)}
+                </div>
               ))}
-            </div>
-          </SortableContext>
-        </DndContext>
+            </ResponsiveGridLayout>
+          )}
+        </div>
 
         {/* ── Hidden Widgets Panel ── */}
         {customizing && hiddenWidgets.size > 0 && (
