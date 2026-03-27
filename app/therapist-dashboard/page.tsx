@@ -166,7 +166,15 @@ export default function DashboardExample() {
 
   useEffect(() => {
     setNow(new Date());
+    // Restore dark mode preference
+    const saved = localStorage.getItem('moods-dark-mode');
+    if (saved === 'true') setDarkMode(true);
   }, []);
+
+  // Persist dark mode preference
+  useEffect(() => {
+    localStorage.setItem('moods-dark-mode', String(darkMode));
+  }, [darkMode]);
 
   // Close dialogs on Escape
   useEffect(() => {
@@ -403,7 +411,7 @@ export default function DashboardExample() {
       {/* Top Bar */}
       <header className={s.topBar}>
         <Link href="/" className={s.logo}>
-          <Image src="/images/logo.png" alt="Oh My Mood" width={120} height={32} className={s.logoImg} />
+          <Image src={darkMode ? "/images/logo-white.png" : "/images/logo.png"} alt="Oh My Mood" width={120} height={32} className={s.logoImg} />
         </Link>
         <div className={s.topBarRight}>
           <div className={s.sizeControls}>

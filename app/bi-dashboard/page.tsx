@@ -160,12 +160,19 @@ export default function DashboardExample3() {
   const [hiddenWidgets, setHiddenWidgets] = useState<Set<string>>(new Set());
   const { width, containerRef, mounted } = useContainerWidth();
 
-  // Live clock
+  // Live clock + restore dark mode
   useEffect(() => {
     setNow(new Date());
+    const saved = localStorage.getItem('moods-dark-mode');
+    if (saved === 'true') setDarkMode(true);
     const id = setInterval(() => setNow(new Date()), 60_000);
     return () => clearInterval(id);
   }, []);
+
+  // Persist dark mode preference
+  useEffect(() => {
+    localStorage.setItem('moods-dark-mode', String(darkMode));
+  }, [darkMode]);
 
   const greeting = now ? getGreeting(now.getHours()) : 'Goedemiddag';
   const dateStr = now ? formatDate(now) : '';
@@ -453,7 +460,7 @@ export default function DashboardExample3() {
       {/* ── Top Bar ── */}
       <header className={s.topBar}>
         <Link href="/" className={s.logo}>
-          <Image src="/images/logo.png" alt="Oh My Mood" width={120} height={32} className={s.logoImg} />
+          <Image src={darkMode ? "/images/logo-white.png" : "/images/logo.png"} alt="Oh My Mood" width={120} height={32} className={s.logoImg} />
         </Link>
         <div className={s.topBarRight}>
           {/* Text size controls */}
