@@ -293,8 +293,7 @@
 .darkTheme .filterReset:hover { background: #e8e4dd; color: #1a1815; }
 
 /* AskMoody inline */
-.darkTheme .askMoodyInline { background: #252220; border-color: #3a3530; }
-.darkTheme .askMoodyInline:focus-within { border-color: #c4a070; }
+/* AskMoody dark — see panel styles below */
 .darkTheme .askMoodyDot { color: #c4a070; }
 .darkTheme .askMoodyLabel { color: #6a6460; }
 .darkTheme .askMoodyInput { color: #e8e4dd; }
@@ -1247,27 +1246,264 @@
 }
 
 /* ── AskMoody Bottom Bar ── */
-/* Old fixed bottom bar — replaced by inline */
-.askMoodyBar { display: none; }
-
-.askMoodyInline {
+/* ── AskMoody Trigger ── */
+.askMoodyTriggerRow {
   position: relative;
   z-index: 1;
-  max-width: 1536px; /* 1600 - 2*32 padding */
-  margin: 0 auto 20px;
-  padding: 0 20px;
+  max-width: 1600px;
+  margin: 0 auto 16px;
+  padding: 0 32px;
+}
+
+.askMoodyTrigger {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 16px;
   background: #f5f2ec;
   border: 1px solid #d0cdc6;
-  height: 48px;
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.9rem;
+  color: #7a746e;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.askMoodyTrigger:hover {
+  border-color: #8b6d4f;
+  background: #ece8e1;
+}
+
+/* ── AskMoody Side Panel ── */
+@keyframes moodySlideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes moodyFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.moodyOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(58, 58, 58, 0.15);
+  animation: moodyFadeIn 0.15s ease;
+}
+
+.moodyPanel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 420px;
+  max-width: 100vw;
+  height: 100vh;
+  background: #f5f2ec;
+  border-left: 1px solid #d0cdc6;
+  display: flex;
+  flex-direction: column;
+  animation: moodySlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.moodyHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #d0cdc6;
+  flex-shrink: 0;
+}
+
+.moodyHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.moodyHeaderTitle {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #3a3a3a;
+  letter-spacing: 0.04em;
+}
+
+.moodyClose {
+  background: none;
+  border: none;
+  color: #7a746e;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.15s;
+}
+
+.moodyClose:hover {
+  color: #3a3a3a;
+}
+
+.moodyMessages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  scrollbar-width: thin;
+  scrollbar-color: #d0cdc6 transparent;
+}
+
+.moodyMsgSystem {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.9rem;
+  color: #7a746e;
+  line-height: 1.5;
+  padding: 12px 14px;
+  background: #eeeae3;
+  border: 1px solid #e8e4dd;
+}
+
+.moodySuggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.moodySuggestion {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.85rem;
+  color: #8b6d4f;
+  text-align: left;
+  padding: 8px 12px;
+  background: none;
+  border: 1px solid #d0cdc6;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.moodySuggestion:hover {
+  background: #ece8e1;
+  border-color: #8b6d4f;
+}
+
+.moodyMsgUser {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.9rem;
+  color: #3a3a3a;
+  padding: 10px 14px;
+  background: #3a3a3a;
+  color: #eeeae3;
+  align-self: flex-end;
+  max-width: 80%;
+  line-height: 1.5;
+}
+
+.moodyMsgAi {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.9rem;
+  color: #3a3a3a;
+  padding: 12px 14px;
+  background: #eeeae3;
+  border: 1px solid #e8e4dd;
+  line-height: 1.6;
+  max-width: 90%;
+}
+
+.moodyMsgAi p {
+  margin: 0 0 8px;
+}
+
+.moodyMsgAi p:last-child {
+  margin-bottom: 0;
+}
+
+.moodyMsgAi ul {
+  margin: 4px 0 8px 16px;
+  padding: 0;
+}
+
+.moodyMsgAi li {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  color: #3a3a3a;
+  padding: 2px 0;
+}
+
+.moodyMsgAi strong {
+  color: #1a1815;
+}
+
+.moodyInputArea {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-top: 1px solid #d0cdc6;
+  flex-shrink: 0;
+}
+
+.moodyInput {
+  flex: 1;
+  background: #eeeae3;
+  border: 1px solid #d0cdc6;
+  padding: 10px 14px;
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.9rem;
+  color: #3a3a3a;
+  outline: none;
   transition: border-color 0.15s;
 }
 
-.askMoodyInline:focus-within {
+.moodyInput:focus {
   border-color: #8b6d4f;
 }
+
+.moodyInput::placeholder {
+  color: #a09890;
+}
+
+.moodySendBtn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #3a3a3a;
+  border: none;
+  color: #eeeae3;
+  cursor: pointer;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.moodySendBtn:hover {
+  background: #8b6d4f;
+}
+
+/* ── Dark theme AskMoody ── */
+.darkTheme .askMoodyTrigger { background: #252220; border-color: #3a3530; color: #6a6460; }
+.darkTheme .askMoodyTrigger:hover { border-color: #c4a070; background: #1a1815; }
+.darkTheme .moodyOverlay { background: rgba(0,0,0,0.4); }
+.darkTheme .moodyPanel { background: #1a1815; border-left-color: #3a3530; }
+.darkTheme .moodyHeader { border-bottom-color: #3a3530; }
+.darkTheme .moodyHeaderTitle { color: #e8e4dd; }
+.darkTheme .moodyClose { color: #6a6460; }
+.darkTheme .moodyClose:hover { color: #e8e4dd; }
+.darkTheme .moodyMsgSystem { background: #252220; border-color: #3a3530; color: #9a9490; }
+.darkTheme .moodySuggestion { border-color: #3a3530; color: #c4a070; }
+.darkTheme .moodySuggestion:hover { background: #252220; border-color: #c4a070; }
+.darkTheme .moodyMsgUser { background: #e8e4dd; color: #1a1815; }
+.darkTheme .moodyMsgAi { background: #252220; border-color: #3a3530; color: #e8e4dd; }
+.darkTheme .moodyMsgAi li { color: #9a9490; }
+.darkTheme .moodyMsgAi strong { color: #e8e4dd; }
+.darkTheme .moodyInputArea { border-top-color: #3a3530; }
+.darkTheme .moodyInput { background: #252220; border-color: #3a3530; color: #e8e4dd; }
+.darkTheme .moodyInput:focus { border-color: #c4a070; }
+.darkTheme .moodyInput::placeholder { color: #4a4540; }
+.darkTheme .moodySendBtn { background: #c4a070; color: #1a1815; }
+.darkTheme .moodySendBtn:hover { background: #d4b080; }
 
 .askMoodyLeft {
   display: flex;

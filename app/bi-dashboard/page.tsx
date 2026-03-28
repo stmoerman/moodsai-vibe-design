@@ -148,6 +148,7 @@ export default function DashboardExample3() {
   const [now, setNow] = useState<Date | null>(null);
   const [customizing, setCustomizing] = useState(false);
   const [activeTab, setActiveTab] = useState('overzicht');
+  const [moodyOpen, setMoodyOpen] = useState(false);
   const [activeFilters, setActiveFilters] = useState({
     year: '2026',
     month: 'Maart',
@@ -175,6 +176,21 @@ export default function DashboardExample3() {
   useEffect(() => {
     localStorage.setItem('moods-dark-mode', String(darkMode));
   }, [darkMode]);
+
+  // ⌘K to toggle AskMoody
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setMoodyOpen((v) => !v);
+      }
+      if (e.key === 'Escape' && moodyOpen) {
+        setMoodyOpen(false);
+      }
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [moodyOpen]);
 
   const greeting = now ? getGreeting(now.getHours()) : 'Goedemiddag';
   const dateStr = now ? formatDate(now) : '';
@@ -627,20 +643,69 @@ export default function DashboardExample3() {
         </div>
       </div>
 
-      {/* ── AskMoody Inline ── */}
-      <div className={s.askMoodyInline}>
-        <div className={s.askMoodyLeft}>
+      {/* ── AskMoody Trigger ── */}
+      <div className={s.askMoodyTriggerRow}>
+        <button className={s.askMoodyTrigger} onClick={() => setMoodyOpen(true)}>
           <span className={s.askMoodyDot}>&#x2726;</span>
-          <span className={s.askMoodyLabel}>AskMoody</span>
-        </div>
-        <input
-          type="text"
-          className={s.askMoodyInput}
-          placeholder="Vraag iets over je praktijkdata..."
-          readOnly
-        />
-        <span className={s.askMoodyShortcut}>&#x2318;K</span>
+          <span>Vraag iets aan Moody...</span>
+          <span className={s.askMoodyShortcut}>&#x2318;K</span>
+        </button>
       </div>
+
+      {/* ── AskMoody Side Panel ── */}
+      {moodyOpen && (
+        <div className={s.moodyOverlay} onClick={() => setMoodyOpen(false)}>
+          <div className={s.moodyPanel} onClick={(e) => e.stopPropagation()}>
+            <div className={s.moodyHeader}>
+              <div className={s.moodyHeaderLeft}>
+                <span className={s.askMoodyDot}>&#x2726;</span>
+                <span className={s.moodyHeaderTitle}>AskMoody</span>
+              </div>
+              <button className={s.moodyClose} onClick={() => setMoodyOpen(false)}>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                  <line x1="4" y1="4" x2="12" y2="12" /><line x1="12" y1="4" x2="4" y2="12" />
+                </svg>
+              </button>
+            </div>
+            <div className={s.moodyMessages}>
+              <div className={s.moodyMsgSystem}>
+                Hoi Jaime! Ik kan je helpen met vragen over je praktijkdata. Probeer bijvoorbeeld:
+              </div>
+              <div className={s.moodySuggestions}>
+                <button className={s.moodySuggestion} onClick={() => {}}>Wat is onze omzet deze maand?</button>
+                <button className={s.moodySuggestion} onClick={() => {}}>Hoeveel cli&euml;nten zijn er deze week?</button>
+                <button className={s.moodySuggestion} onClick={() => {}}>Toon declarabiliteit per therapeut</button>
+              </div>
+              <div className={s.moodyMsgUser}>
+                Wat is onze omzet deze maand?
+              </div>
+              <div className={s.moodyMsgAi}>
+                <p>De omzet voor maart 2026 is <strong>&euro;152.631</strong>, verdeeld over:</p>
+                <ul>
+                  <li>Behandeling: &euro;108.114 (68%)</li>
+                  <li>Diagnostiek: &euro;19.253 (13%)</li>
+                  <li>E-health: &euro;3.026 (2%)</li>
+                  <li>Workshop: &euro;736 (1%)</li>
+                </ul>
+                <p>Dit is 1,6% hoger dan vorige maand.</p>
+              </div>
+            </div>
+            <div className={s.moodyInputArea}>
+              <input
+                type="text"
+                className={s.moodyInput}
+                placeholder="Stel een vraag..."
+                autoFocus
+              />
+              <button className={s.moodySendBtn}>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14 2L7 9M14 2L9.5 14L7 9L2 6.5L14 2Z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Widget Grid ── */}
       <div className={s.widgetGridArea}>
