@@ -7,6 +7,8 @@ import { ResponsiveGridLayout, useContainerWidth } from 'react-grid-layout';
 import type { Layout, LayoutItem } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import * as Checkbox from '@radix-ui/react-checkbox';
 import s from './page.module.css';
 
 /* ── Helpers ── */
@@ -180,8 +182,6 @@ export default function DashboardExample3() {
   const maxBarTotal = Math.max(...weeklyRevenue.map((w) => w.diagnostics + w.treatment + w.workshop + w.ehealth));
   const maxFlow = Math.max(...clientFlow.flatMap((c) => [c.inflow, c.outflow]));
 
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-
   const filterOptions: Record<string, string[]> = {
     year: ['2024', '2025', '2026'],
     month: ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'],
@@ -191,7 +191,6 @@ export default function DashboardExample3() {
 
   function selectFilter(key: string, value: string) {
     setActiveFilters((prev) => ({ ...prev, [key]: value }));
-    setOpenDropdown(null);
   }
 
   function toggleWeek(week: string) {
@@ -216,16 +215,7 @@ export default function DashboardExample3() {
   function resetFilters() {
     setActiveFilters({ year: '2026', month: 'Maart' });
     setSelectedWeeks(new Set());
-    setOpenDropdown(null);
   }
-
-  // Close dropdown on outside click
-  useEffect(() => {
-    if (!openDropdown) return;
-    const handleClick = () => setOpenDropdown(null);
-    const timer = setTimeout(() => document.addEventListener('click', handleClick), 0);
-    return () => { clearTimeout(timer); document.removeEventListener('click', handleClick); };
-  }, [openDropdown]);
 
   const toggleHide = useCallback((id: string) => {
     setHiddenWidgets((prev) => {
@@ -561,68 +551,74 @@ export default function DashboardExample3() {
       <div className={s.filtersRow}>
         <div className={s.filters}>
           {/* Year + Month dropdowns */}
+          {/* Year + Month dropdowns (Radix) */}
           {(['year', 'month'] as const).map((key) => (
-            <div key={key} className={s.filterDropdown}>
-              <button
-                className={`${s.filterBtn} ${openDropdown === key ? s.filterBtnOpen : ''}`}
-                onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === key ? null : key); }}
-              >
-                <span className={s.filterBtnLabel}>{key === 'year' ? 'Jaar' : 'Maand'}</span>
-                <span className={s.filterBtnValue}>{activeFilters[key]}</span>
+            <DropdownMenu.Root key={key}>
+              <DropdownMenu.Trigger asChild>
+                <button className={s.filterBtn}>
+                  <span className={s.filterBtnLabel}>{key === 'year' ? 'Jaar' : 'Maand'}</span>
+                  <span className={s.filterBtnValue}>{activeFilters[key]}</span>
+                  <svg className={s.filterBtnChevron} width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                    <path d="M3 4l2 2 2-2" />
+                  </svg>
+                </button>
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Portal>
+                <DropdownMenu.Content className={s.filterMenu} sideOffset={4} align="start">
+                  {filterOptions[key].map((opt) => (
+                    <DropdownMenu.Item
+                      key={opt}
+                      className={`${s.filterOption} ${activeFilters[key] === opt ? s.filterOptionActive : ''}`}
+                      onSelect={() => selectFilter(key, opt)}
+                    >
+                      {opt}
+                    </DropdownMenu.Item>
+                  ))}
+                </DropdownMenu.Content>
+              </DropdownMenu.Portal>
+            </DropdownMenu.Root>
+          ))}
+
+          {/* Week multi-select (Radix) */}
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger asChild>
+              <button className={s.filterBtn}>
+                <span className={s.filterBtnLabel}>Week</span>
+                <span className={s.filterBtnValue}>{weekLabel}</span>
                 <svg className={s.filterBtnChevron} width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                   <path d="M3 4l2 2 2-2" />
                 </svg>
               </button>
-              {openDropdown === key && (
-                <div className={s.filterMenu} onClick={(e) => e.stopPropagation()}>
-                  {filterOptions[key].map((opt) => (
-                    <button
-                      key={opt}
-                      className={`${s.filterOption} ${activeFilters[key] === opt ? s.filterOptionActive : ''}`}
-                      onClick={() => selectFilter(key, opt)}
-                    >
-                      {opt}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-
-          {/* Week multi-select dropdown */}
-          <div className={s.filterDropdown}>
-            <button
-              className={`${s.filterBtn} ${openDropdown === 'week' ? s.filterBtnOpen : ''}`}
-              onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === 'week' ? null : 'week'); }}
-            >
-              <span className={s.filterBtnLabel}>Week</span>
-              <span className={s.filterBtnValue}>{weekLabel}</span>
-              <svg className={s.filterBtnChevron} width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                <path d="M3 4l2 2 2-2" />
-              </svg>
-            </button>
-            {openDropdown === 'week' && (
-              <div className={s.filterMenu} onClick={(e) => e.stopPropagation()}>
-                <button
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content className={s.filterMenu} sideOffset={4} align="start">
+                <DropdownMenu.Item
                   className={`${s.filterOption} ${selectedWeeks.size === 0 ? s.filterOptionActive : ''}`}
-                  onClick={selectAllWeeks}
+                  onSelect={selectAllWeeks}
                 >
                   Alle weken
-                </button>
+                </DropdownMenu.Item>
+                <DropdownMenu.Separator className={s.filterSeparator} />
                 {weekOptions.map((w) => (
-                  <label key={w} className={s.filterCheckOption}>
-                    <input
-                      type="checkbox"
-                      checked={selectedWeeks.has(w)}
-                      onChange={() => toggleWeek(w)}
-                      className={s.filterCheckbox}
-                    />
+                  <DropdownMenu.CheckboxItem
+                    key={w}
+                    className={s.filterCheckOption}
+                    checked={selectedWeeks.has(w)}
+                    onCheckedChange={() => toggleWeek(w)}
+                    onSelect={(e) => e.preventDefault()}
+                  >
+                    <DropdownMenu.ItemIndicator className={s.filterCheckIndicator}>
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M2 6l3 3 5-5" />
+                      </svg>
+                    </DropdownMenu.ItemIndicator>
                     <span>{w}</span>
-                  </label>
+                  </DropdownMenu.CheckboxItem>
                 ))}
-              </div>
-            )}
-          </div>
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Root>
+
           <button className={s.filterReset} onClick={resetFilters} title="Filters herstellen">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
               <path d="M1 1l10 10M11 1L1 11" />

@@ -285,8 +285,10 @@
 .darkTheme .filterOptionActive { background: #e8e4dd; color: #1a1815; }
 .darkTheme .filterOptionActive:hover { background: #d0cdc6; }
 .darkTheme .filterCheckOption { color: #e8e4dd; }
-.darkTheme .filterCheckOption:hover { background: #3a3530; }
-.darkTheme .filterCheckbox { accent-color: #c4a070; }
+.darkTheme .filterCheckOption:hover,
+.darkTheme .filterCheckOption[data-highlighted] { background: #3a3530; }
+.darkTheme .filterCheckIndicator { color: #c4a070; }
+.darkTheme .filterSeparator { background: #3a3530; }
 .darkTheme .filterReset { border-color: #3a3530; color: #6a6460; }
 .darkTheme .filterReset:hover { background: #e8e4dd; color: #1a1815; }
 
@@ -514,17 +516,20 @@
 }
 
 .filterMenu {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
   min-width: 140px;
-  max-height: 240px;
+  max-height: 280px;
   overflow-y: auto;
   background: #f5f2ec;
   border: 1px solid #d0cdc6;
   z-index: 50;
   box-shadow: 0 4px 16px rgba(0,0,0,0.08);
   scrollbar-width: thin;
+  animation: filterMenuIn 0.15s ease;
+}
+
+@keyframes filterMenuIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
   scrollbar-color: #d0cdc6 transparent;
 }
 
@@ -542,8 +547,10 @@
   transition: background 0.1s;
 }
 
-.filterOption:hover {
+.filterOption:hover,
+.filterOption[data-highlighted] {
   background: #ece8e1;
+  outline: none;
 }
 
 .filterOptionActive {
@@ -560,16 +567,19 @@
   align-items: center;
   gap: 8px;
   width: 100%;
-  padding: 8px 12px;
+  padding: 8px 12px 8px 28px;
   font-family: 'Space Mono', monospace;
   font-size: 0.65rem;
   color: #3a3a3a;
   cursor: pointer;
   transition: background 0.1s;
   user-select: none;
+  outline: none;
+  position: relative;
 }
 
-.filterCheckOption:hover {
+.filterCheckOption:hover,
+.filterCheckOption[data-highlighted] {
   background: #ece8e1;
 }
 
@@ -577,12 +587,20 @@
   flex: 1;
 }
 
-.filterCheckbox {
-  width: 14px;
-  height: 14px;
-  accent-color: #3a3a3a;
-  cursor: pointer;
-  flex-shrink: 0;
+.filterCheckIndicator {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  color: #3a3a3a;
+}
+
+.filterSeparator {
+  height: 1px;
+  background: #d0cdc6;
+  margin: 4px 0;
 }
 
 .filterReset {
