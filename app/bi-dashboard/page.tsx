@@ -40,43 +40,43 @@ const weeklyRevenue = [
 ];
 
 const tableData = [
-  { week: 'W03', total: '€112,400', diagnostics: '€16,000', treatment: '€74,000', workshop: '€8,000', ehealth: '€14,400' },
-  { week: 'W04', total: '€137,000', diagnostics: '€20,000', treatment: '€105,000', workshop: '€3,000', ehealth: '€9,000' },
-  { week: 'W05', total: '€128,200', diagnostics: '€24,000', treatment: '€88,000', workshop: '€5,200', ehealth: '€11,000' },
-  { week: 'W06', total: '€144,300', diagnostics: '€19,000', treatment: '€110,000', workshop: '€7,300', ehealth: '€8,000' },
-  { week: 'W07', total: '€134,100', diagnostics: '€21,000', treatment: '€98,000', workshop: '€2,100', ehealth: '€13,000' },
-  { week: 'W08', total: '€139,400', diagnostics: '€23,000', treatment: '€102,000', workshop: '€4,400', ehealth: '€10,000' },
+  { week: 'W03', total: '€112.400', diagnostics: '€16.000', treatment: '€74.000', workshop: '€8.000', ehealth: '€14.400' },
+  { week: 'W04', total: '€137.000', diagnostics: '€20.000', treatment: '€105.000', workshop: '€3.000', ehealth: '€9.000' },
+  { week: 'W05', total: '€128.200', diagnostics: '€24.000', treatment: '€88.000', workshop: '€5.200', ehealth: '€11.000' },
+  { week: 'W06', total: '€144.300', diagnostics: '€19.000', treatment: '€110.000', workshop: '€7.300', ehealth: '€8.000' },
+  { week: 'W07', total: '€134.100', diagnostics: '€21.000', treatment: '€98.000', workshop: '€2.100', ehealth: '€13.000' },
+  { week: 'W08', total: '€139.400', diagnostics: '€23.000', treatment: '€102.000', workshop: '€4.400', ehealth: '€10.000' },
 ];
 
 const clientFlow = [
-  { month: 'Oct', inflow: 78, outflow: 52 },
+  { month: 'Okt', inflow: 78, outflow: 52 },
   { month: 'Nov', inflow: 65, outflow: 48 },
   { month: 'Dec', inflow: 42, outflow: 58 },
   { month: 'Jan', inflow: 88, outflow: 44 },
   { month: 'Feb', inflow: 72, outflow: 50 },
-  { month: 'Mar', inflow: 91, outflow: 46 },
+  { month: 'Mrt', inflow: 91, outflow: 46 },
 ];
 
 const modules = [
   { name: 'Core', metric: 'Dashboard & AI', trend: null, active: true },
-  { name: 'Video', metric: '8 rooms', trend: '+2 this week', active: true },
+  { name: 'Video', metric: '8 kamers', trend: '+2 deze week', active: true },
   { name: 'HCI', metric: '78% decl.', trend: '-2% vs target', trendNeg: true, active: true },
-  { name: 'BI', metric: '12 reports', trend: '+3 new', active: true },
-  { name: 'Care', metric: '3 referrals', trend: '+1 today', active: true },
-  { name: 'Newsletter', metric: 'Not active', trend: null, active: false },
+  { name: 'BI', metric: '12 rapporten', trend: '+3 nieuw', active: true },
+  { name: 'Care', metric: '3 verwijzingen', trend: '+1 vandaag', active: true },
+  { name: 'Nieuwsbrief', metric: 'Niet actief', trend: null, active: false },
 ];
 
 /* ── Widget titles map ── */
 const WIDGET_TITLES: Record<string, string> = {
-  'stat-revenue': 'Revenue this week',
-  'stat-clients': 'Clients',
-  'stat-hours': 'Direct hours',
-  'stat-declarability': 'Declarability',
-  'chart-revenue': 'Revenue per week',
-  'breakdown-revenue': 'Current month',
-  'declaration-control': 'Declaration control',
-  'client-flow': 'Client flow',
-  'table-revenue': 'Revenue table',
+  'stat-revenue': 'Omzet deze week',
+  'stat-clients': 'Cli\u00ebnten',
+  'stat-hours': 'Directe uren',
+  'stat-declarability': 'Declarabiliteit',
+  'chart-revenue': 'Omzet per week',
+  'breakdown-revenue': 'Huidige maand',
+  'declaration-control': 'Declaratiecontrole',
+  'client-flow': 'Cli\u00ebntenstroom',
+  'table-revenue': 'Omzettabel',
 };
 
 /* ── Default grid layout ── */
@@ -125,9 +125,9 @@ function WidgetHeader({
       <h3 className={s.widgetTitle}>{title}</h3>
       <div className={s.widgetActions}>
         {!customizing && (
-          <button className={s.aiButton} aria-label="Ask Moody about this">
+          <button className={s.aiButton} aria-label="Vraag Moody hierover">
             &#x2726;
-            <span className={s.aiTooltip}>Ask Moody about this</span>
+            <span className={s.aiTooltip}>Vraag Moody hierover</span>
           </button>
         )}
       </div>
@@ -266,10 +266,10 @@ export default function DashboardExample3() {
       case 'stat-revenue':
         return (
           <>
-            <WidgetHeader title="Revenue this week" customizing={customizing} />
-            <div className={s.statValue}>&euro;155,068</div>
-            <div className={s.statLabel}>This week total</div>
-            <div className={`${s.statTrend} ${s.trendPositive}`}>&uarr; 1.6%</div>
+            <WidgetHeader title="Omzet deze week" customizing={customizing} />
+            <div className={s.statValue}>&euro;155.068</div>
+            <div className={s.statLabel}>Totaal deze week</div>
+            <div className={`${s.statTrend} ${s.trendPositive}`}>&uarr; 1,6%</div>
             <Sparkline points={[120, 128, 118, 135, 142, 148, 155]} />
           </>
         );
@@ -277,10 +277,10 @@ export default function DashboardExample3() {
       case 'stat-clients':
         return (
           <>
-            <WidgetHeader title="Clients" customizing={customizing} />
-            <div className={s.statValue}>1,587</div>
-            <div className={s.statLabel}>Total active</div>
-            <div className={`${s.statTrend} ${s.trendPositive}`}>+12 this month</div>
+            <WidgetHeader title="Cli&euml;nten" customizing={customizing} />
+            <div className={s.statValue}>1.587</div>
+            <div className={s.statLabel}>Totaal actief</div>
+            <div className={`${s.statTrend} ${s.trendPositive}`}>+12 deze maand</div>
             <Sparkline points={[1540, 1548, 1555, 1562, 1570, 1578, 1587]} />
           </>
         );
@@ -288,10 +288,10 @@ export default function DashboardExample3() {
       case 'stat-hours':
         return (
           <>
-            <WidgetHeader title="Direct hours" customizing={customizing} />
-            <div className={s.statValue}>23,528</div>
-            <div className={s.statLabel}>Indirect: 2,396</div>
-            <div className={`${s.statTrend} ${s.trendPositive}`}>&uarr; 3.2%</div>
+            <WidgetHeader title="Directe uren" customizing={customizing} />
+            <div className={s.statValue}>23.528</div>
+            <div className={s.statLabel}>Indirect: 2.396</div>
+            <div className={`${s.statTrend} ${s.trendPositive}`}>&uarr; 3,2%</div>
             <Sparkline points={[22100, 22400, 22800, 23000, 23100, 23350, 23528]} />
           </>
         );
@@ -299,10 +299,10 @@ export default function DashboardExample3() {
       case 'stat-declarability':
         return (
           <>
-            <WidgetHeader title="Declarability" customizing={customizing} />
+            <WidgetHeader title="Declarabiliteit" customizing={customizing} />
             <div className={s.statValue}>78%</div>
             <div className={s.statLabel}>Target: 80%</div>
-            <div className={`${s.statTrend} ${s.trendWarning}`}>&minus;2% below target</div>
+            <div className={`${s.statTrend} ${s.trendWarning}`}>&minus;2% onder target</div>
             <Sparkline points={[76, 77, 79, 78, 77, 78, 78]} />
           </>
         );
@@ -310,7 +310,7 @@ export default function DashboardExample3() {
       case 'chart-revenue':
         return (
           <>
-            <WidgetHeader title="Revenue per week" customizing={customizing} />
+            <WidgetHeader title="Omzet per week" customizing={customizing} />
             <div className={s.chartArea}>
               <div className={s.chartContainer}>
                 <div className={s.yAxis}>
@@ -340,10 +340,10 @@ export default function DashboardExample3() {
               </div>
               <div className={s.chartLegend}>
                 {[
-                  { color: darkMode ? '#9a9490' : '#3a3a3a', label: 'Diagnostics' },
-                  { color: darkMode ? '#e8e4dd' : '#8b6d4f', label: 'Treatment' },
+                  { color: darkMode ? '#9a9490' : '#3a3a3a', label: 'Diagnostiek' },
+                  { color: darkMode ? '#e8e4dd' : '#8b6d4f', label: 'Behandeling' },
                   { color: darkMode ? '#c4a070' : '#b8a898', label: 'Workshop' },
-                  { color: darkMode ? '#a08060' : '#d0cdc6', label: 'eHealth' },
+                  { color: darkMode ? '#a08060' : '#d0cdc6', label: 'E-health' },
                 ].map((l) => (
                   <div className={s.legendItem} key={l.label}>
                     <div className={s.legendSwatch} style={{ background: l.color }} />
@@ -358,7 +358,7 @@ export default function DashboardExample3() {
       case 'breakdown-revenue':
         return (
           <>
-            <WidgetHeader title="Current month" customizing={customizing} />
+            <WidgetHeader title="Huidige maand" customizing={customizing} />
             <div className={s.revSummary}>
               <div className={s.revLargeValue}>&euro;152,631</div>
               {[
@@ -382,25 +382,25 @@ export default function DashboardExample3() {
       case 'declaration-control':
         return (
           <>
-            <WidgetHeader title="Declaration control" customizing={customizing} />
-            <div className={s.declLargeValue}>&euro;95,575 <span className={`${s.statTrend} ${s.trendPositive}`}>&uarr;</span></div>
-            <div className={s.declDeviation}>Deviation: +5.45%</div>
+            <WidgetHeader title="Declaratiecontrole" customizing={customizing} />
+            <div className={s.declLargeValue}>&euro;95.575 <span className={`${s.statTrend} ${s.trendPositive}`}>&uarr;</span></div>
+            <div className={s.declDeviation}>Afwijking: +5,45%</div>
             <div className={s.declRow}>
-              <span className={s.declLabel}>Submitted</span>
-              <span className={s.declValue}>&euro;1,754,571</span>
+              <span className={s.declLabel}>Ingediend</span>
+              <span className={s.declValue}>&euro;1.754.571</span>
             </div>
             <div className={s.declRow}>
-              <span className={s.declLabel}>Approved</span>
-              <span className={s.declValue}>&euro;1,659,000</span>
+              <span className={s.declLabel}>Goedgekeurd</span>
+              <span className={s.declValue}>&euro;1.659.000</span>
             </div>
-            <div className={s.declFootnote}>10,812 declarations &middot; 2,349 deviations found</div>
+            <div className={s.declFootnote}>10.812 declaraties &middot; 2.349 afwijkingen gevonden</div>
           </>
         );
 
       case 'client-flow':
         return (
           <>
-            <WidgetHeader title="Client flow" customizing={customizing} />
+            <WidgetHeader title="Cli&euml;ntenstroom" customizing={customizing} />
             <div className={s.flowToggles}>
               {(['Week', 'Month', 'Quarter'] as const).map((p) => (
                 <button
@@ -408,7 +408,7 @@ export default function DashboardExample3() {
                   className={`${s.flowToggle} ${flowPeriod === p ? s.flowToggleActive : ''}`}
                   onClick={() => setFlowPeriod(p)}
                 >
-                  {p}
+                  {p === 'Month' ? 'Maand' : p === 'Quarter' ? 'Kwartaal' : p}
                 </button>
               ))}
             </div>
@@ -434,11 +434,11 @@ export default function DashboardExample3() {
             <div className={s.flowLegend}>
               <div className={s.legendItem}>
                 <div className={s.legendSwatch} style={{ background: darkMode ? '#e8e4dd' : '#3a3a3a' }} />
-                <span className={s.legendLabel}>New clients</span>
+                <span className={s.legendLabel}>Nieuwe cli&euml;nten</span>
               </div>
               <div className={s.legendItem}>
                 <div className={s.legendSwatch} style={{ background: darkMode ? '#6a6460' : '#d0cdc6' }} />
-                <span className={s.legendLabel}>Closed trajectories</span>
+                <span className={s.legendLabel}>Afgesloten trajecten</span>
               </div>
             </div>
           </>
@@ -447,16 +447,16 @@ export default function DashboardExample3() {
       case 'table-revenue':
         return (
           <>
-            <WidgetHeader title="Revenue per week" customizing={customizing} />
+            <WidgetHeader title="Omzet per week" customizing={customizing} />
             <table className={s.dataTable}>
               <thead>
                 <tr>
                   <th>Week</th>
-                  <th>Total</th>
-                  <th>Diagnostics</th>
-                  <th>Treatment</th>
+                  <th>Totaal</th>
+                  <th>Diagnostiek</th>
+                  <th>Behandeling</th>
                   <th>Workshop</th>
-                  <th>eHealth</th>
+                  <th>E-health</th>
                 </tr>
               </thead>
               <tbody>
