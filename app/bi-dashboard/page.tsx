@@ -740,6 +740,7 @@ export default function DashboardExample3() {
                 });
               }}
               margin={[16, 16] as [number, number]}
+              containerPadding={[0, 0] as [number, number]}
             >
               {visibleLayout.map((item) => (
                 <div key={item.i} className={`${s.widgetCard} ${customizing ? s.widgetCustomizing : ''}`}>
