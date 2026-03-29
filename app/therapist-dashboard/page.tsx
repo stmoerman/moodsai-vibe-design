@@ -20,6 +20,44 @@ function formatDate(date: Date) {
   return `${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]}`;
 }
 
+// ── Agenda color config ──
+const APPOINTMENT_TYPES = ['Behandeling', 'Intake', 'Vervolgconsult', 'Workshop', 'Diagnostiek'] as const;
+type AppointmentType = typeof APPOINTMENT_TYPES[number];
+
+interface ColorOption {
+  name: string;
+  color: string;       // border / accent color
+  lightBg: string;     // light mode tinted background
+  darkBg: string;      // dark mode tinted background
+}
+
+const COLOR_PALETTE: ColorOption[] = [
+  { name: 'Amber',      color: '#c4a050', lightBg: '#f5edd8', darkBg: '#2a2418' },
+  { name: 'Terracotta', color: '#c47050', lightBg: '#f5e0d8', darkBg: '#2a1f18' },
+  { name: 'Sage',       color: '#5a9a60', lightBg: '#ddf0e0', darkBg: '#1a2a1c' },
+  { name: 'Dusty Blue', color: '#5078a0', lightBg: '#dce6f0', darkBg: '#1a2028' },
+  { name: 'Plum',       color: '#8a60a0', lightBg: '#ecddf0', darkBg: '#221a28' },
+  { name: 'Copper',     color: '#b0784a', lightBg: '#f2e6d8', darkBg: '#28201a' },
+  { name: 'Olive',      color: '#8a8a40', lightBg: '#eff0d8', darkBg: '#22221a' },
+  { name: 'Slate Teal', color: '#508a8a', lightBg: '#d8eff0', darkBg: '#1a2828' },
+];
+
+const DEFAULT_TYPE_COLORS: Record<AppointmentType, number> = {
+  'Behandeling': 0,      // Amber
+  'Intake': 1,           // Terracotta
+  'Vervolgconsult': 2,   // Sage
+  'Workshop': 3,         // Dusty Blue
+  'Diagnostiek': 4,      // Plum
+};
+
+function getTypeFromAppointment(apt: { type: string }): AppointmentType | null {
+  // Match partial types like "Behandeling (ZPM)" to "Behandeling"
+  for (const t of APPOINTMENT_TYPES) {
+    if (apt.type.startsWith(t)) return t;
+  }
+  return null;
+}
+
 type AppointmentStatus = 'confirmed' | 'pending' | 'available' | 'break';
 
 interface Appointment {
@@ -163,12 +201,19 @@ export default function DashboardExample() {
   const [activeTab, setActiveTab] = useState('agenda');
   const [textSize, setTextSize] = useState(0);
   const [darkMode, setDarkMode] = useState(false);
+  const [typeColors, setTypeColors] = useState<Record<AppointmentType, number>>(DEFAULT_TYPE_COLORS);
+  const [showColorSettings, setShowColorSettings] = useState(false);
 
   useEffect(() => {
     setNow(new Date());
     // Restore dark mode preference
     const saved = localStorage.getItem('moods-dark-mode');
     if (saved === 'true') setDarkMode(true);
+    // Restore agenda colors
+    const savedColors = localStorage.getItem('moods-agenda-colors');
+    if (savedColors) {
+      try { setTypeColors(JSON.parse(savedColors)); } catch { /* ignore */ }
+    }
   }, []);
 
   // Persist dark mode preference
@@ -176,19 +221,51 @@ export default function DashboardExample() {
     localStorage.setItem('moods-dark-mode', String(darkMode));
   }, [darkMode]);
 
+  // Persist agenda color preference
+  useEffect(() => {
+    localStorage.setItem('moods-agenda-colors', JSON.stringify(typeColors));
+  }, [typeColors]);
+
+  // Close color settings on click outside
+  useEffect(() => {
+    if (!showColorSettings) return;
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest(`.${s.colorSettingsWrap}`)) {
+        setShowColorSettings(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [showColorSettings]);
+
+  const getAptStyle = (apt: { type: string; status: string }) => {
+    if (apt.status === 'available' || apt.status === 'break') return {};
+    const aptType = getTypeFromAppointment(apt);
+    if (!aptType) return {};
+    const colorIdx = typeColors[aptType];
+    const palette = COLOR_PALETTE[colorIdx];
+    if (!palette) return {};
+    return {
+      '--apt-color': palette.color,
+      '--apt-bg': darkMode ? palette.darkBg : palette.lightBg,
+    } as React.CSSProperties;
+  };
+
   // Close dialogs on Escape
   useEffect(() => {
-    if (expandedAppointment === null && selectedWeekApt === null && !isAgendaExpanded) return;
+    if (expandedAppointment === null && selectedWeekApt === null && !isAgendaExpanded && !showColorSettings) return;
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setExpandedAppointment(null);
         setSelectedWeekApt(null);
         setIsAgendaExpanded(false);
+        setShowColorSettings(false);
       }
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [expandedAppointment, selectedWeekApt, isAgendaExpanded]);
+  }, [expandedAppointment, selectedWeekApt, isAgendaExpanded, showColorSettings]);
 
   const greeting = now ? getGreeting(now.getHours()) : 'Goedemorgen';
   const dateStr = now ? formatDate(now) : '';
@@ -265,6 +342,45 @@ export default function DashboardExample() {
               Week
             </button>
           </div>
+          <div className={s.colorSettingsWrap}>
+            <button
+              className={s.colorSettingsBtn}
+              onClick={() => setShowColorSettings((v) => !v)}
+              title="Agenda kleuren"
+            >
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="7" cy="7" r="2.5" />
+                <path d="M7 1v1.5M7 11.5V13M1 7h1.5M11.5 7H13M2.8 2.8l1.1 1.1M10.1 10.1l1.1 1.1M11.2 2.8l-1.1 1.1M3.9 10.1l-1.1 1.1" />
+              </svg>
+            </button>
+            {showColorSettings && (
+              <div className={s.colorSettingsPanel}>
+                <h4 className={s.colorSettingsTitle}>Agenda kleuren</h4>
+                {APPOINTMENT_TYPES.map((type) => (
+                  <div key={type} className={s.colorSettingsRow}>
+                    <span className={s.colorSettingsLabel}>{type}</span>
+                    <div className={s.colorSwatches}>
+                      {COLOR_PALETTE.map((c, ci) => (
+                        <button
+                          key={ci}
+                          className={`${s.colorSwatch} ${typeColors[type] === ci ? s.colorSwatchActive : ''}`}
+                          style={{ backgroundColor: c.color }}
+                          onClick={() => setTypeColors((prev) => ({ ...prev, [type]: ci }))}
+                          title={c.name}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+                <button
+                  className={s.colorSettingsReset}
+                  onClick={() => setTypeColors(DEFAULT_TYPE_COLORS)}
+                >
+                  Reset naar standaard
+                </button>
+              </div>
+            )}
+          </div>
           {inExpandedDialog ? (
             <button className={s.expandBtn} onClick={() => setIsAgendaExpanded(false)} title="Sluiten">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
@@ -318,6 +434,7 @@ export default function DashboardExample() {
                     top: `${topPct}%`,
                     height: `${heightPct}%`,
                     animationDelay: `${i * 0.03}s`,
+                    ...getAptStyle(apt),
                   }}
                   onClick={isAppointment ? () => toggleExpand(i) : undefined}
                 >
@@ -386,6 +503,7 @@ export default function DashboardExample() {
                         style={{
                           top: `${topPct}%`,
                           height: `${heightPct}%`,
+                          ...getAptStyle(apt),
                         }}
                         onClick={isAppointment ? () => handleWeekAptClick(day, i, apt) : undefined}
                       >

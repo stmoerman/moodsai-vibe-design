@@ -208,204 +208,203 @@
 .themeToggleActive:hover { background: #d0cdc6; }
 
 /* ═══════════════════════════════════════════
-   Dark Theme
+   Dark Theme — Overhauled palette
+   bg: #141210  card: #1e1c19  border: #2e2a26
+   text-primary: #ede9e3  text-secondary: #8a8580  text-muted: #6a6560
+   accent: #d4a96c  hover: #28241f
    ═══════════════════════════════════════════ */
 .darkTheme {
-  background: #1a1815;
-  color: #e8e4dd;
+  background: #141210;
+  color: #ede9e3;
 }
 
 .darkTheme .dotGrid {
-  background-image: radial-gradient(circle, #2a2625 0.6px, transparent 0.6px);
+  background-image: radial-gradient(circle, #252220 0.6px, transparent 0.6px);
 }
 
 .darkTheme .topBar {
-  background: #1a1815;
-  border-bottom-color: #3a3530;
+  background: #141210;
+  border-bottom-color: #2e2a26;
 }
 
 .darkTheme .greeting {
-  color: #c4a070;
+  color: #d4a96c;
 }
 
 .darkTheme .greetingUnderlinePath {
-  stroke: #c4a070;
+  stroke: #d4a96c;
 }
 
-.darkTheme .userName { color: #6a6460; }
-.darkTheme .avatar { background: #3a3530; color: #9a9490; }
+.darkTheme .userName { color: #8a8580; }
+.darkTheme .avatar { background: #2e2a26; color: #aba6a0; }
 
-.darkTheme .dateTime { color: #6a6460; }
+.darkTheme .dateTime { color: #8a8580; }
 
-.darkTheme .navTab { color: #6a6460; }
-.darkTheme .navTabActive { color: #e8e4dd; border-bottom-color: #e8e4dd; }
-.darkTheme .navTabs { border-bottom-color: #3a3530; }
+.darkTheme .navTab { color: #8a8580; }
+.darkTheme .navTabActive { color: #ede9e3; border-bottom-color: #d4a96c; }
+.darkTheme .navTabs { border-bottom-color: #2e2a26; }
 
 .darkTheme .statBlock {
-  background: #252220;
-  border-color: #3a3530;
+  background: #1e1c19;
+  border-color: #2e2a26;
 }
-.darkTheme .statValue { color: #e8e4dd; }
-.darkTheme .statLabel { color: #6a6460; }
-.darkTheme .statSub { color: #6a6460; }
+.darkTheme .statValue { color: #ede9e3; }
+.darkTheme .statLabel { color: #8a8580; }
+.darkTheme .statSub { color: #8a8580; }
 
 .darkTheme .scheduleSection {
   background: transparent;
 }
-.darkTheme .scheduleTitle { color: #e8e4dd; }
-.darkTheme .scheduleCount { color: #6a6460; }
-.darkTheme .scheduleTime { color: #6a6460; }
-.darkTheme .scheduleClient { color: #e8e4dd; }
-.darkTheme .scheduleType { color: #6a6460; }
-.darkTheme .scheduleDuration { color: #6a6460; }
-.darkTheme .scheduleRow { border-bottom-color: #2a2625; }
-.darkTheme .scheduleRow:hover { background: #252220; }
-.darkTheme .scheduleRowActive { border-left-color: #c4a070; }
+.darkTheme .scheduleTitle { color: #ede9e3; }
+.darkTheme .scheduleCount { color: #8a8580; }
+.darkTheme .scheduleTime { color: #8a8580; }
+.darkTheme .scheduleClient { color: #ede9e3; }
+.darkTheme .scheduleType { color: #8a8580; }
+.darkTheme .scheduleDuration { color: #8a8580; }
+.darkTheme .scheduleRow { border-bottom-color: #252220; }
+.darkTheme .scheduleRow:hover { background: #1e1c19; }
+.darkTheme .scheduleRowActive { border-left-color: #d4a96c; }
 
-.darkTheme .aptConfirmed { background: #252220; border-left-color: #e8e4dd; }
-.darkTheme .aptPending { background: #252220; border-left-color: #6a6460; }
-.darkTheme .aptAvailable { border-color: #3a3530; }
-.darkTheme .aptAvailable .aptClient { color: #3a3530; }
-.darkTheme .aptBreak { background: #1e1b18; }
+.darkTheme .aptAvailable { border-color: #2e2a26; }
+.darkTheme .aptAvailable .aptClient { color: #2e2a26; }
+.darkTheme .aptBreak { background: #1a1815; }
 
-.darkTheme .aptClient { color: #e8e4dd; }
-.darkTheme .aptMeta { color: #6a6460; }
-.darkTheme .aptConfirmed:hover,
-.darkTheme .aptPending:hover { background: #2a2625; }
+.darkTheme .aptClient { color: #ede9e3; }
+.darkTheme .aptMeta { color: #8a8580; }
 
-.darkTheme .nowDot { background: #c4a070; }
-.darkTheme .nowLine { background: #c4a070; }
+.darkTheme .nowDot { background: #d4a96c; }
+.darkTheme .nowLine { background: #d4a96c; }
 
-.darkTheme .togglePill { border-color: #3a3530; color: #6a6460; }
-.darkTheme .togglePillActive { background: #e8e4dd; color: #1a1815; border-color: #e8e4dd; }
+.darkTheme .togglePill { border-color: #2e2a26; color: #8a8580; }
+.darkTheme .togglePillActive { background: #ede9e3; color: #141210; border-color: #ede9e3; }
 
-.darkTheme .askMoody { background: #252220; border-color: #3a3530; }
-.darkTheme .askMoodyHeader { border-bottom-color: #2a2625; }
-.darkTheme .askMoodyLabel { color: #6a6460; }
-.darkTheme .askMoodyMsg { color: #9a9490; }
-.darkTheme .askMoodyInput { color: #e8e4dd; border-top-color: #3a3530; }
-.darkTheme .askMoodyInput::placeholder { color: #4a4540; }
+.darkTheme .askMoody { background: #1e1c19; border-color: #2e2a26; }
+.darkTheme .askMoodyHeader { border-bottom-color: #252220; }
+.darkTheme .askMoodyLabel { color: #8a8580; }
+.darkTheme .askMoodyMsg { color: #aba6a0; }
+.darkTheme .askMoodyInput { color: #ede9e3; border-top-color: #2e2a26; }
+.darkTheme .askMoodyInput::placeholder { color: #6a6560; }
 
-.darkTheme .notesSection { background: #252220; border-color: #3a3530; }
-.darkTheme .sectionHeading { color: #e8e4dd; }
-.darkTheme .noteRow { border-bottom-color: #2a2625; }
-.darkTheme .noteText { color: #9a9490; }
-.darkTheme .noteTime { color: #4a4540; }
+.darkTheme .notesSection { background: #1e1c19; border-color: #2e2a26; }
+.darkTheme .sectionHeading { color: #ede9e3; }
+.darkTheme .noteRow { border-bottom-color: #252220; }
+.darkTheme .noteText { color: #aba6a0; }
+.darkTheme .noteTime { color: #6a6560; }
 
-.darkTheme .messagesSection { background: #252220; border-color: #3a3530; }
-.darkTheme .messageBadge { background: #c4a070; color: #1a1815; }
-.darkTheme .messageRow { border-bottom-color: #2a2625; }
-.darkTheme .messageName { color: #e8e4dd; }
-.darkTheme .messagePreview { color: #6a6460; }
-.darkTheme .messageTime { color: #4a4540; }
+.darkTheme .messagesSection { background: #1e1c19; border-color: #2e2a26; }
+.darkTheme .messageBadge { background: #d4a96c; color: #141210; }
+.darkTheme .messageRow { border-bottom-color: #252220; }
+.darkTheme .messageName { color: #ede9e3; }
+.darkTheme .messagePreview { color: #8a8580; }
+.darkTheme .messageTime { color: #6a6560; }
 
-.darkTheme .roomLinkCard { background: #c4a070; color: #1a1815; }
-.darkTheme .roomLinkCard:hover { background: #d4b080; }
+.darkTheme .roomLinkCard { background: transparent; color: #d4a96c; border-color: #d4a96c; }
+.darkTheme .roomLinkCard:hover { background: #d4a96c; color: #141210; }
 
 /* Teamchat dark */
 .darkTheme .teamchatsView { background: transparent; }
-.darkTheme .teamchatsSidebar { background: #252220; border-color: #3a3530; }
-.darkTheme .teamchatSearchInput { background: #1a1815; border-color: #3a3530; color: #e8e4dd; }
-.darkTheme .teamchatItem { border-bottom-color: #2a2625; }
-.darkTheme .teamchatItem:hover { background: #2a2625; }
-.darkTheme .teamchatItemActive { background: #1a1815; border-left-color: #c4a070; }
-.darkTheme .teamchatItemName { color: #e8e4dd; }
-.darkTheme .teamchatItemTime { color: #4a4540; }
-.darkTheme .teamchatItemPreview { color: #6a6460; }
-.darkTheme .teamchatMain { background: #1a1815; border-color: #3a3530; }
-.darkTheme .teamchatHeader { background: #252220; border-bottom-color: #3a3530; }
-.darkTheme .teamchatChannelName { color: #e8e4dd; }
-.darkTheme .teamchatChannelMeta { color: #4a4540; }
-.darkTheme .teamchatMsgAvatar { background: #3a3530; color: #9a9490; }
-.darkTheme .teamchatMsgAuthor { color: #e8e4dd; }
-.darkTheme .teamchatMsgTime { color: #4a4540; }
-.darkTheme .teamchatMsgText { color: #9a9490; }
-.darkTheme .teamchatInputField { background: #252220; border-color: #3a3530; color: #e8e4dd; }
-.darkTheme .teamchatInputAction { border-color: #3a3530; color: #6a6460; }
-.darkTheme .teamchatInputAction:hover { background: #e8e4dd; color: #1a1815; }
+.darkTheme .teamchatsSidebar { background: #1e1c19; border-color: #2e2a26; }
+.darkTheme .teamchatSearchInput { background: #141210; border-color: #2e2a26; color: #ede9e3; }
+.darkTheme .teamchatItem { border-bottom-color: #252220; }
+.darkTheme .teamchatItem:hover { background: #28241f; }
+.darkTheme .teamchatItemActive { background: #141210; border-left-color: #d4a96c; }
+.darkTheme .teamchatItemName { color: #ede9e3; }
+.darkTheme .teamchatItemTime { color: #6a6560; }
+.darkTheme .teamchatItemPreview { color: #8a8580; }
+.darkTheme .teamchatMain { background: #141210; border-color: #2e2a26; }
+.darkTheme .teamchatHeader { background: #1e1c19; border-bottom-color: #2e2a26; }
+.darkTheme .teamchatChannelName { color: #ede9e3; }
+.darkTheme .teamchatChannelMeta { color: #6a6560; }
+.darkTheme .teamchatMsgAvatar { background: #2e2a26; color: #aba6a0; }
+.darkTheme .teamchatMsgAuthor { color: #ede9e3; }
+.darkTheme .teamchatMsgTime { color: #6a6560; }
+.darkTheme .teamchatMsgText { color: #aba6a0; }
+.darkTheme .teamchatInputField { background: #1e1c19; border-color: #2e2a26; color: #ede9e3; }
+.darkTheme .teamchatInputAction { border-color: #2e2a26; color: #8a8580; }
+.darkTheme .teamchatInputAction:hover { background: #ede9e3; color: #141210; }
 
 /* Dialog dark */
-.darkTheme .dialogOverlay { background: rgba(0,0,0,0.5); }
-.darkTheme .dialog { background: #252220; border-color: #3a3530; }
-.darkTheme .dialogWide { background: #252220; border-color: #3a3530; }
-.darkTheme .dialogHeader { border-bottom-color: #3a3530; }
-.darkTheme .dialogClose { color: #6a6460; }
-.darkTheme .dialogClose:hover { color: #e8e4dd; }
-.darkTheme .aptDetailAvatar { background: #3a3530; color: #9a9490; }
-.darkTheme .aptDetailName { color: #e8e4dd; }
-.darkTheme .aptDetailType { color: #6a6460; }
-.darkTheme .aptDetailLabel { color: #6a6460; }
-.darkTheme .aptDetailValue { color: #9a9490; }
-.darkTheme .aptDetailAction { border-color: #3a3530; color: #e8e4dd; }
-.darkTheme .aptDetailAction:hover { background: #e8e4dd; color: #1a1815; }
+.darkTheme .dialogOverlay { background: rgba(0,0,0,0.6); }
+.darkTheme .dialog { background: #1e1c19; border-color: #2e2a26; }
+.darkTheme .dialogWide { background: #1e1c19; border-color: #2e2a26; }
+.darkTheme .dialogHeader { border-bottom-color: #2e2a26; }
+.darkTheme .dialogClose { color: #8a8580; }
+.darkTheme .dialogClose:hover { color: #ede9e3; }
+.darkTheme .aptDetailAvatar { background: #2e2a26; color: #aba6a0; }
+.darkTheme .aptDetailName { color: #ede9e3; }
+.darkTheme .aptDetailType { color: #8a8580; }
+.darkTheme .aptDetailLabel { color: #8a8580; }
+.darkTheme .aptDetailValue { color: #aba6a0; }
+.darkTheme .aptDetailAction { border-color: #2e2a26; color: #ede9e3; }
+.darkTheme .aptDetailAction:hover { background: #ede9e3; color: #141210; }
 
 /* Size + theme buttons */
-.darkTheme .sizeBtn { border-color: #3a3530; color: #9a9490; }
-.darkTheme .sizeBtn:hover:not(:disabled) { background: #e8e4dd; color: #1a1815; }
-.darkTheme .themeToggle { border-color: #3a3530; color: #9a9490; }
-.darkTheme .themeToggle:hover { background: #e8e4dd; color: #1a1815; }
+.darkTheme .sizeBtn { border-color: #2e2a26; color: #aba6a0; }
+.darkTheme .sizeBtn:hover:not(:disabled) { background: #ede9e3; color: #141210; }
+.darkTheme .themeToggle { border-color: #2e2a26; color: #aba6a0; }
+.darkTheme .themeToggle:hover { background: #ede9e3; color: #141210; }
 
 /* Timeline dark */
-.darkTheme .timelineBody { border-left-color: #3a3530; }
-.darkTheme .timelineVerticalLine { background: #3a3530; }
-.darkTheme .timelineGutterTime { color: #6a6460; }
-.darkTheme .agendaNavBtn { border-color: #3a3530; color: #9a9490; }
-.darkTheme .agendaNavBtn:hover:not(:disabled) { background: #e8e4dd; color: #1a1815; }
-.darkTheme .agendaTodayBtn { border-color: #3a3530; color: #9a9490; }
-.darkTheme .agendaTodayBtn:hover { background: #e8e4dd; color: #1a1815; }
-.darkTheme .agendaDateLabel { color: #e8e4dd; }
-.darkTheme .expandBtn { border-color: #3a3530; color: #6a6460; }
-.darkTheme .expandBtn:hover { background: #e8e4dd; color: #1a1815; }
+.darkTheme .timelineBody { border-left-color: #2e2a26; }
+.darkTheme .timelineVerticalLine { background: #2e2a26; }
+.darkTheme .timelineGutterTime { color: #8a8580; }
+.darkTheme .agendaNavBtn { border-color: #2e2a26; color: #aba6a0; }
+.darkTheme .agendaNavBtn:hover:not(:disabled) { background: #ede9e3; color: #141210; }
+.darkTheme .agendaTodayBtn { border-color: #2e2a26; color: #aba6a0; }
+.darkTheme .agendaTodayBtn:hover { background: #ede9e3; color: #141210; }
+.darkTheme .agendaDateLabel { color: #ede9e3; }
+.darkTheme .expandBtn { border-color: #2e2a26; color: #8a8580; }
+.darkTheme .expandBtn:hover { background: #ede9e3; color: #141210; }
 
 /* Week view dark */
-.darkTheme .weekDayCol { border-left-color: #2a2625; }
-.darkTheme .weekDayHeader { border-bottom-color: #3a3530; color: #6a6460; }
-.darkTheme .weekDayHeaderActive { color: #e8e4dd; border-bottom-color: #c4a070; }
-.darkTheme .weekDayBodyActive { background: #252220; }
-.darkTheme .weekGutterHeader { border-bottom-color: #3a3530; }
-.darkTheme .weekAptClient { color: #e8e4dd; }
+.darkTheme .weekDayCol { border-left-color: #252220; }
+.darkTheme .weekDayHeader { border-bottom-color: #2e2a26; color: #8a8580; }
+.darkTheme .weekDayHeaderActive { color: #ede9e3; border-bottom-color: #d4a96c; }
+.darkTheme .weekDayBodyActive { background: #1e1c19; }
+.darkTheme .weekGutterHeader { border-bottom-color: #2e2a26; }
+.darkTheme .weekAptClient { color: #ede9e3; }
 
 /* Tabs dark */
-.darkTheme .tabContentHeader { border-bottom-color: #3a3530; }
-.darkTheme .tabContentTitle { color: #e8e4dd; }
-.darkTheme .tabContentMeta { color: #6a6460; }
+.darkTheme .tabContentHeader { border-bottom-color: #2e2a26; }
+.darkTheme .tabContentTitle { color: #ede9e3; }
+.darkTheme .tabContentMeta { color: #8a8580; }
 
 /* Directe Tijd dark */
-.darkTheme .directeTijdCard { background: #252220; border-color: #3a3530; }
-.darkTheme .directeTijdTable { background: #252220; border-color: #3a3530; }
-.darkTheme .dtRow { border-bottom-color: #2a2625; }
-.darkTheme .dtDay { color: #e8e4dd; }
-.darkTheme .dtHours { color: #9a9490; }
-.darkTheme .dtBar { background: #3a3530; }
-.darkTheme .dtBarFill { background: #c4a070; }
+.darkTheme .directeTijdCard { background: #1e1c19; border-color: #2e2a26; }
+.darkTheme .directeTijdTable { background: #1e1c19; border-color: #2e2a26; }
+.darkTheme .dtRow { border-bottom-color: #252220; }
+.darkTheme .dtDay { color: #ede9e3; }
+.darkTheme .dtHours { color: #aba6a0; }
+.darkTheme .dtBar { background: #2e2a26; }
+.darkTheme .dtBarFill { background: #d4a96c; }
 
 /* Client list dark */
-.darkTheme .clientList { background: #252220; border-color: #3a3530; }
-.darkTheme .clientRow { border-bottom-color: #2a2625; }
-.darkTheme .clientRow:hover { background: #2a2625; }
-.darkTheme .clientAvatar { background: #3a3530; color: #9a9490; }
-.darkTheme .clientName { color: #e8e4dd; }
-.darkTheme .clientMeta { color: #6a6460; }
-.darkTheme .clientNextLabel { color: #4a4540; }
-.darkTheme .clientNextValue { color: #9a9490; }
+.darkTheme .clientList { background: #1e1c19; border-color: #2e2a26; }
+.darkTheme .clientRow { border-bottom-color: #252220; }
+.darkTheme .clientRow:hover { background: #28241f; }
+.darkTheme .clientAvatar { background: #2e2a26; color: #aba6a0; }
+.darkTheme .clientName { color: #ede9e3; }
+.darkTheme .clientMeta { color: #8a8580; }
+.darkTheme .clientNextLabel { color: #6a6560; }
+.darkTheme .clientNextValue { color: #aba6a0; }
 
 /* Quick actions dark */
-.darkTheme .quickAction { color: #9a9490; border-bottom-color: #2a2625; }
-.darkTheme .quickAction:hover { color: #e8e4dd; }
-.darkTheme .quickActionAccent { color: #c4a070; }
+.darkTheme .quickAction { color: #aba6a0; border-bottom-color: #252220; }
+.darkTheme .quickAction:hover { color: #ede9e3; }
+.darkTheme .quickActionAccent { color: #d4a96c; }
 
 /* Teamchat new btn dark */
-.darkTheme .teamchatNewBtn { border-bottom-color: #3a3530; color: #c4a070; }
-.darkTheme .teamchatNewBtn:hover { background: #2a2625; }
-.darkTheme .teamchatSearch { border-bottom-color: #3a3530; }
-.darkTheme .teamchatUnread { background: #c4a070; color: #1a1815; }
+.darkTheme .teamchatNewBtn { border-bottom-color: #2e2a26; color: #d4a96c; }
+.darkTheme .teamchatNewBtn:hover { background: #28241f; }
+.darkTheme .teamchatSearch { border-bottom-color: #2e2a26; }
+.darkTheme .teamchatUnread { background: #d4a96c; color: #141210; }
 
 /* Boot screen dark */
-.darkTheme .bootScreen { background: #1a1815; }
-.darkTheme .bootGreeting { color: #c4a070; }
-.darkTheme .bootUnderlinePath { stroke: #c4a070; }
-.darkTheme .bootStat { color: #9a9490; }
-.darkTheme .bootStatDot { color: #3a3530; }
+.darkTheme .bootScreen { background: #141210; }
+.darkTheme .bootGreeting { color: #d4a96c; }
+.darkTheme .bootUnderlinePath { stroke: #d4a96c; }
+.darkTheme .bootStat { color: #aba6a0; }
+.darkTheme .bootStatDot { color: #2e2a26; }
 
 .userName {
   font-family: 'Space Mono', monospace;
@@ -816,25 +815,24 @@
 }
 
 .aptConfirmed {
-  background: #f5f2ec;
-  border-left: 2px solid #3a3a3a;
+  border-left: 3px solid var(--apt-color, #3a3a3a);
+  background: var(--apt-bg, #f5f2ec);
   cursor: pointer;
 }
 
 .aptConfirmed:hover {
-  background: #ece8e1;
+  filter: brightness(0.97);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border-left-width: 3px;
 }
 
 .aptPending {
-  background: #f5f2ec;
-  border-left: 2px dashed #d0cdc6;
+  border-left: 3px dashed var(--apt-color, #d0cdc6);
+  background: var(--apt-bg, #f5f2ec);
   cursor: pointer;
 }
 
 .aptPending:hover {
-  background: #ece8e1;
+  filter: brightness(0.97);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
@@ -2098,6 +2096,138 @@
     max-height: 500px;
   }
 }
+
+/* ── Color Settings Panel ── */
+.colorSettingsBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: 1px solid #d0cdc6;
+  color: #7a746e;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  padding: 0;
+  position: relative;
+}
+
+.colorSettingsBtn:hover {
+  background: #3a3a3a;
+  color: #eeeae3;
+}
+
+.darkTheme .colorSettingsBtn { border-color: #2e2a26; color: #8a8580; }
+.darkTheme .colorSettingsBtn:hover { background: #ede9e3; color: #141210; }
+
+.colorSettingsWrap {
+  position: relative;
+}
+
+.colorSettingsPanel {
+  position: absolute;
+  top: 36px;
+  right: 0;
+  z-index: 50;
+  background: #f5f2ec;
+  border: 1px solid #d0cdc6;
+  padding: 16px;
+  min-width: 280px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  animation: dialogSlideUp 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.darkTheme .colorSettingsPanel {
+  background: #1e1c19;
+  border-color: #2e2a26;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+
+.colorSettingsTitle {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #7a746e;
+  margin: 0 0 14px 0;
+}
+
+.darkTheme .colorSettingsTitle { color: #8a8580; }
+
+.colorSettingsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #e8e4dd;
+}
+
+.colorSettingsRow:last-of-type {
+  border-bottom: none;
+}
+
+.darkTheme .colorSettingsRow { border-bottom-color: #252220; }
+
+.colorSettingsLabel {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.9rem;
+  color: #3a3a3a;
+}
+
+.darkTheme .colorSettingsLabel { color: #ede9e3; }
+
+.colorSwatches {
+  display: flex;
+  gap: 5px;
+}
+
+.colorSwatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.1s ease, border-color 0.15s ease;
+  padding: 0;
+  background: none;
+}
+
+.colorSwatch:hover {
+  transform: scale(1.2);
+}
+
+.colorSwatchActive {
+  border-color: #3a3a3a;
+  transform: scale(1.15);
+}
+
+.darkTheme .colorSwatchActive {
+  border-color: #ede9e3;
+}
+
+.colorSettingsReset {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: #7a746e;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px 0 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.15s ease;
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+
+.colorSettingsReset:hover {
+  color: #3a3a3a;
+}
+
+.darkTheme .colorSettingsReset { color: #8a8580; }
+.darkTheme .colorSettingsReset:hover { color: #ede9e3; }
 
 /* ── Reduced Motion ── */
 @media (prefers-reduced-motion: reduce) {
