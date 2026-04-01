@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import s from './page.module.css';
 
@@ -135,17 +136,33 @@ const EVENT_COLORS: Record<AgendaType, string> = {
 };
 
 /* ── Calendar helpers ── */
-function getMonthGrid(year: number, month: number) {
+interface GridDay {
+  day: number;
+  current: boolean; // true = this month, false = prev/next month
+}
+
+function getMonthGrid(year: number, month: number): GridDay[] {
   const first = new Date(year, month, 1);
   const last = new Date(year, month + 1, 0);
-  // Monday = 0 in our grid
-  let startDay = first.getDay() - 1;
+  let startDay = first.getDay() - 1; // Monday = 0
   if (startDay < 0) startDay = 6;
 
-  const days: (number | null)[] = [];
-  for (let i = 0; i < startDay; i++) days.push(null);
-  for (let d = 1; d <= last.getDate(); d++) days.push(d);
-  while (days.length % 7 !== 0) days.push(null);
+  const prevLast = new Date(year, month, 0).getDate();
+  const days: GridDay[] = [];
+
+  // Previous month trailing days
+  for (let i = startDay - 1; i >= 0; i--) {
+    days.push({ day: prevLast - i, current: false });
+  }
+  // Current month
+  for (let d = 1; d <= last.getDate(); d++) {
+    days.push({ day: d, current: true });
+  }
+  // Next month leading days
+  let nextDay = 1;
+  while (days.length % 7 !== 0) {
+    days.push({ day: nextDay++, current: false });
+  }
   return days;
 }
 
@@ -168,11 +185,25 @@ function dateKey(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-export default function AdminDashboard() {
+export default function AdminDashboardPage() {
+  return (
+    <Suspense>
+      <AdminDashboard />
+    </Suspense>
+  );
+}
+
+function AdminDashboard() {
   const { displayName } = useAuth();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [greeting, setGreeting] = useState('');
   const [dateStr, setDateStr] = useState('');
-  const [activeTab, setActiveTab] = useState('overzicht');
+  const activeTab = searchParams.get('tab') ?? 'overzicht';
+
+  const setActiveTab = useCallback((tab: string) => {
+    router.replace(`/admin?tab=${tab}`, { scroll: false });
+  }, [router]);
 
   // Calendar state
   const [calView, setCalView] = useState<CalendarView>('maand');
@@ -393,8 +424,8 @@ export default function AdminDashboard() {
                     {d}
                   </div>
                 ))}
-                {monthGrid.map((day, i) => {
-                  const dk = day ? `${calDate.getFullYear()}-${String(calDate.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}` : null;
+                {monthGrid.map((gd, i) => {
+                  const dk = gd.current ? `${calDate.getFullYear()}-${String(calDate.getMonth() + 1).padStart(2, '0')}-${String(gd.day).padStart(2, '0')}` : null;
                   const dayEvts = dk ? (eventsByDate[dk] ?? []) : [];
                   const isToday = dk === todayKey;
                   const isSelected = dk === selectedDay;
@@ -403,13 +434,13 @@ export default function AdminDashboard() {
                       key={i}
                       className={[
                         'min-h-[130px] p-2 border-b border-r border-border-subtle/50 overflow-hidden transition-colors',
-                        day ? 'cursor-pointer hover:bg-surface-hover' : 'bg-paper/40',
+                        gd.current ? 'cursor-pointer hover:bg-surface-hover' : '',
                         isToday ? 'bg-[#f5edd8]' : '',
                         isSelected ? 'bg-surface-hover ring-1 ring-text-muted ring-inset' : '',
                       ].join(' ')}
-                      onClick={() => day && dk && setSelectedDay(selectedDay === dk ? null : dk)}
+                      onClick={() => gd.current && dk && setSelectedDay(selectedDay === dk ? null : dk)}
                     >
-                      {day && <span className="block font-mono text-xs text-text mb-1.5">{day}</span>}
+                      <span className={`block font-mono text-xs mb-1.5 ${gd.current ? 'text-text' : 'text-text-faint'}`}>{gd.day}</span>
                       {dayEvts.slice(0, 3).map((ev, j) => (
                         <div key={j} className="flex gap-1 items-baseline py-0.5 pl-2 mb-0.5 border-l-[3px] bg-paper/60" style={{ borderLeftColor: EVENT_COLORS[ev.type] }}>
                           <span className="font-mono text-[0.6rem] text-text-faint shrink-0">{ev.time}</span>
