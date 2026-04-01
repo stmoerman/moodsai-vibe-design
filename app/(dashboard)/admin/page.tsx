@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useAuth } from '@/contexts/AuthContext';
+import { mockIntakeSlots } from '@/data/intake-slots';
 import s from './page.module.css';
 
 function getGreeting(hour: number) {
@@ -95,45 +96,23 @@ interface CalendarEvent {
   participants?: number; // for workshops
 }
 
-// Generate events relative to current month
-function generateMockEvents(): CalendarEvent[] {
-  const now = new Date();
-  const y = now.getFullYear();
-  const m = now.getMonth();
-
-  const d = (day: number) => `${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-  return [
-    // Intake (booked)
-    { date: d(2), time: '09:00', endTime: '10:00', title: 'Intake J. de Vries', type: 'intake', therapist: 'Van den Berg', therapistSlug: 'van-den-berg', room: 'Kamer 1', videoRoom: '/r/van-den-berg', client: { name: 'J. de Vries', initials: 'JV', dob: '12-03-1988', dossier: 'D-2026-0412', diagnosis: 'Angststoornis (vermoeden)' } },
-    { date: d(4), time: '10:00', endTime: '11:00', title: 'Intake P. Bakker', type: 'intake', therapist: 'Smeets', therapistSlug: 'smeets', room: 'Kamer 3', videoRoom: '/r/smeets', client: { name: 'P. Bakker', initials: 'PB', dob: '28-07-1995', dossier: 'D-2026-0418', diagnosis: 'Burnout (vermoeden)' } },
-    { date: d(8), time: '10:00', endTime: '11:30', title: 'Intake L. Visser', type: 'intake', therapist: 'Van den Berg', therapistSlug: 'van-den-berg', room: 'Kamer 1', videoRoom: '/r/van-den-berg', client: { name: 'L. Visser', initials: 'LV', dob: '04-11-1990', dossier: 'D-2026-0425', diagnosis: 'Depressie (vermoeden)' } },
-    { date: d(11), time: '11:00', endTime: '12:00', title: 'Intake R. Hendriks', type: 'intake', therapist: 'Smeets', therapistSlug: 'smeets', room: 'Kamer 3', videoRoom: '/r/smeets', client: { name: 'R. Hendriks', initials: 'RH', dob: '19-05-1982', dossier: 'D-2026-0431', diagnosis: 'PTSS (vermoeden)' } },
-    { date: d(15), time: '13:00', endTime: '14:00', title: 'Intake D. Meijer', type: 'intake', therapist: 'Jansen', therapistSlug: 'jansen', room: 'Kamer 1', videoRoom: '/r/jansen', client: { name: 'D. Meijer', initials: 'DM', dob: '22-09-1997', dossier: 'D-2026-0440', diagnosis: 'Sociale angst (vermoeden)' } },
-    { date: d(21), time: '09:00', endTime: '10:00', title: 'Intake F. Bos', type: 'intake', therapist: 'Van den Berg', therapistSlug: 'van-den-berg', room: 'Kamer 1', videoRoom: '/r/van-den-berg', client: { name: 'F. Bos', initials: 'FB', dob: '08-01-1985', dossier: 'D-2026-0452', diagnosis: 'GAD (vermoeden)' } },
-    { date: d(28), time: '09:00', endTime: '10:00', title: 'Intake W. Peters', type: 'intake', therapist: 'Van den Berg', therapistSlug: 'van-den-berg', room: 'Kamer 1', videoRoom: '/r/van-den-berg', client: { name: 'W. Peters', initials: 'WP', dob: '15-06-1992', dossier: 'D-2026-0468', diagnosis: 'OCD (vermoeden)' } },
-    // Intake (available slots)
-    { date: d(2), time: '14:00', endTime: '15:00', title: 'Beschikbaar — Intake', type: 'intake', therapist: 'Smeets', therapistSlug: 'smeets', room: 'Kamer 3', videoRoom: '/r/smeets', available: true },
-    { date: d(9), time: '09:00', endTime: '10:00', title: 'Beschikbaar — Intake', type: 'intake', therapist: 'Jansen', therapistSlug: 'jansen', room: 'Kamer 1', videoRoom: '/r/jansen', available: true },
-    { date: d(16), time: '10:00', endTime: '11:00', title: 'Beschikbaar — Intake', type: 'intake', therapist: 'Van den Berg', therapistSlug: 'van-den-berg', room: 'Kamer 1', videoRoom: '/r/van-den-berg', available: true },
-    { date: d(23), time: '14:00', endTime: '15:00', title: 'Beschikbaar — Intake', type: 'intake', therapist: 'Smeets', therapistSlug: 'smeets', room: 'Kamer 3', videoRoom: '/r/smeets', available: true },
-    { date: d(30), time: '09:00', endTime: '10:00', title: 'Beschikbaar — Intake', type: 'intake', therapist: 'Kuijpers', therapistSlug: 'kuijpers', room: 'Kamer 2', videoRoom: '/r/kuijpers', available: true },
-    // Behandeling
-    { date: d(2), time: '11:00', endTime: '12:00', title: 'Behandeling M. Smit', type: 'behandeling', therapist: 'Kuijpers', therapistSlug: 'kuijpers', room: 'Kamer 2', videoRoom: '/r/kuijpers', client: { name: 'M. Smit', initials: 'MS', dob: '03-04-1991', dossier: 'D-2025-0289', lastSession: '25 mrt', diagnosis: 'GAD — GAD-7: 14' } },
-    { date: d(7), time: '09:00', endTime: '10:00', title: 'Behandeling A. Hoekstra', type: 'behandeling', therapist: 'Van den Berg', therapistSlug: 'van-den-berg', room: 'Kamer 1', videoRoom: '/r/van-den-berg', client: { name: 'A. Hoekstra', initials: 'AH', dob: '17-08-1986', dossier: 'D-2025-0312', lastSession: '28 mrt', diagnosis: 'Depressie — PHQ-9: 18' } },
-    { date: d(7), time: '13:00', endTime: '14:00', title: 'Behandeling S. Jansen', type: 'behandeling', therapist: 'Kuijpers', therapistSlug: 'kuijpers', room: 'Kamer 2', videoRoom: '/r/kuijpers', client: { name: 'S. Jansen', initials: 'SJ', dob: '21-12-1993', dossier: 'D-2025-0334', lastSession: '27 mrt', diagnosis: 'PTSS — PCL-5: 42' } },
-    { date: d(9), time: '09:00', endTime: '10:00', title: 'Behandeling N. Mulder', type: 'behandeling', therapist: 'Jansen', therapistSlug: 'jansen', room: 'Kamer 2', videoRoom: '/r/jansen', client: { name: 'N. Mulder', initials: 'NM', dob: '09-02-1989', dossier: 'D-2025-0356', lastSession: '26 mrt', diagnosis: 'Burnout — UBOS: hoog' } },
-    { date: d(14), time: '09:00', endTime: '10:00', title: 'Behandeling M. de Vries', type: 'behandeling', therapist: 'Van den Berg', therapistSlug: 'van-den-berg', room: 'Kamer 1', videoRoom: '/r/van-den-berg', client: { name: 'M. de Vries', initials: 'MV', dob: '14-06-1987', dossier: 'D-2025-0278', lastSession: '31 mrt', diagnosis: 'Angststoornis — GAD-7: 11' } },
-    { date: d(14), time: '10:30', endTime: '11:30', title: 'Behandeling J. Kok', type: 'behandeling', therapist: 'Kuijpers', therapistSlug: 'kuijpers', room: 'Kamer 2', videoRoom: '/r/kuijpers', client: { name: 'J. Kok', initials: 'JK', dob: '30-10-1994', dossier: 'D-2025-0398', lastSession: '28 mrt', diagnosis: 'Sociale angst — LSAS: 68' } },
-    { date: d(18), time: '10:00', endTime: '11:00', title: 'Behandeling K. Willems', type: 'behandeling', therapist: 'Smeets', therapistSlug: 'smeets', room: 'Kamer 3', videoRoom: '/r/smeets', client: { name: 'K. Willems', initials: 'KW', dob: '05-03-1996', dossier: 'D-2026-0021', lastSession: '29 mrt', diagnosis: 'Depressie — PHQ-9: 12' } },
-    { date: d(22), time: '11:00', endTime: '12:00', title: 'Behandeling T. Vos', type: 'behandeling', therapist: 'Kuijpers', therapistSlug: 'kuijpers', room: 'Kamer 2', videoRoom: '/r/kuijpers', client: { name: 'T. Vos', initials: 'TV', dob: '11-07-1990', dossier: 'D-2025-0367', lastSession: '1 apr', diagnosis: 'GAD — GAD-7: 9' } },
-    { date: d(25), time: '10:00', endTime: '11:00', title: 'Behandeling E. Brouwer', type: 'behandeling', therapist: 'Smeets', therapistSlug: 'smeets', room: 'Kamer 3', videoRoom: '/r/smeets', client: { name: 'E. Brouwer', initials: 'EB', dob: '26-01-1988', dossier: 'D-2025-0401', lastSession: '30 mrt', diagnosis: 'OCD — Y-BOCS: 22' } },
-    { date: d(29), time: '13:00', endTime: '14:00', title: 'Behandeling H. Dekker', type: 'behandeling', therapist: 'Kuijpers', therapistSlug: 'kuijpers', room: 'Kamer 2', videoRoom: '/r/kuijpers', client: { name: 'H. Dekker', initials: 'HD', dob: '18-09-1983', dossier: 'D-2025-0345', lastSession: '29 mrt', diagnosis: 'PTSS — PCL-5: 38' } },
-    // Workshops
-    { date: d(3), time: '14:00', endTime: '16:00', title: 'Workshop Stressregulatie', type: 'workshop', therapist: 'Jansen', therapistSlug: 'jansen', room: 'Groepsruimte', videoRoom: '/r/jansen-groep', participants: 8 },
-    { date: d(10), time: '14:00', endTime: '16:00', title: 'Workshop Mindfulness', type: 'workshop', therapist: 'Kuijpers', therapistSlug: 'kuijpers', room: 'Groepsruimte', videoRoom: '/r/kuijpers-groep', participants: 12 },
-    { date: d(17), time: '14:00', endTime: '16:00', title: 'Workshop Slaaphygiëne', type: 'workshop', therapist: 'Van den Berg', therapistSlug: 'van-den-berg', room: 'Groepsruimte', videoRoom: '/r/van-den-berg-groep', participants: 6 },
-    { date: d(24), time: '14:00', endTime: '16:00', title: 'Workshop ACT-basis', type: 'workshop', therapist: 'Van den Berg', therapistSlug: 'van-den-berg', room: 'Groepsruimte', videoRoom: '/r/van-den-berg-groep', participants: 10 },
-  ];
+// Convert intake slots to CalendarEvents
+function getIntakeEvents(): CalendarEvent[] {
+  return mockIntakeSlots.map((slot) => {
+    const slug = slot.therapistMemberId.replace('mem-', '');
+    return {
+      date: slot.date,
+      time: slot.startTime,
+      endTime: slot.endTime,
+      title: `Optie intake — ${slot.therapistName}`,
+      type: 'intake' as AgendaType,
+      therapist: slot.therapistName,
+      therapistSlug: slug,
+      room: slot.location,
+      videoRoom: `/r/${slug}`,
+      available: true,
+    };
+  });
 }
 
 const AGENDA_OPTIONS: { value: AgendaType; label: string }[] = [
@@ -222,13 +201,13 @@ function AdminDashboard() {
 
   // Calendar state
   const [calView, setCalView] = useState<CalendarView>('maand');
-  const [calDate, setCalDate] = useState(() => new Date());
+  const [calDate, setCalDate] = useState(() => new Date(2026, 5, 1)); // June 2026 — where the data lives
   const [intakeSlot, setIntakeSlot] = useState<CalendarEvent | null>(null);
   const [intakeForm, setIntakeForm] = useState({ firstName: '', lastName: '', email: '', phone: '' });
   const [intakeSubmitted, setIntakeSubmitted] = useState(false);
   const [agendaFilter, setAgendaFilter] = useState<AgendaType>('alle');
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
-  const [events] = useState(generateMockEvents);
+  const [events] = useState(getIntakeEvents);
 
   useEffect(() => {
     const now = new Date();
@@ -271,7 +250,7 @@ function AdminDashboard() {
     setCalDate((d) => { const n = new Date(d); n.setDate(n.getDate() + 1); return n; });
   }
   function goToday() {
-    setCalDate(new Date());
+    setCalDate(new Date(2026, 5, 1)); // Jump to June 2026 data
   }
 
   const monthGrid = getMonthGrid(calDate.getFullYear(), calDate.getMonth());
