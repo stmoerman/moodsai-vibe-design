@@ -93,6 +93,7 @@ interface CalendarEvent {
     diagnosis?: string;
   };
   available?: boolean; // for intake slots
+  region?: string | null;
   participants?: number; // for workshops
 }
 
@@ -111,6 +112,7 @@ function getIntakeEvents(): CalendarEvent[] {
       room: slot.location,
       videoRoom: `/r/${slug}`,
       available: true,
+      region: slot.region,
     };
   });
 }
@@ -582,11 +584,9 @@ function AdminDashboard() {
                           <div className="font-serif text-sm text-text">{ev.therapist}</div>
                           <a href={`/r/${ev.therapistSlug}`} className="font-mono text-[0.65rem] text-warm hover:underline no-underline" onClick={(e) => e.stopPropagation()}>/r/{ev.therapistSlug}</a>
                         </div>
-                        {ev.room && (
-                          <div className="ml-auto font-mono text-[0.65rem] text-text-faint">
-                            {ev.room}
-                          </div>
-                        )}
+                        <div className="ml-auto font-mono text-[0.65rem] text-text-faint">
+                          {ev.region ?? 'Landelijk'}
+                        </div>
                       </div>
 
                       {/* Client details (for booked appointments) */}
