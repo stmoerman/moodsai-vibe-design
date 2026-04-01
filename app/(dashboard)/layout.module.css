@@ -34,38 +34,6 @@
   flex: 1;
 }
 
-.sizeControls {
-  display: flex;
-  gap: 4px;
-}
-
-.sizeBtn {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  background: transparent;
-  border: 1px solid var(--color-border);
-  color: var(--color-text-muted);
-  padding: 4px 8px;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-}
-
-.sizeBtn:hover:not(:disabled) {
-  background: var(--color-text);
-  color: var(--color-paper);
-}
-
-.sizeBtn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
-
-.sizeBtnPlus,
-.sizeBtnMinus {
-  font-size: 0.55rem;
-  vertical-align: super;
-}
-
 .logoutBtn {
   font-family: var(--font-mono);
   font-size: 0.7rem;
@@ -95,10 +63,6 @@
   }
 
   .roleLabel {
-    display: none;
-  }
-
-  .sizeControls {
     display: none;
   }
 }

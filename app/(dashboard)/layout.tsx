@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
@@ -16,8 +16,6 @@ const ROLE_LABELS: Record<string, string> = {
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { role, logout } = useAuth();
   const router = useRouter();
-  const [textSize, setTextSize] = useState(0);
-
   useEffect(() => {
     if (role === null) {
       const saved = localStorage.getItem('moods-demo-auth');
@@ -27,12 +25,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     }
   }, [role, router]);
 
-  const sizeClass = textSize !== 0
-    ? `dashboard-size-${textSize > 0 ? 'up' : 'down'}-${Math.abs(textSize)}`
-    : '';
-
   return (
-    <div className={sizeClass}>
+    <div>
       <div className={s.topBarOuter}>
       <header className={s.topBar}>
         <div className={s.logo}>
@@ -47,24 +41,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
         <span className={s.roleLabel}>{ROLE_LABELS[role ?? ''] ?? ''}</span>
         <div className={s.spacer} />
-        <div className={s.sizeControls}>
-          <button
-            className={s.sizeBtn}
-            onClick={() => setTextSize((v) => Math.max(-2, v - 1))}
-            disabled={textSize <= -2}
-            title="Kleiner"
-          >
-            A<span className={s.sizeBtnMinus}>−</span>
-          </button>
-          <button
-            className={s.sizeBtn}
-            onClick={() => setTextSize((v) => Math.min(2, v + 1))}
-            disabled={textSize >= 2}
-            title="Groter"
-          >
-            A<span className={s.sizeBtnPlus}>+</span>
-          </button>
-        </div>
         <button className={s.logoutBtn} onClick={logout}>Uitloggen</button>
       </header>
       </div>
