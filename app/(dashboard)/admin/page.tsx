@@ -340,12 +340,12 @@ export default function AdminDashboard() {
 
         {/* ════ Planning Tab ════ */}
         {activeTab === 'planning' && (
-          <div className={s.widgetCard}>
+          <div className="bg-surface border border-border p-6">
             {/* Toolbar */}
-            <div className={s.calToolbar}>
-              <div className={s.calToolbarLeft}>
+            <div className="flex items-center gap-3 mb-5 flex-wrap">
+              <div className="flex gap-1.5">
                 <select
-                  className={s.calSelect}
+                  className="font-mono text-[0.7rem] text-text bg-paper border border-border px-2.5 py-1.5 uppercase tracking-wide cursor-pointer"
                   value={agendaFilter}
                   onChange={(e) => setAgendaFilter(e.target.value as AgendaType)}
                 >
@@ -354,7 +354,7 @@ export default function AdminDashboard() {
                   ))}
                 </select>
                 <select
-                  className={s.calSelect}
+                  className="font-mono text-[0.7rem] text-text bg-paper border border-border px-2.5 py-1.5 uppercase tracking-wide cursor-pointer"
                   value={calView}
                   onChange={(e) => setCalView(e.target.value as CalendarView)}
                 >
@@ -363,59 +363,61 @@ export default function AdminDashboard() {
                   <option value="dag">Dag</option>
                 </select>
               </div>
-              <div className={s.calToolbarCenter}>
-                <button className={s.calNavBtn} onClick={calView === 'maand' ? prevMonth : calView === 'week' ? prevWeek : prevDay}>←</button>
-                <span className={s.calTitle}>
+              <div className="flex-1 flex items-center justify-center gap-3">
+                <button className="font-mono text-sm text-text-muted border border-border w-8 h-8 flex items-center justify-center cursor-pointer hover:bg-text hover:text-paper transition-colors" onClick={calView === 'maand' ? prevMonth : calView === 'week' ? prevWeek : prevDay}>←</button>
+                <span className="font-display text-lg text-text min-w-[200px] text-center">
                   {calView === 'maand' && `${MONTH_NAMES[calDate.getMonth()]} ${calDate.getFullYear()}`}
                   {calView === 'week' && `Week ${Math.ceil((calDate.getDate() + new Date(calDate.getFullYear(), calDate.getMonth(), 1).getDay()) / 7)} · ${MONTH_NAMES[calDate.getMonth()]} ${calDate.getFullYear()}`}
                   {calView === 'dag' && `${DAY_HEADERS[(calDate.getDay() + 6) % 7]} ${calDate.getDate()} ${MONTH_NAMES[calDate.getMonth()]}`}
                 </span>
-                <button className={s.calNavBtn} onClick={calView === 'maand' ? nextMonth : calView === 'week' ? nextWeek : nextDay}>→</button>
+                <button className="font-mono text-sm text-text-muted border border-border w-8 h-8 flex items-center justify-center cursor-pointer hover:bg-text hover:text-paper transition-colors" onClick={calView === 'maand' ? nextMonth : calView === 'week' ? nextWeek : nextDay}>→</button>
               </div>
-              <div className={s.calToolbarRight}>
-                <button className={s.calTodayBtn} onClick={goToday}>Vandaag</button>
-              </div>
+              <button className="font-mono text-[0.7rem] text-text-muted border border-border px-3.5 py-1.5 uppercase tracking-wide cursor-pointer hover:bg-text hover:text-paper transition-colors" onClick={goToday}>Vandaag</button>
             </div>
 
             {/* Legend */}
-            <div className={s.calLegend}>
+            <div className="flex gap-5 mb-5 flex-wrap">
               {AGENDA_OPTIONS.filter((o) => o.value !== 'alle').map((opt) => (
-                <div key={opt.value} className={s.calLegendItem}>
-                  <span className={s.calLegendDot} style={{ background: EVENT_COLORS[opt.value] }} />
-                  <span className={s.calLegendLabel}>{opt.label}</span>
+                <div key={opt.value} className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 shrink-0" style={{ background: EVENT_COLORS[opt.value] }} />
+                  <span className="font-mono text-[0.65rem] text-text-muted uppercase tracking-wide">{opt.label}</span>
                 </div>
               ))}
             </div>
 
             {/* ── Month View ── */}
             {calView === 'maand' && (
-              <div className={s.calMonthGrid}>
+              <div className="grid grid-cols-7">
                 {DAY_HEADERS.map((d) => (
-                  <div key={d} className={s.calDayHeader}>{d}</div>
+                  <div key={d} className="font-mono text-[0.7rem] text-text-muted uppercase tracking-wider text-center py-2.5 border-b border-border-subtle">
+                    {d}
+                  </div>
                 ))}
                 {monthGrid.map((day, i) => {
                   const dk = day ? `${calDate.getFullYear()}-${String(calDate.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}` : null;
                   const dayEvts = dk ? (eventsByDate[dk] ?? []) : [];
                   const isToday = dk === todayKey;
+                  const isSelected = dk === selectedDay;
                   return (
                     <div
                       key={i}
-                      className={`${s.calDayCell} ${day ? '' : s.calDayCellEmpty} ${isToday ? s.calDayCellToday : ''} ${dk === selectedDay ? s.calDayCellSelected : ''}`}
+                      className={[
+                        'min-h-[130px] p-2 border-b border-r border-border-subtle/50 overflow-hidden transition-colors',
+                        day ? 'cursor-pointer hover:bg-surface-hover' : 'bg-paper/40',
+                        isToday ? 'bg-[#f5edd8]' : '',
+                        isSelected ? 'bg-surface-hover ring-1 ring-text-muted ring-inset' : '',
+                      ].join(' ')}
                       onClick={() => day && dk && setSelectedDay(selectedDay === dk ? null : dk)}
                     >
-                      {day && <span className={s.calDayNum}>{day}</span>}
+                      {day && <span className="block font-mono text-xs text-text mb-1.5">{day}</span>}
                       {dayEvts.slice(0, 3).map((ev, j) => (
-                        <div
-                          key={j}
-                          className={s.calEventPill}
-                          style={{ borderLeftColor: EVENT_COLORS[ev.type] }}
-                        >
-                          <span className={s.calEventTime}>{ev.time}</span>
-                          <span className={s.calEventTitle}>{ev.title}</span>
+                        <div key={j} className="flex gap-1 items-baseline py-0.5 pl-2 mb-0.5 border-l-[3px] bg-paper/60" style={{ borderLeftColor: EVENT_COLORS[ev.type] }}>
+                          <span className="font-mono text-[0.6rem] text-text-faint shrink-0">{ev.time}</span>
+                          <span className="font-serif text-[0.8rem] text-text truncate">{ev.title}</span>
                         </div>
                       ))}
                       {dayEvts.length > 3 && (
-                        <div className={s.calEventMore}>+{dayEvts.length - 3} meer</div>
+                        <div className="font-mono text-[0.6rem] text-text-muted pl-2 pt-0.5">+{dayEvts.length - 3} meer</div>
                       )}
                     </div>
                   );
@@ -425,60 +427,52 @@ export default function AdminDashboard() {
 
             {/* ── Week View ── */}
             {calView === 'week' && (
-              <div className={s.calWeekGrid}>
-                <div className={s.calWeekGutter} />
+              <div className="grid grid-cols-[60px_repeat(7,1fr)]">
+                <div className="border-b border-border-subtle bg-paper" />
                 {weekDates.map((wd, i) => {
                   const dk = dateKey(wd);
                   return (
-                    <div key={i} className={`${s.calWeekDayHeader} ${dk === todayKey ? s.calWeekDayHeaderToday : ''}`}>
+                    <div key={i} className={`font-mono text-[0.7rem] uppercase tracking-wide text-center py-2.5 border-b border-border-subtle ${dk === todayKey ? 'bg-[#f5edd8] text-text font-bold' : 'text-text-muted'}`}>
                       {DAY_HEADERS[i]} {wd.getDate()}
                     </div>
                   );
                 })}
                 {HOURS.map((hour) => (
-                  <>
-                    <div key={`g-${hour}`} className={s.calWeekGutterTime}>{String(hour).padStart(2, '0')}:00</div>
+                  <div key={`row-${hour}`} className="contents">
+                    <div className="font-mono text-[0.65rem] text-text-faint px-2 py-2 text-right border-r border-border-subtle border-b border-b-border-subtle/50">{String(hour).padStart(2, '0')}:00</div>
                     {weekDates.map((wd, di) => {
                       const dk = dateKey(wd);
                       const hourEvts = (eventsByDate[dk] ?? []).filter((e) => parseInt(e.time) === hour);
                       return (
-                        <div key={`${hour}-${di}`} className={s.calWeekCell}>
+                        <div key={`${hour}-${di}`} className="min-h-[52px] p-1 border-r border-b border-border-subtle/50">
                           {hourEvts.map((ev, j) => (
-                            <div
-                              key={j}
-                              className={s.calWeekEvent}
-                              style={{ borderLeftColor: EVENT_COLORS[ev.type] }}
-                            >
-                              <span className={s.calWeekEventTime}>{ev.time}–{ev.endTime}</span>
-                              <span className={s.calWeekEventTitle}>{ev.title}</span>
+                            <div key={j} className="py-1 px-2 mb-0.5 border-l-[3px] bg-paper/60" style={{ borderLeftColor: EVENT_COLORS[ev.type] }}>
+                              <span className="block font-mono text-[0.6rem] text-text-faint">{ev.time}–{ev.endTime}</span>
+                              <span className="block font-serif text-[0.8rem] text-text truncate">{ev.title}</span>
                             </div>
                           ))}
                         </div>
                       );
                     })}
-                  </>
+                  </div>
                 ))}
               </div>
             )}
 
             {/* ── Day View ── */}
             {calView === 'dag' && (
-              <div className={s.calDayView}>
+              <div>
                 {HOURS.map((hour) => {
                   const hourEvts = dayEvents.filter((e) => parseInt(e.time) === hour);
                   return (
-                    <div key={hour} className={s.calDayRow}>
-                      <div className={s.calDayRowTime}>{String(hour).padStart(2, '0')}:00</div>
-                      <div className={s.calDayRowContent}>
+                    <div key={hour} className="flex border-b border-border-subtle/50 min-h-[56px]">
+                      <div className="w-[70px] shrink-0 font-mono text-[0.65rem] text-text-faint py-2.5 px-2.5 text-right border-r border-border-subtle">{String(hour).padStart(2, '0')}:00</div>
+                      <div className="flex-1 p-1.5 flex flex-col gap-1">
                         {hourEvts.map((ev, j) => (
-                          <div
-                            key={j}
-                            className={s.calDayEvent}
-                            style={{ borderLeftColor: EVENT_COLORS[ev.type] }}
-                          >
-                            <div className={s.calDayEventTime}>{ev.time} – {ev.endTime}</div>
-                            <div className={s.calDayEventTitle}>{ev.title}</div>
-                            <div className={s.calDayEventMeta}>{ev.therapist}{ev.room ? ` · ${ev.room}` : ''}</div>
+                          <div key={j} className="py-2.5 px-3.5 border-l-[3px] bg-paper/60" style={{ borderLeftColor: EVENT_COLORS[ev.type] }}>
+                            <div className="font-mono text-[0.65rem] text-text-muted">{ev.time} – {ev.endTime}</div>
+                            <div className="font-serif text-[0.95rem] text-text mt-0.5">{ev.title}</div>
+                            <div className="font-mono text-[0.65rem] text-text-faint mt-0.5">{ev.therapist}{ev.room ? ` · ${ev.room}` : ''}</div>
                           </div>
                         ))}
                       </div>
@@ -490,15 +484,15 @@ export default function AdminDashboard() {
 
             {/* Selected day detail (month view) */}
             {calView === 'maand' && selectedDay && eventsByDate[selectedDay] && (
-              <div className={s.calDayDetail}>
-                <div className={s.calDayDetailTitle}>
+              <div className="mt-5 pt-5 border-t border-border">
+                <div className="font-display text-lg text-text mb-3 capitalize">
                   {new Date(selectedDay + 'T00:00').toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' })}
                 </div>
                 {eventsByDate[selectedDay].map((ev, i) => (
-                  <div key={i} className={s.calDayDetailItem} style={{ borderLeftColor: EVENT_COLORS[ev.type] }}>
-                    <div className={s.calDayDetailItemTime}>{ev.time} – {ev.endTime}</div>
-                    <div className={s.calDayDetailItemTitle}>{ev.title}</div>
-                    <div className={s.calDayDetailItemMeta}>{ev.therapist}{ev.room ? ` · ${ev.room}` : ''}</div>
+                  <div key={i} className="py-2.5 px-3.5 border-l-[3px] bg-paper mb-1.5" style={{ borderLeftColor: EVENT_COLORS[ev.type] }}>
+                    <div className="font-mono text-[0.65rem] text-text-muted">{ev.time} – {ev.endTime}</div>
+                    <div className="font-serif text-[0.95rem] text-text mt-0.5">{ev.title}</div>
+                    <div className="font-mono text-[0.65rem] text-text-faint mt-0.5">{ev.therapist}{ev.room ? ` · ${ev.room}` : ''}</div>
                   </div>
                 ))}
               </div>
