@@ -877,15 +877,7 @@ export function PlanningTab() {
       {/* Stats bar */}
       {view !== 'maand' && <StatsBar />}
 
-      {/* Data source indicator */}
-      <div className="flex items-center gap-2 px-5 py-1.5">
-        {isLoading && <span className="font-mono text-[0.6rem] text-text-faint animate-pulse">Laden...</span>}
-        {!isLoading && (
-          <span className="font-mono text-[0.6rem] text-text-faint">
-            {dataSource === 'live' ? '● Live database' : '○ Demo data'} · {allEntries.length} items
-          </span>
-        )}
-      </div>
+      {/* (data source shown inline in filter row) */}
 
       {/* Filters row */}
       <div className="flex flex-wrap items-center gap-2 px-5 py-3 bg-paper border-b border-border">
@@ -907,29 +899,46 @@ export function PlanningTab() {
 
         <div className="w-px h-5 bg-border mx-1" />
 
-        {/* Navigation */}
-        <div className="flex items-center gap-2">
-          <button
-            onClick={view === 'maand' ? () => setCalMonth((m) => m.month === 0 ? { year: m.year - 1, month: 11 } : { ...m, month: m.month - 1 }) : goToPrevWeek}
-            className="w-7 h-7 border border-border flex items-center justify-center text-text-muted font-mono text-sm cursor-pointer hover:bg-surface-hover transition-colors"
-          >
-            ←
-          </button>
-          <button
-            onClick={view === 'maand' ? () => { const n = new Date(); setCalMonth({ year: n.getFullYear(), month: n.getMonth() }); } : goToCurrentWeek}
-            className="font-display text-sm text-text px-3 py-1 border border-border cursor-pointer hover:bg-surface-hover transition-colors min-w-[160px] text-center"
-          >
-            {view === 'maand' ? `${MONTH_NAMES[calMonth.month]} ${calMonth.year}` : formatWeekLabel(weekStart)}
-          </button>
-          <button
-            onClick={view === 'maand' ? () => setCalMonth((m) => m.month === 11 ? { year: m.year + 1, month: 0 } : { ...m, month: m.month + 1 }) : goToNextWeek}
-            className="w-7 h-7 border border-border flex items-center justify-center text-text-muted font-mono text-sm cursor-pointer hover:bg-surface-hover transition-colors"
-          >
-            →
-          </button>
-        </div>
+        <div className="flex-1" />
 
-        <div className="w-px h-5 bg-border mx-1" />
+        {/* Data source */}
+        {isLoading && <span className="font-mono text-[0.6rem] text-text-faint animate-pulse">Laden...</span>}
+        {!isLoading && (
+          <span className="font-mono text-[0.6rem] text-text-faint">
+            {dataSource === 'live' ? '●' : '○'} {allEntries.length}
+          </span>
+        )}
+
+        {/* Clear filters */}
+        {hasActiveFilters && (
+          <button
+            onClick={clearFilters}
+            className="font-mono text-[0.6rem] text-warm underline cursor-pointer hover:text-text transition-colors"
+          >
+            Wissen
+          </button>
+        )}
+      </div>
+
+      {/* Navigation + view toggle row */}
+      <div className="flex items-center gap-2 px-5 pb-3">
+        <button
+          onClick={view === 'maand' ? () => setCalMonth((m) => m.month === 0 ? { year: m.year - 1, month: 11 } : { ...m, month: m.month - 1 }) : goToPrevWeek}
+          className="w-7 h-7 border border-border flex items-center justify-center text-text-muted font-mono text-sm cursor-pointer hover:bg-surface-hover transition-colors"
+        >←</button>
+        <span className="font-display text-sm text-text min-w-[160px] text-center">
+          {view === 'maand' ? `${MONTH_NAMES[calMonth.month]} ${calMonth.year}` : formatWeekLabel(weekStart)}
+        </span>
+        <button
+          onClick={view === 'maand' ? () => setCalMonth((m) => m.month === 11 ? { year: m.year + 1, month: 0 } : { ...m, month: m.month + 1 }) : goToNextWeek}
+          className="w-7 h-7 border border-border flex items-center justify-center text-text-muted font-mono text-sm cursor-pointer hover:bg-surface-hover transition-colors"
+        >→</button>
+        <button
+          onClick={() => { const n = new Date(); setCalMonth({ year: n.getFullYear(), month: n.getMonth() }); setWeekStart(DEFAULT_WEEK_START); }}
+          className="font-mono text-[0.65rem] text-text-muted border border-border px-3 py-1 uppercase tracking-wide cursor-pointer hover:bg-text hover:text-paper transition-colors"
+        >Vandaag</button>
+
+        <div className="flex-1" />
 
         {/* View toggle */}
         <div className="flex">
@@ -943,16 +952,6 @@ export function PlanningTab() {
             </button>
           ))}
         </div>
-
-        {/* Clear filters */}
-        {hasActiveFilters && (
-          <button
-            onClick={clearFilters}
-            className="font-mono text-[0.65rem] uppercase tracking-wide text-warm underline cursor-pointer hover:text-text transition-colors ml-auto"
-          >
-            Filters wissen
-          </button>
-        )}
       </div>
 
       {/* ═══ Month view ═══ */}
