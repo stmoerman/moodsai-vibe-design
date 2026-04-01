@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useAuth } from '@/contexts/AuthContext';
 import s from './page.module.css';
 
@@ -69,7 +70,7 @@ const navTabs = [
 ];
 
 /* ── Calendar types ── */
-type AgendaType = 'alle' | 'intake' | 'behandeling' | 'workshop' | 'beschikbaar';
+type AgendaType = 'alle' | 'intake' | 'behandeling' | 'workshop';
 type CalendarView = 'maand' | 'week' | 'dag';
 
 interface CalendarEvent {
@@ -88,34 +89,29 @@ function generateMockEvents(): CalendarEvent[] {
   const y = now.getFullYear();
   const m = now.getMonth();
 
+  const d = (day: number) => `${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
   return [
-    { date: `${y}-${String(m+1).padStart(2,'0')}-02`, time: '09:00', endTime: '10:00', title: 'Intake J. de Vries', type: 'intake', therapist: 'Van den Berg', room: 'Kamer 1' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-02`, time: '11:00', endTime: '12:00', title: 'Behandeling M. Smit', type: 'behandeling', therapist: 'Kuijpers', room: 'Kamer 2' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-03`, time: '14:00', endTime: '16:00', title: 'Workshop Stressregulatie', type: 'workshop', therapist: 'Jansen', room: 'Groepsruimte' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-04`, time: '09:00', endTime: '09:30', title: 'Beschikbaar', type: 'beschikbaar', therapist: 'Van den Berg', room: 'Kamer 1' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-04`, time: '10:00', endTime: '11:00', title: 'Intake P. Bakker', type: 'intake', therapist: 'Smeets', room: 'Kamer 3' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-07`, time: '09:00', endTime: '10:00', title: 'Behandeling A. Hoekstra', type: 'behandeling', therapist: 'Van den Berg', room: 'Kamer 1' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-07`, time: '13:00', endTime: '14:00', title: 'Behandeling S. Jansen', type: 'behandeling', therapist: 'Kuijpers', room: 'Kamer 2' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-08`, time: '08:30', endTime: '09:00', title: 'Beschikbaar', type: 'beschikbaar', therapist: 'Smeets' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-08`, time: '10:00', endTime: '11:30', title: 'Intake L. Visser', type: 'intake', therapist: 'Van den Berg', room: 'Kamer 1' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-09`, time: '09:00', endTime: '10:00', title: 'Behandeling N. Mulder', type: 'behandeling', therapist: 'Jansen', room: 'Kamer 2' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-10`, time: '14:00', endTime: '16:00', title: 'Workshop Mindfulness', type: 'workshop', therapist: 'Kuijpers', room: 'Groepsruimte' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-11`, time: '09:00', endTime: '09:30', title: 'Beschikbaar', type: 'beschikbaar', therapist: 'Van den Berg' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-11`, time: '11:00', endTime: '12:00', title: 'Intake R. Hendriks', type: 'intake', therapist: 'Smeets', room: 'Kamer 3' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-14`, time: '09:00', endTime: '10:00', title: 'Behandeling M. de Vries', type: 'behandeling', therapist: 'Van den Berg', room: 'Kamer 1' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-14`, time: '10:30', endTime: '11:30', title: 'Behandeling J. Kok', type: 'behandeling', therapist: 'Kuijpers', room: 'Kamer 2' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-15`, time: '13:00', endTime: '14:00', title: 'Intake D. Meijer', type: 'intake', therapist: 'Jansen', room: 'Kamer 1' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-16`, time: '09:00', endTime: '09:30', title: 'Beschikbaar', type: 'beschikbaar', therapist: 'Kuijpers' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-17`, time: '14:00', endTime: '16:00', title: 'Workshop Slaaphygiëne', type: 'workshop', therapist: 'Van den Berg', room: 'Groepsruimte' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-18`, time: '10:00', endTime: '11:00', title: 'Behandeling K. Willems', type: 'behandeling', therapist: 'Smeets', room: 'Kamer 3' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-21`, time: '09:00', endTime: '10:00', title: 'Intake F. Bos', type: 'intake', therapist: 'Van den Berg', room: 'Kamer 1' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-22`, time: '11:00', endTime: '12:00', title: 'Behandeling T. Vos', type: 'behandeling', therapist: 'Kuijpers', room: 'Kamer 2' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-23`, time: '09:00', endTime: '09:30', title: 'Beschikbaar', type: 'beschikbaar', therapist: 'Jansen' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-24`, time: '14:00', endTime: '16:00', title: 'Workshop ACT-basis', type: 'workshop', therapist: 'Van den Berg', room: 'Groepsruimte' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-25`, time: '10:00', endTime: '11:00', title: 'Behandeling E. Brouwer', type: 'behandeling', therapist: 'Smeets', room: 'Kamer 3' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-28`, time: '09:00', endTime: '10:00', title: 'Intake W. Peters', type: 'intake', therapist: 'Van den Berg', room: 'Kamer 1' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-29`, time: '13:00', endTime: '14:00', title: 'Behandeling H. Dekker', type: 'behandeling', therapist: 'Kuijpers', room: 'Kamer 2' },
-    { date: `${y}-${String(m+1).padStart(2,'0')}-30`, time: '09:00', endTime: '09:30', title: 'Beschikbaar', type: 'beschikbaar', therapist: 'Van den Berg' },
+    { date: d(2), time: '09:00', endTime: '10:00', title: 'Intake J. de Vries', type: 'intake', therapist: 'Van den Berg', room: 'Kamer 1' },
+    { date: d(2), time: '11:00', endTime: '12:00', title: 'Behandeling M. Smit', type: 'behandeling', therapist: 'Kuijpers', room: 'Kamer 2' },
+    { date: d(3), time: '14:00', endTime: '16:00', title: 'Workshop Stressregulatie', type: 'workshop', therapist: 'Jansen', room: 'Groepsruimte' },
+    { date: d(4), time: '10:00', endTime: '11:00', title: 'Intake P. Bakker', type: 'intake', therapist: 'Smeets', room: 'Kamer 3' },
+    { date: d(7), time: '09:00', endTime: '10:00', title: 'Behandeling A. Hoekstra', type: 'behandeling', therapist: 'Van den Berg', room: 'Kamer 1' },
+    { date: d(7), time: '13:00', endTime: '14:00', title: 'Behandeling S. Jansen', type: 'behandeling', therapist: 'Kuijpers', room: 'Kamer 2' },
+    { date: d(8), time: '10:00', endTime: '11:30', title: 'Intake L. Visser', type: 'intake', therapist: 'Van den Berg', room: 'Kamer 1' },
+    { date: d(9), time: '09:00', endTime: '10:00', title: 'Behandeling N. Mulder', type: 'behandeling', therapist: 'Jansen', room: 'Kamer 2' },
+    { date: d(10), time: '14:00', endTime: '16:00', title: 'Workshop Mindfulness', type: 'workshop', therapist: 'Kuijpers', room: 'Groepsruimte' },
+    { date: d(11), time: '11:00', endTime: '12:00', title: 'Intake R. Hendriks', type: 'intake', therapist: 'Smeets', room: 'Kamer 3' },
+    { date: d(14), time: '09:00', endTime: '10:00', title: 'Behandeling M. de Vries', type: 'behandeling', therapist: 'Van den Berg', room: 'Kamer 1' },
+    { date: d(14), time: '10:30', endTime: '11:30', title: 'Behandeling J. Kok', type: 'behandeling', therapist: 'Kuijpers', room: 'Kamer 2' },
+    { date: d(15), time: '13:00', endTime: '14:00', title: 'Intake D. Meijer', type: 'intake', therapist: 'Jansen', room: 'Kamer 1' },
+    { date: d(17), time: '14:00', endTime: '16:00', title: 'Workshop Slaaphygiëne', type: 'workshop', therapist: 'Van den Berg', room: 'Groepsruimte' },
+    { date: d(18), time: '10:00', endTime: '11:00', title: 'Behandeling K. Willems', type: 'behandeling', therapist: 'Smeets', room: 'Kamer 3' },
+    { date: d(21), time: '09:00', endTime: '10:00', title: 'Intake F. Bos', type: 'intake', therapist: 'Van den Berg', room: 'Kamer 1' },
+    { date: d(22), time: '11:00', endTime: '12:00', title: 'Behandeling T. Vos', type: 'behandeling', therapist: 'Kuijpers', room: 'Kamer 2' },
+    { date: d(24), time: '14:00', endTime: '16:00', title: 'Workshop ACT-basis', type: 'workshop', therapist: 'Van den Berg', room: 'Groepsruimte' },
+    { date: d(25), time: '10:00', endTime: '11:00', title: 'Behandeling E. Brouwer', type: 'behandeling', therapist: 'Smeets', room: 'Kamer 3' },
+    { date: d(28), time: '09:00', endTime: '10:00', title: 'Intake W. Peters', type: 'intake', therapist: 'Van den Berg', room: 'Kamer 1' },
+    { date: d(29), time: '13:00', endTime: '14:00', title: 'Behandeling H. Dekker', type: 'behandeling', therapist: 'Kuijpers', room: 'Kamer 2' },
   ];
 }
 
@@ -124,15 +120,13 @@ const AGENDA_OPTIONS: { value: AgendaType; label: string }[] = [
   { value: 'intake', label: 'Intake' },
   { value: 'behandeling', label: 'Behandeling' },
   { value: 'workshop', label: 'Workshops' },
-  { value: 'beschikbaar', label: 'Beschikbare slots' },
 ];
 
-const EVENT_COLORS: Record<AgendaType, string> = {
+const EVENT_COLORS: Record<string, string> = {
   alle: '#3a3a3a',
-  intake: '#c47050',
-  behandeling: '#c4a050',
-  workshop: '#5078a0',
-  beschikbaar: '#5a9a60',
+  intake: '#b85c3a',
+  behandeling: '#8b6d4f',
+  workshop: '#4a6e8a',
 };
 
 /* ── Calendar helpers ── */
@@ -375,24 +369,51 @@ function AdminDashboard() {
             {/* Toolbar */}
             <div className="flex items-center gap-3 mb-5 flex-wrap">
               <div className="flex gap-1.5">
-                <select
-                  className="font-mono text-[0.7rem] text-text bg-paper border border-border px-2.5 py-1.5 uppercase tracking-wide cursor-pointer"
-                  value={agendaFilter}
-                  onChange={(e) => setAgendaFilter(e.target.value as AgendaType)}
-                >
-                  {AGENDA_OPTIONS.map((opt) => (
-                    <option key={opt.value} value={opt.value}>{opt.label}</option>
-                  ))}
-                </select>
-                <select
-                  className="font-mono text-[0.7rem] text-text bg-paper border border-border px-2.5 py-1.5 uppercase tracking-wide cursor-pointer"
-                  value={calView}
-                  onChange={(e) => setCalView(e.target.value as CalendarView)}
-                >
-                  <option value="maand">Maand</option>
-                  <option value="week">Week</option>
-                  <option value="dag">Dag</option>
-                </select>
+                {/* Agenda filter dropdown */}
+                <DropdownMenu.Root>
+                  <DropdownMenu.Trigger asChild>
+                    <button className="font-mono text-[0.7rem] text-text bg-paper border border-border px-3 py-1.5 uppercase tracking-wide cursor-pointer flex items-center gap-2 hover:bg-surface-hover transition-colors">
+                      {AGENDA_OPTIONS.find((o) => o.value === agendaFilter)?.label}
+                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M3 4l2 2 2-2" /></svg>
+                    </button>
+                  </DropdownMenu.Trigger>
+                  <DropdownMenu.Portal>
+                    <DropdownMenu.Content className="bg-surface border border-border py-1 min-w-[160px] z-50" sideOffset={4} align="start">
+                      {AGENDA_OPTIONS.map((opt) => (
+                        <DropdownMenu.Item
+                          key={opt.value}
+                          className={`font-mono text-[0.7rem] uppercase tracking-wide px-3 py-2 cursor-pointer outline-none transition-colors ${agendaFilter === opt.value ? 'bg-text text-paper' : 'text-text-muted hover:bg-surface-hover hover:text-text'}`}
+                          onSelect={() => setAgendaFilter(opt.value)}
+                        >
+                          {opt.label}
+                        </DropdownMenu.Item>
+                      ))}
+                    </DropdownMenu.Content>
+                  </DropdownMenu.Portal>
+                </DropdownMenu.Root>
+
+                {/* View selector dropdown */}
+                <DropdownMenu.Root>
+                  <DropdownMenu.Trigger asChild>
+                    <button className="font-mono text-[0.7rem] text-text bg-paper border border-border px-3 py-1.5 uppercase tracking-wide cursor-pointer flex items-center gap-2 hover:bg-surface-hover transition-colors">
+                      {calView === 'maand' ? 'Maand' : calView === 'week' ? 'Week' : 'Dag'}
+                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M3 4l2 2 2-2" /></svg>
+                    </button>
+                  </DropdownMenu.Trigger>
+                  <DropdownMenu.Portal>
+                    <DropdownMenu.Content className="bg-surface border border-border py-1 min-w-[120px] z-50" sideOffset={4} align="start">
+                      {(['maand', 'week', 'dag'] as CalendarView[]).map((v) => (
+                        <DropdownMenu.Item
+                          key={v}
+                          className={`font-mono text-[0.7rem] uppercase tracking-wide px-3 py-2 cursor-pointer outline-none transition-colors ${calView === v ? 'bg-text text-paper' : 'text-text-muted hover:bg-surface-hover hover:text-text'}`}
+                          onSelect={() => setCalView(v)}
+                        >
+                          {v === 'maand' ? 'Maand' : v === 'week' ? 'Week' : 'Dag'}
+                        </DropdownMenu.Item>
+                      ))}
+                    </DropdownMenu.Content>
+                  </DropdownMenu.Portal>
+                </DropdownMenu.Root>
               </div>
               <div className="flex-1 flex items-center justify-center gap-3">
                 <button className="font-mono text-sm text-text-muted border border-border w-8 h-8 flex items-center justify-center cursor-pointer hover:bg-text hover:text-paper transition-colors" onClick={calView === 'maand' ? prevMonth : calView === 'week' ? prevWeek : prevDay}>←</button>
@@ -420,7 +441,7 @@ function AdminDashboard() {
             {calView === 'maand' && (
               <div className="grid grid-cols-7">
                 {DAY_HEADERS.map((d) => (
-                  <div key={d} className="font-mono text-[0.7rem] text-text-muted uppercase tracking-wider text-center py-2.5 border-b border-border-subtle">
+                  <div key={d} className="font-mono text-[0.7rem] text-text-muted uppercase tracking-wider text-center py-2.5">
                     {d}
                   </div>
                 ))}
@@ -434,14 +455,18 @@ function AdminDashboard() {
                       key={i}
                       className={[
                         'min-h-[130px] p-2 overflow-hidden transition-colors',
-                        gd.current ? 'border-b border-r border-border-subtle/40 cursor-pointer hover:bg-surface-hover' : '',
-                        !gd.current ? 'bg-transparent' : '',
-                        isToday ? 'bg-[#f5edd8]' : '',
-                        isSelected ? 'bg-surface-hover ring-1 ring-text-muted ring-inset' : '',
+                        gd.current
+                          ? 'border-t border-border-subtle/60 cursor-pointer hover:bg-surface-hover'
+                          : '',
+                        isToday && !isSelected ? 'bg-warm/5' : '',
+                        isSelected ? 'bg-warm/10 ring-1 ring-warm/40 ring-inset' : '',
                       ].join(' ')}
                       onClick={() => gd.current && dk && setSelectedDay(selectedDay === dk ? null : dk)}
                     >
-                      <span className={`block font-mono text-xs mb-1.5 ${gd.current ? 'text-text' : 'text-text-faint'}`}>{gd.day}</span>
+                      {gd.current
+                        ? <span className={`block font-mono text-xs mb-1.5 ${isToday ? 'text-warm font-bold' : 'text-text'}`}>{gd.day}</span>
+                        : <span className="block font-mono text-xs mb-1.5 text-text-faint/40">{gd.day}</span>
+                      }
                       {dayEvts.slice(0, 3).map((ev, j) => (
                         <div key={j} className="flex gap-1 items-baseline py-0.5 pl-2 mb-0.5 border-l-[3px] bg-paper/60" style={{ borderLeftColor: EVENT_COLORS[ev.type] }}>
                           <span className="font-mono text-[0.6rem] text-text-faint shrink-0">{ev.time}</span>
