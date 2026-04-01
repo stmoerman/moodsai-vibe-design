@@ -46,16 +46,24 @@ const kpis = [
 ];
 
 const quickLinks = [
-  { icon: '→', label: 'Teamlid uitnodigen', desc: 'Stuur een uitnodiging' },
+  { icon: '→', label: 'Teamlid uitnodigen', desc: 'Uitnodiging versturen' },
   { icon: '◉', label: 'Rooster bekijken', desc: 'Weekoverzicht team' },
   { icon: '◈', label: 'Declarabiliteit', desc: 'Controle & alerts' },
   { icon: '◎', label: 'Verlofoverzicht', desc: 'Aanvragen & saldi' },
+];
+
+const navTabs = [
+  { id: 'overzicht', label: 'Overzicht' },
+  { id: 'team', label: 'Team' },
+  { id: 'hr', label: 'HR & Verlof' },
+  { id: 'rapportage', label: 'Rapportage' },
 ];
 
 export default function AdminDashboard() {
   const { displayName } = useAuth();
   const [greeting, setGreeting] = useState('');
   const [dateStr, setDateStr] = useState('');
+  const [activeTab, setActiveTab] = useState('overzicht');
 
   useEffect(() => {
     const now = new Date();
@@ -65,113 +73,140 @@ export default function AdminDashboard() {
 
   return (
     <div className={s.root}>
-      <h1 className={s.greeting}>{greeting}, {displayName ?? 'Demo Admin'}</h1>
-      <div className={s.dateStr}>Admin · {dateStr}</div>
+      <div className={s.dotGrid} aria-hidden="true" />
 
-      <div className={s.grid}>
-        {/* Team overview */}
-        <div className={s.card}>
-          <h2 className={s.cardTitle}>Teamoverzicht</h2>
-          <div className={s.statRow}>
-            <div className={s.stat}>
-              <div className={s.statValue}>18</div>
-              <div className={s.statLabel}>Teamleden</div>
-            </div>
-            <div className={s.stat}>
-              <div className={s.statValue}>3</div>
-              <div className={s.statLabel}>Recent toegevoegd</div>
-            </div>
-            <div className={s.stat}>
-              <div className={s.statValue}>2</div>
-              <div className={s.statLabel}>Openstaande uitnodigingen</div>
-            </div>
-          </div>
+      {/* ── Welcome Hero ── */}
+      <div className={s.welcomeHero}>
+        <h1 className={s.greeting}>{greeting}, {displayName ?? 'Demo Admin'}</h1>
+        <svg className={s.greetingUnderline} width="280" height="12" viewBox="0 0 280 12" aria-hidden="true">
+          <path
+            d="M0,6 C23,1 46,11 70,5 C93,0 116,10 140,4 C163,-1 186,9 210,5 C233,1 256,9 280,6"
+            className={s.greetingUnderlinePath}
+          />
+        </svg>
+        <span className={s.dateTime}>Admin &middot; Amsterdam &middot; {dateStr}</span>
+      </div>
 
-          <h3 className={s.cardTitle} style={{ fontSize: '0.85rem', marginBottom: 12 }}>Recent toegetreden</h3>
-          {recentMembers.map((m, i) => (
-            <div key={i} className={s.listItem}>
-              <div className={s.listAvatar}>{m.initials}</div>
-              <div>
-                <div className={s.listName}>{m.name}</div>
-                <div className={s.listMeta}>{m.role} · {m.date}</div>
-              </div>
-            </div>
-          ))}
-
-          <h3 className={s.cardTitle} style={{ fontSize: '0.85rem', marginTop: 16, marginBottom: 12 }}>Openstaande uitnodigingen</h3>
-          {pendingInvites.map((inv, i) => (
-            <div key={i} className={s.listItem}>
-              <div className={s.listAvatar}>{inv.initials}</div>
-              <div>
-                <div className={s.listName}>{inv.name}</div>
-                <div className={s.listMeta}>{inv.role} · Verstuurd {inv.sent}</div>
-              </div>
-              <div className={s.listSpacer} />
-              <span className={`${s.listBadge} ${s.badgePending}`}>Verstuurd</span>
-            </div>
+      {/* ── Navigation Tabs ── */}
+      <nav className={s.navTabs}>
+        <div className={s.navTabsInner}>
+          {navTabs.map((tab) => (
+            <button
+              key={tab.id}
+              className={`${s.navTab} ${activeTab === tab.id ? s.navTabActive : ''}`}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              {tab.label}
+            </button>
           ))}
         </div>
+      </nav>
 
-        {/* HR snapshot */}
-        <div className={s.card}>
-          <h2 className={s.cardTitle}>HR Snapshot</h2>
-          <div className={s.statRow}>
-            <div className={s.stat}>
-              <div className={s.statValue}>1</div>
-              <div className={s.statLabel}>Afwezig vandaag</div>
-            </div>
-            <div className={s.stat}>
-              <div className={s.statValue}>2</div>
-              <div className={s.statLabel}>Verlofaanvragen</div>
-            </div>
-            <div className={s.stat}>
-              <div className={s.statValue}>1</div>
-              <div className={s.statLabel}>Declarabiliteit alert</div>
-            </div>
-          </div>
-
-          {hrItems.map((item, i) => (
-            <div key={i} className={s.listItem}>
-              <div className={s.listAvatar}>{item.initials}</div>
-              <div>
-                <div className={s.listName}>{item.name}</div>
-                <div className={s.listMeta}>{item.reason}</div>
+      {/* ── Content ── */}
+      <div className={s.content}>
+        <div className={s.grid}>
+          {/* Team overview */}
+          <div className={s.widgetCard}>
+            <div className={s.widgetTitle}>Teamoverzicht</div>
+            <div className={s.statRow}>
+              <div className={s.stat}>
+                <div className={s.statValue}>18</div>
+                <div className={s.statLabel}>Teamleden</div>
               </div>
-              <div className={s.listSpacer} />
-              <span className={`${s.listBadge} ${item.badgeType === 'warning' ? s.badgeWarning : s.badgePending}`}>
-                {item.badge}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {/* Op-Ex KPIs */}
-        <div className={`${s.card} ${s.gridFull}`}>
-          <h2 className={s.cardTitle}>Op-Ex KPIs</h2>
-          <div className={s.kpiRow}>
-            {kpis.map((kpi, i) => (
-              <div key={i} className={s.kpi}>
-                <div className={s.kpiValue}>{kpi.value}</div>
-                <div className={s.kpiLabel}>{kpi.label}</div>
-                <div className={`${s.kpiTrend} ${kpi.neg ? s.kpiTrendNeg : ''}`}>{kpi.trend}</div>
+              <div className={s.stat}>
+                <div className={s.statValue}>3</div>
+                <div className={s.statLabel}>Recent</div>
               </div>
-            ))}
-          </div>
-        </div>
+              <div className={s.stat}>
+                <div className={s.statValue}>2</div>
+                <div className={s.statLabel}>Uitnodigingen</div>
+              </div>
+            </div>
 
-        {/* Quick links */}
-        <div className={`${s.card} ${s.gridFull}`}>
-          <h2 className={s.cardTitle}>Snelkoppelingen</h2>
-          <div className={s.quickLinks}>
-            {quickLinks.map((link, i) => (
-              <button key={i} className={s.quickLink}>
-                <span className={s.quickLinkIcon}>{link.icon}</span>
+            <div className={`${s.sectionSub} ${s.sectionSubFirst}`}>Recent toegetreden</div>
+            {recentMembers.map((m, i) => (
+              <div key={i} className={s.listItem}>
+                <div className={s.listAvatar}>{m.initials}</div>
                 <div>
-                  <div>{link.desc}</div>
-                  <div className={s.quickLinkLabel}>{link.label}</div>
+                  <div className={s.listName}>{m.name}</div>
+                  <div className={s.listMeta}>{m.role} · {m.date}</div>
                 </div>
-              </button>
+              </div>
             ))}
+
+            <div className={s.sectionSub} style={{ marginTop: 12 }}>Openstaande uitnodigingen</div>
+            {pendingInvites.map((inv, i) => (
+              <div key={i} className={s.listItem}>
+                <div className={s.listAvatar}>{inv.initials}</div>
+                <div>
+                  <div className={s.listName}>{inv.name}</div>
+                  <div className={s.listMeta}>{inv.role} · Verstuurd {inv.sent}</div>
+                </div>
+                <div className={s.listSpacer} />
+                <span className={`${s.listBadge} ${s.badgePending}`}>Verstuurd</span>
+              </div>
+            ))}
+          </div>
+
+          {/* HR snapshot */}
+          <div className={s.widgetCard}>
+            <div className={s.widgetTitle}>HR Snapshot</div>
+            <div className={s.statRow}>
+              <div className={s.stat}>
+                <div className={s.statValue}>1</div>
+                <div className={s.statLabel}>Afwezig</div>
+              </div>
+              <div className={s.stat}>
+                <div className={s.statValue}>2</div>
+                <div className={s.statLabel}>Verlofaanvragen</div>
+              </div>
+              <div className={s.stat}>
+                <div className={s.statValue}>1</div>
+                <div className={s.statLabel}>Alert</div>
+              </div>
+            </div>
+
+            {hrItems.map((item, i) => (
+              <div key={i} className={s.listItem}>
+                <div className={s.listAvatar}>{item.initials}</div>
+                <div>
+                  <div className={s.listName}>{item.name}</div>
+                  <div className={s.listMeta}>{item.reason}</div>
+                </div>
+                <div className={s.listSpacer} />
+                <span className={`${s.listBadge} ${item.badgeType === 'warning' ? s.badgeWarning : s.badgePending}`}>
+                  {item.badge}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Op-Ex KPIs */}
+          <div className={`${s.widgetCard} ${s.gridFull}`}>
+            <div className={s.widgetTitle}>Op-Ex KPIs</div>
+            <div className={s.kpiRow}>
+              {kpis.map((kpi, i) => (
+                <div key={i} className={s.kpi}>
+                  <div className={s.kpiValue}>{kpi.value}</div>
+                  <div className={s.kpiLabel}>{kpi.label}</div>
+                  <div className={`${s.kpiTrend} ${kpi.neg ? s.kpiTrendNeg : ''}`}>{kpi.trend}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Quick links */}
+          <div className={`${s.widgetCard} ${s.gridFull}`}>
+            <div className={s.widgetTitle}>Snelkoppelingen</div>
+            <div className={s.quickLinks}>
+              {quickLinks.map((link, i) => (
+                <button key={i} className={s.quickLink}>
+                  <span className={s.quickLinkIcon}>{link.icon}</span>
+                  <div className={s.quickLinkDesc}>{link.desc}</div>
+                  <div className={s.quickLinkLabel}>{link.label}</div>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
