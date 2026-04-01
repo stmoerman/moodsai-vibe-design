@@ -900,7 +900,7 @@ export function PlanningTab() {
         const grid = getMonthGrid(calMonth.year, calMonth.month);
         const todayKey = isoDate(new Date());
         return (
-          <div className="bg-surface border border-border p-6">
+          <div className="bg-surface border border-border p-6 relative">
             {/* Legend */}
             <div className="flex gap-5 mb-5 flex-wrap">
               {ALL_TYPES.filter((t) => activeTypes.has(t)).map((type) => (
@@ -950,10 +950,10 @@ export function PlanningTab() {
             {/* Day detail drawer */}
             {selectedDay && entriesByDate[selectedDay] && (
               <div
-                className="fixed inset-0 bg-text/10 z-50 flex justify-end"
+                className="absolute inset-0 bg-text/10 z-10 flex justify-end p-4"
                 onClick={(e) => e.target === e.currentTarget && setSelectedDay(null)}
               >
-                <div className="bg-surface border-l border-border w-full max-w-md h-full shadow-lg flex flex-col">
+                <div className="bg-surface border border-border w-full max-w-md h-full shadow-lg flex flex-col">
                   <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
                     <h3 className="font-display text-lg text-text capitalize">
                       {new Date(selectedDay + 'T00:00').toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' })}
