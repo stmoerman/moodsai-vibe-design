@@ -708,12 +708,36 @@ export function PlanningTab() {
     [allEntries]
   );
 
-  // --- View state ---
-  const [view, setView] = useState<'maand' | 'week' | 'dag'>('maand');
-  const [calMonth, setCalMonth] = useState(() => { const n = new Date(); return { year: n.getFullYear(), month: n.getMonth() }; });
+  // --- View state (persisted to localStorage) ---
+  const [view, setView] = useState<'maand' | 'week' | 'dag'>(() => {
+    if (typeof window === 'undefined') return 'maand';
+    return (localStorage.getItem('moods-planning-view') as 'maand' | 'week' | 'dag') ?? 'maand';
+  });
+  const [calMonth, setCalMonth] = useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('moods-planning-month');
+        if (saved) return JSON.parse(saved) as { year: number; month: number };
+      } catch {}
+    }
+    const n = new Date(); return { year: n.getFullYear(), month: n.getMonth() };
+  });
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
-  const [weekStart, setWeekStart] = useState<Date>(DEFAULT_WEEK_START);
+  const [weekStart, setWeekStart] = useState<Date>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('moods-planning-week');
+        if (saved) return new Date(saved);
+      } catch {}
+    }
+    return DEFAULT_WEEK_START;
+  });
   const [selectedDayIndex, setSelectedDayIndex] = useState<number>(0);
+
+  // Persist view state
+  useEffect(() => { localStorage.setItem('moods-planning-view', view); }, [view]);
+  useEffect(() => { localStorage.setItem('moods-planning-month', JSON.stringify(calMonth)); }, [calMonth]);
+  useEffect(() => { localStorage.setItem('moods-planning-week', weekStart.toISOString()); }, [weekStart]);
 
   // --- Filter state (persisted to localStorage) ---
   const [activeTypes, setActiveTypes] = useState<Set<AgendaActivityType>>(() => {
