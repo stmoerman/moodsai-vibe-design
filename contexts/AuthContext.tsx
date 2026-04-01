@@ -5,7 +5,7 @@ import { createContext, useContext, useState, useEffect, useCallback, type React
 import { useRouter } from 'next/navigation';
 
 interface AuthState {
-  role: 'therapist' | 'client' | 'admin' | null;
+  role: 'therapist' | 'client' | 'admin' | 'owner' | null;
   email: string | null;
   displayName: string | null;
 }
@@ -18,13 +18,15 @@ interface AuthContextValue extends AuthState {
 const ROLE_MAP: Record<string, { role: AuthState['role']; displayName: string }> = {
   'therapist-demo@moodsai.ai': { role: 'therapist', displayName: 'Demo Therapeut' },
   'client-demo@moodsai.ai': { role: 'client', displayName: 'Demo Cliënt' },
-  'admin-demo@moodsai.ai': { role: 'admin', displayName: 'Demo Beheerder' },
+  'admin-demo@moodsai.ai': { role: 'admin', displayName: 'Demo Admin' },
+  'owner-demo@moodsai.ai': { role: 'owner', displayName: 'Demo Eigenaar' },
 };
 
 const ROLE_ROUTES: Record<string, string> = {
   therapist: '/therapist',
   client: '/client',
   admin: '/admin',
+  owner: '/owner',
 };
 
 const STORAGE_KEY = 'moods-demo-auth';

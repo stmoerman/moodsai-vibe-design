@@ -9,7 +9,8 @@ import s from './layout.module.css';
 const ROLE_LABELS: Record<string, string> = {
   therapist: 'Therapeut Dashboard',
   client: 'Cliënt Dashboard',
-  admin: 'Beheerder Dashboard',
+  admin: 'Admin Dashboard',
+  owner: 'Eigenaar Dashboard',
 };
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
