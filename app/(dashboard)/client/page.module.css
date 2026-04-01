@@ -1,0 +1,234 @@
+.root {
+  min-height: 100%;
+  background-color: var(--color-paper);
+  padding: 32px 24px 60px;
+}
+
+.greeting {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--color-text);
+  margin-bottom: 4px;
+}
+
+.dateStr {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 32px;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2px;
+  max-width: 1200px;
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: 24px 20px;
+}
+
+.cardTitle {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--color-text);
+  margin-bottom: 20px;
+}
+
+.aptItem {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.aptItem:last-child {
+  border-bottom: none;
+}
+
+.aptDate {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--color-text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+
+.aptName {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  color: var(--color-text);
+  margin-bottom: 2px;
+}
+
+.aptMeta {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+}
+
+.aptType {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 2px 6px;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+
+.aptTypeWorkshop {
+  border-color: var(--color-warm);
+  color: var(--color-warm);
+}
+
+.progressText {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--color-text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 16px;
+}
+
+.taskItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.taskItem:last-child {
+  border-bottom: none;
+}
+
+.taskCheck {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--color-border);
+  flex-shrink: 0;
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  color: var(--color-warm);
+}
+
+.taskCheckDone {
+  background: var(--color-warm);
+  border-color: var(--color-warm);
+  color: white;
+}
+
+.taskName {
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.taskNameDone {
+  text-decoration: line-through;
+  color: var(--color-text-faint);
+}
+
+.taskDeadline {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--color-text-faint);
+  margin-top: 2px;
+}
+
+.chatContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 400px;
+}
+
+.chatMessages {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+}
+
+.chatBubble {
+  max-width: 85%;
+  padding: 10px 14px;
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.chatBubbleAi {
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  align-self: flex-start;
+}
+
+.chatBubbleUser {
+  background: var(--color-text);
+  color: var(--color-paper);
+  align-self: flex-end;
+}
+
+.chatInputRow {
+  display: flex;
+  gap: 8px;
+  border-top: 1px solid var(--color-border-subtle);
+  padding-top: 12px;
+}
+
+.chatInput {
+  flex: 1;
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  color: var(--color-text);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  padding: 6px 0;
+  outline: none;
+}
+
+.chatInput:focus {
+  border-bottom-color: var(--color-text);
+}
+
+.chatInput::placeholder {
+  color: var(--color-text-faint);
+}
+
+.chatSend {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  background: var(--color-text);
+  color: var(--color-paper);
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.chatSend:hover {
+  opacity: 0.85;
+}
+
+@media (max-width: 900px) {
+  .columns {
+    grid-template-columns: 1fr;
+  }
+}
