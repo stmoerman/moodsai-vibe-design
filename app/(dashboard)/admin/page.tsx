@@ -562,9 +562,10 @@ function AdminDashboard() {
             {/* Day detail overlay */}
             {calView === 'maand' && selectedDay && eventsByDate[selectedDay] && (
               <div
-                className="absolute inset-4 bg-surface border border-border z-10 flex flex-col"
+                className="absolute inset-0 bg-text/10 z-10 flex items-start justify-end p-4"
                 onClick={(e) => e.target === e.currentTarget && setSelectedDay(null)}
               >
+              <div className="bg-surface border border-border flex flex-col w-full max-w-md h-full shadow-lg">
                 <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
                   <h3 className="font-display text-xl text-text capitalize">
                     {new Date(selectedDay + 'T00:00').toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' })}
@@ -600,9 +601,13 @@ function AdminDashboard() {
                           <div className="font-mono text-[0.65rem] text-warm">/r/{ev.therapistSlug}</div>
                         </div>
                         {ev.videoRoom && (
-                          <div className="ml-auto font-mono text-[0.65rem] text-text-faint border border-border-subtle px-2 py-0.5">
+                          <a
+                            href={ev.videoRoom}
+                            className="ml-auto font-mono text-[0.65rem] text-warm border border-border-subtle px-2 py-0.5 hover:bg-warm hover:text-paper transition-colors cursor-pointer no-underline"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             Video: {ev.videoRoom}
-                          </div>
+                          </a>
                         )}
                       </div>
 
@@ -665,6 +670,7 @@ function AdminDashboard() {
                     <div className="font-serif text-text-muted text-center py-12">Geen afspraken op deze dag</div>
                   )}
                 </div>
+              </div>
               </div>
             )}
           </div>
