@@ -1,0 +1,99 @@
+.topBar {
+  display: flex;
+  align-items: center;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  gap: 16px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.logoImg {
+  display: block;
+}
+
+.roleLabel {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.sizeControls {
+  display: flex;
+  gap: 4px;
+}
+
+.sizeBtn {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.sizeBtn:hover:not(:disabled) {
+  background: var(--color-text);
+  color: var(--color-paper);
+}
+
+.sizeBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.sizeBtnPlus,
+.sizeBtnMinus {
+  font-size: 0.55rem;
+  vertical-align: super;
+}
+
+.logoutBtn {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  padding: 6px 12px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  transition: background 0.2s, color 0.2s;
+}
+
+.logoutBtn:hover {
+  background: var(--color-text);
+  color: var(--color-paper);
+}
+
+.content {
+  min-height: calc(100vh - 53px);
+}
+
+@media (max-width: 640px) {
+  .topBar {
+    padding: 10px 16px;
+    gap: 8px;
+  }
+
+  .roleLabel {
+    display: none;
+  }
+
+  .sizeControls {
+    display: none;
+  }
+}
