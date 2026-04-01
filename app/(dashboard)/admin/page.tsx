@@ -55,7 +55,7 @@ const kpis = [
 ];
 
 const quickLinks = [
-  { icon: '→', label: 'Teamlid uitnodigen', desc: 'Uitnodiging versturen' },
+  { icon: '→', label: 'Cliënt uitnodigen', desc: 'Uitnodiging versturen' },
   { icon: '◉', label: 'Rooster bekijken', desc: 'Weekoverzicht team' },
   { icon: '◈', label: 'Declarabiliteit', desc: 'Controle & alerts' },
   { icon: '◎', label: 'Verlofoverzicht', desc: 'Aanvragen & saldi' },
