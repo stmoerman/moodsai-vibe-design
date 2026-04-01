@@ -433,8 +433,9 @@ function AdminDashboard() {
                     <div
                       key={i}
                       className={[
-                        'min-h-[130px] p-2 border-b border-r border-border-subtle/50 overflow-hidden transition-colors',
-                        gd.current ? 'cursor-pointer hover:bg-surface-hover' : '',
+                        'min-h-[130px] p-2 overflow-hidden transition-colors',
+                        gd.current ? 'border-b border-r border-border-subtle/40 cursor-pointer hover:bg-surface-hover' : '',
+                        !gd.current ? 'bg-transparent' : '',
                         isToday ? 'bg-[#f5edd8]' : '',
                         isSelected ? 'bg-surface-hover ring-1 ring-text-muted ring-inset' : '',
                       ].join(' ')}
