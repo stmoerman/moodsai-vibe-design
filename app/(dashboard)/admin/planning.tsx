@@ -17,20 +17,20 @@ import {
 
 const ACTIVITY_COLORS: Record<AgendaActivityType, string> = {
   behandeling: '#5a7a5a',
-  workshop:    '#7a5a8a',
+  workshop: '#7a5a8a',
   diagnostiek: '#b07a3a',
-  evaluatie:   '#4a6e8a',
-  intake:      '#8b6d4f',
-  reserved:    '#9a9490',
+  evaluatie: '#4a6e8a',
+  intake: '#8b6d4f',
+  reserved: '#9a9490',
 };
 
 const ACTIVITY_LABELS: Record<AgendaActivityType, string> = {
   behandeling: 'Behandeling',
-  workshop:    'Workshop',
+  workshop: 'Workshop',
   diagnostiek: 'Diagnostiek',
-  evaluatie:   'Evaluatie',
-  intake:      'Intake',
-  reserved:    'Gereserveerd',
+  evaluatie: 'Evaluatie',
+  intake: 'Intake',
+  reserved: 'Gereserveerd',
 };
 
 const ALL_TYPES: AgendaActivityType[] = [
@@ -42,15 +42,41 @@ const ALL_TYPES: AgendaActivityType[] = [
   'reserved',
 ];
 
-const WEEK_DAYS_NL   = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag'];
+// Time grid: 08:00 – 17:00, 30-min slots
+const GRID_START = 8 * 60; // 480 minutes
+const GRID_END = 17 * 60; // 1020 minutes
+const PX_PER_MIN = 96 / 60; // 1.6px per minute
+const TOTAL_HEIGHT = (GRID_END - GRID_START) * PX_PER_MIN; // 864px
+
+const TIME_LABELS: string[] = [];
+for (let m = GRID_START; m < GRID_END; m += 30) {
+  const h = Math.floor(m / 60);
+  const min = m % 60;
+  TIME_LABELS.push(`${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')}`);
+}
+
+const WEEK_DAYS_NL = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag'];
 const WEEK_DAYS_SHORT = ['Ma', 'Di', 'Wo', 'Do', 'Vr'];
 
-// Default week: June 1 2026 (where mock data lives)
-const DEFAULT_WEEK_START = new Date(2026, 5, 1);
+// Week of Jun 1 2026 — Mon=Jun1, Tue=Jun2, Wed=Jun3, Thu=Jun4, Fri=Jun5
+const DEFAULT_WEEK_START = new Date(2026, 5, 1); // June 1 2026 (month is 0-indexed)
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
+
+function toMinutes(time: string): number {
+  const [h, m] = time.split(':').map(Number);
+  return h * 60 + m;
+}
+
+function entryTop(entry: AgendaEntry): number {
+  return (toMinutes(entry.startTime) - GRID_START) * PX_PER_MIN;
+}
+
+function entryHeight(entry: AgendaEntry): number {
+  return Math.max(entry.duration * PX_PER_MIN, 28);
+}
 
 function getWeekDates(weekStart: Date): Date[] {
   return Array.from({ length: 5 }, (_, i) => {
@@ -77,18 +103,77 @@ function formatWeekLabel(weekStart: Date): string {
   return `${weekStart.getDate()} ${months[weekStart.getMonth()]} – ${end.getDate()} ${months[end.getMonth()]} ${weekStart.getFullYear()}`;
 }
 
-function sortByTime(entries: AgendaEntry[]): AgendaEntry[] {
-  return [...entries].sort((a, b) => {
-    const [ah, am] = a.startTime.split(':').map(Number);
-    const [bh, bm] = b.startTime.split(':').map(Number);
-    return ah * 60 + am - (bh * 60 + bm);
-  });
+function getInitials(name: string): string {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((w) => w[0]?.toUpperCase() ?? '')
+    .slice(0, 2)
+    .join('');
+}
+
+// Resolve overlapping entries into columns
+interface LayoutEntry {
+  entry: AgendaEntry;
+  col: number;
+  colCount: number;
+}
+
+function layoutEntries(entries: AgendaEntry[]): LayoutEntry[] {
+  if (entries.length === 0) return [];
+
+  // Sort by start time
+  const sorted = [...entries].sort(
+    (a, b) => toMinutes(a.startTime) - toMinutes(b.startTime)
+  );
+
+  const result: LayoutEntry[] = sorted.map((entry) => ({ entry, col: 0, colCount: 1 }));
+  const cols: number[] = []; // tracks end minute of the last entry in each column
+
+  for (let i = 0; i < result.length; i++) {
+    const start = toMinutes(result[i].entry.startTime);
+    const end = start + result[i].entry.duration;
+
+    // Find the first available column
+    let placed = false;
+    for (let c = 0; c < cols.length; c++) {
+      if (cols[c] <= start) {
+        result[i].col = c;
+        cols[c] = end;
+        placed = true;
+        break;
+      }
+    }
+    if (!placed) {
+      result[i].col = cols.length;
+      cols.push(end);
+    }
+  }
+
+  // Second pass: determine total column count for overlapping groups
+  for (let i = 0; i < result.length; i++) {
+    const startI = toMinutes(result[i].entry.startTime);
+    const endI = startI + result[i].entry.duration;
+    let maxCol = result[i].col;
+    for (let j = 0; j < result.length; j++) {
+      if (i === j) continue;
+      const startJ = toMinutes(result[j].entry.startTime);
+      const endJ = startJ + result[j].entry.duration;
+      if (startJ < endI && endJ > startI) {
+        maxCol = Math.max(maxCol, result[j].col);
+      }
+    }
+    result[i].colCount = maxCol + 1;
+  }
+
+  return result;
 }
 
 // ---------------------------------------------------------------------------
-// Icons
+// Sub-components
 // ---------------------------------------------------------------------------
 
+// Chevron icon for dropdowns
 function ChevronDown() {
   return (
     <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
@@ -97,26 +182,11 @@ function ChevronDown() {
   );
 }
 
+// Check icon for active checkboxes
 function CheckIcon() {
   return (
     <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M2 5l2.5 2.5L8 3" />
-    </svg>
-  );
-}
-
-function ChevronLeft() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-      <path d="M8 2L4 6l4 4" />
-    </svg>
-  );
-}
-
-function ChevronRight() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-      <path d="M4 2l4 4-4 4" />
     </svg>
   );
 }
@@ -128,30 +198,25 @@ function ChevronRight() {
 function StatsBar() {
   const stats = mockAgendaStats;
   return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 px-5 py-2.5 bg-surface border-b border-border">
-      <span className="font-mono text-[0.68rem] text-text-faint">
-        {stats.totalEntries} afspraken totaal
+    <div className="flex flex-wrap items-center gap-x-5 gap-y-2 px-5 py-3 bg-surface border-b border-border">
+      <span className="font-mono text-[0.68rem] text-text-muted uppercase tracking-wide">
+        {stats.totalEntries} afspraken · {stats.period.replace(' to ', ' – ')}
       </span>
-      <div className="w-px h-3.5 bg-border-subtle" />
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-        {ALL_TYPES.map((type) => {
-          const count = stats.byType[type]?.count ?? 0;
-          return (
-            <div key={type} className="flex items-center gap-1.5">
-              <span
-                className="w-1.5 h-1.5 rounded-full shrink-0"
-                style={{ backgroundColor: ACTIVITY_COLORS[type] }}
-              />
-              <span className="font-mono text-[0.65rem] text-text-muted">
-                {ACTIVITY_LABELS[type]}
-              </span>
-              <span className="font-mono text-[0.65rem] text-text font-medium">
-                {count}
-              </span>
-            </div>
-          );
-        })}
-      </div>
+      <div className="w-px h-4 bg-border" />
+      {ALL_TYPES.map((type) => {
+        const count = stats.byType[type]?.count ?? 0;
+        return (
+          <div key={type} className="flex items-center gap-1.5">
+            <span
+              className="w-2 h-2 rounded-full shrink-0"
+              style={{ backgroundColor: ACTIVITY_COLORS[type] }}
+            />
+            <span className="font-mono text-[0.65rem] text-text-muted">
+              {ACTIVITY_LABELS[type]} <span className="text-text font-medium">{count}</span>
+            </span>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -167,23 +232,17 @@ interface ActivityFilterProps {
 
 function ActivityFilter({ selected, onChange }: ActivityFilterProps) {
   const stats = mockAgendaStats;
-  const hiddenCount = ALL_TYPES.length - selected.size;
-  const hasFilter = hiddenCount > 0;
+  const activeCount = ALL_TYPES.length - selected.size;
+  const hasFilter = activeCount > 0;
 
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
-        <button
-          className={`font-mono text-[0.68rem] px-3 py-1.5 border flex items-center gap-2 cursor-pointer transition-colors ${
-            hasFilter
-              ? 'border-warm text-warm bg-surface'
-              : 'border-border text-text-muted bg-paper hover:bg-surface-hover'
-          }`}
-        >
+        <button className={`font-mono text-[0.68rem] uppercase tracking-wide px-3 py-1.5 border flex items-center gap-2 cursor-pointer transition-colors ${hasFilter ? 'border-warm text-warm bg-surface' : 'border-border text-text-muted bg-paper hover:bg-surface-hover'}`}>
           Activiteit
           {hasFilter && (
             <span className="bg-warm text-paper text-[0.6rem] px-1.5 py-0.5 rounded-full leading-none">
-              {selected.size}/{ALL_TYPES.length}
+              {activeCount}
             </span>
           )}
           <ChevronDown />
@@ -191,7 +250,7 @@ function ActivityFilter({ selected, onChange }: ActivityFilterProps) {
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
         <DropdownMenu.Content
-          className="bg-surface border border-border py-1 min-w-[210px] z-50 shadow-sm"
+          className="bg-surface border border-border py-1 min-w-[200px] z-50 shadow-sm"
           sideOffset={4}
           align="start"
         >
@@ -205,9 +264,7 @@ function ActivityFilter({ selected, onChange }: ActivityFilterProps) {
                 onSelect={(e) => { e.preventDefault(); onChange(type); }}
               >
                 <span
-                  className={`w-4 h-4 border shrink-0 flex items-center justify-center transition-colors ${
-                    isOn ? 'border-text bg-text text-paper' : 'border-border'
-                  }`}
+                  className={`w-4 h-4 border shrink-0 flex items-center justify-center transition-colors ${isOn ? 'border-text bg-text text-paper' : 'border-border'}`}
                 >
                   {isOn && <CheckIcon />}
                 </span>
@@ -215,9 +272,7 @@ function ActivityFilter({ selected, onChange }: ActivityFilterProps) {
                   className="w-2 h-2 rounded-full shrink-0"
                   style={{ backgroundColor: ACTIVITY_COLORS[type] }}
                 />
-                <span className="font-serif text-sm text-text flex-1">
-                  {ACTIVITY_LABELS[type]}
-                </span>
+                <span className="font-serif text-sm text-text flex-1">{ACTIVITY_LABELS[type]}</span>
                 <span className="font-mono text-[0.65rem] text-text-faint">{count}</span>
               </DropdownMenu.Item>
             );
@@ -235,28 +290,19 @@ interface LocationFilterProps {
 
 function LocationFilter({ selectedLocations, onToggle }: LocationFilterProps) {
   const allLocNames = mockLocations.map((l) => l.name);
-  const hiddenCount = allLocNames.length - selectedLocations.size;
-  const hasFilter = hiddenCount > 0;
-
+  const hasFilter = selectedLocations.size < allLocNames.length && selectedLocations.size > 0;
+  // group by type
   const physical = mockLocations.filter((l) => l.type === 'physical');
-  const online   = mockLocations.filter((l) => l.type === 'online');
-  const other    = mockLocations.filter((l) => l.type === 'home' || l.type === 'phone');
+  const online = mockLocations.filter((l) => l.type === 'online');
+  const other = mockLocations.filter((l) => l.type === 'home' || l.type === 'phone');
 
-  function displayName(loc: AgendaLocation): string {
-    if (loc.city) return loc.city;
-    return loc.name
-      .replace('Online behandelkamer ', '')
-      .replace('Bij client thuis', 'Bij cliënt thuis')
-      .replace('Telefonisch contact', 'Telefonisch');
-  }
+  const activeCount = allLocNames.length - selectedLocations.size;
 
   function renderGroup(label: string, locs: AgendaLocation[]) {
     return (
       <>
         <div className="px-3 pt-2 pb-1">
-          <span className="font-mono text-[0.6rem] uppercase tracking-widest text-text-faint">
-            {label}
-          </span>
+          <span className="font-mono text-[0.6rem] uppercase tracking-widest text-text-faint">{label}</span>
         </div>
         {locs.map((loc) => {
           const isOn = selectedLocations.has(loc.name);
@@ -267,14 +313,12 @@ function LocationFilter({ selectedLocations, onToggle }: LocationFilterProps) {
               onSelect={(e) => { e.preventDefault(); onToggle(loc.name); }}
             >
               <span
-                className={`w-4 h-4 border shrink-0 flex items-center justify-center transition-colors ${
-                  isOn ? 'border-text bg-text text-paper' : 'border-border'
-                }`}
+                className={`w-4 h-4 border shrink-0 flex items-center justify-center transition-colors ${isOn ? 'border-text bg-text text-paper' : 'border-border'}`}
               >
                 {isOn && <CheckIcon />}
               </span>
               <span className="font-serif text-sm text-text flex-1 truncate max-w-[180px]" title={loc.name}>
-                {displayName(loc)}
+                {loc.city ?? loc.name.replace('Online behandelkamer ', '').replace('Thuis', 'Thuis').replace('Bij client thuis', 'Bij cliënt thuis').replace('Telefonisch contact', 'Telefonisch')}
               </span>
             </DropdownMenu.Item>
           );
@@ -286,17 +330,11 @@ function LocationFilter({ selectedLocations, onToggle }: LocationFilterProps) {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
-        <button
-          className={`font-mono text-[0.68rem] px-3 py-1.5 border flex items-center gap-2 cursor-pointer transition-colors ${
-            hasFilter
-              ? 'border-warm text-warm bg-surface'
-              : 'border-border text-text-muted bg-paper hover:bg-surface-hover'
-          }`}
-        >
+        <button className={`font-mono text-[0.68rem] uppercase tracking-wide px-3 py-1.5 border flex items-center gap-2 cursor-pointer transition-colors ${hasFilter ? 'border-warm text-warm bg-surface' : 'border-border text-text-muted bg-paper hover:bg-surface-hover'}`}>
           Locatie
           {hasFilter && (
             <span className="bg-warm text-paper text-[0.6rem] px-1.5 py-0.5 rounded-full leading-none">
-              {selectedLocations.size}/{allLocNames.length}
+              {activeCount}
             </span>
           )}
           <ChevronDown />
@@ -322,27 +360,21 @@ function LocationFilter({ selectedLocations, onToggle }: LocationFilterProps) {
 interface TherapistFilterProps {
   allTherapists: string[];
   selectedTherapists: Set<string>;
-  onToggle: (name: string) => void;
+  onToggle: (t: string) => void;
 }
 
 function TherapistFilter({ allTherapists, selectedTherapists, onToggle }: TherapistFilterProps) {
-  const hiddenCount = allTherapists.length - selectedTherapists.size;
-  const hasFilter = hiddenCount > 0;
+  const hasFilter = selectedTherapists.size < allTherapists.length && selectedTherapists.size > 0;
+  const activeCount = allTherapists.length - selectedTherapists.size;
 
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
-        <button
-          className={`font-mono text-[0.68rem] px-3 py-1.5 border flex items-center gap-2 cursor-pointer transition-colors ${
-            hasFilter
-              ? 'border-warm text-warm bg-surface'
-              : 'border-border text-text-muted bg-paper hover:bg-surface-hover'
-          }`}
-        >
+        <button className={`font-mono text-[0.68rem] uppercase tracking-wide px-3 py-1.5 border flex items-center gap-2 cursor-pointer transition-colors ${hasFilter ? 'border-warm text-warm bg-surface' : 'border-border text-text-muted bg-paper hover:bg-surface-hover'}`}>
           Therapeut
           {hasFilter && (
             <span className="bg-warm text-paper text-[0.6rem] px-1.5 py-0.5 rounded-full leading-none">
-              {selectedTherapists.size}/{allTherapists.length}
+              {activeCount}
             </span>
           )}
           <ChevronDown />
@@ -363,9 +395,7 @@ function TherapistFilter({ allTherapists, selectedTherapists, onToggle }: Therap
                 onSelect={(e) => { e.preventDefault(); onToggle(name); }}
               >
                 <span
-                  className={`w-4 h-4 border shrink-0 flex items-center justify-center transition-colors ${
-                    isOn ? 'border-text bg-text text-paper' : 'border-border'
-                  }`}
+                  className={`w-4 h-4 border shrink-0 flex items-center justify-center transition-colors ${isOn ? 'border-text bg-text text-paper' : 'border-border'}`}
                 >
                   {isOn && <CheckIcon />}
                 </span>
@@ -380,132 +410,254 @@ function TherapistFilter({ allTherapists, selectedTherapists, onToggle }: Therap
 }
 
 // ---------------------------------------------------------------------------
-// Entry card — list-based, no absolute positioning
+// Entry card (week view)
 // ---------------------------------------------------------------------------
 
 interface EntryCardProps {
   entry: AgendaEntry;
+  col: number;
+  colCount: number;
   onClick: (entry: AgendaEntry) => void;
-  showDescription?: boolean;
+  dayView?: boolean;
 }
 
-function EntryCard({ entry, onClick, showDescription = false }: EntryCardProps) {
-  const color  = ACTIVITY_COLORS[entry.activityType];
-  const label  = ACTIVITY_LABELS[entry.activityType];
-  const isOpen = !entry.clientName; // intake / reserved slots have no client
+function EntryCard({ entry, col, colCount, onClick, dayView = false }: EntryCardProps) {
+  const top = entryTop(entry);
+  const height = entryHeight(entry);
+  const isIntake = entry.activityType === 'intake';
+  const isReserved = entry.activityType === 'reserved';
+  const color = ACTIVITY_COLORS[entry.activityType];
+  const label = ACTIVITY_LABELS[entry.activityType];
+  const displayName = entry.clientName ?? (isIntake || isReserved ? 'Beschikbaar' : '—');
+  const isOpen = isIntake || (isReserved && !entry.clientName);
 
-  const borderStyle: React.CSSProperties = {
-    borderLeftColor: color,
-    borderLeftWidth: '3px',
-    borderLeftStyle: isOpen ? 'dashed' : 'solid',
+  // Column layout math
+  const widthPct = 100 / colCount;
+  const leftPct = (col / colCount) * 100;
+
+  const cardStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: `${top}px`,
+    height: `${height}px`,
+    left: `calc(${leftPct}% + ${col > 0 ? 2 : 0}px)`,
+    width: `calc(${widthPct}% - ${col > 0 ? 3 : 2}px)`,
+    borderLeft: `3px solid ${color}`,
+    borderTop: isOpen ? `1px dashed ${color}` : `1px solid transparent`,
+    borderRight: isOpen ? `1px dashed ${color}` : '1px solid transparent',
+    borderBottom: isOpen ? `1px dashed ${color}` : `1px solid transparent`,
+    backgroundColor: isOpen
+      ? `${color}12`
+      : `${color}18`,
+    cursor: 'pointer',
+    overflow: 'hidden',
+    zIndex: 2,
+    transition: 'box-shadow 0.15s ease',
   };
 
-  return (
-    <button
-      onClick={() => onClick(entry)}
-      className={`w-full text-left px-3 py-2.5 rounded-sm border border-border-subtle transition-colors hover:bg-surface-hover focus:outline-none focus-visible:ring-1 focus-visible:ring-border ${
-        isOpen ? 'bg-paper' : 'bg-paper'
-      }`}
-      style={borderStyle}
-    >
-      {/* Time row */}
-      <div className="flex items-center gap-1.5 mb-1">
-        <span
-          className="w-1.5 h-1.5 rounded-full shrink-0"
-          style={{ backgroundColor: color }}
-        />
-        <span className="font-mono text-[0.7rem] text-text-muted leading-none">
-          {entry.startTime} – {entry.endTime}
-        </span>
-        <span className="font-mono text-[0.65rem] text-text-faint ml-auto leading-none">
-          {label}
-        </span>
+  if (dayView) {
+    // Day view: full-width, more detail
+    return (
+      <div
+        style={{
+          ...cardStyle,
+          left: '2px',
+          width: 'calc(100% - 4px)',
+        }}
+        onClick={() => onClick(entry)}
+        className="group p-2 hover:shadow-md"
+        title={entry.description || label}
+      >
+        <div className="flex items-start gap-2 h-full">
+          {/* Therapist avatar */}
+          <div
+            className="w-7 h-7 shrink-0 rounded-full flex items-center justify-center font-mono text-[0.58rem] text-paper"
+            style={{ backgroundColor: color }}
+          >
+            {getInitials(entry.therapistName)}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5 mb-0.5">
+              <span
+                className="font-mono text-[0.58rem] uppercase tracking-wide"
+                style={{ color }}
+              >
+                {label}
+              </span>
+              {isOpen && (
+                <span
+                  className="font-mono text-[0.55rem] px-1.5 py-0.5 rounded-full uppercase tracking-wide text-paper"
+                  style={{ backgroundColor: color }}
+                >
+                  Beschikbaar
+                </span>
+              )}
+            </div>
+            <p className="font-serif text-[0.82rem] text-text leading-tight truncate">
+              {entry.therapistName}
+            </p>
+            {entry.clientName && (
+              <p className="font-serif text-[0.78rem] text-text-muted leading-tight truncate">
+                {entry.clientName}
+              </p>
+            )}
+            {height > 64 && (
+              <>
+                <p className="font-mono text-[0.58rem] text-text-faint mt-1 truncate">{entry.location}</p>
+                {entry.description && (
+                  <p className="font-serif text-[0.72rem] text-text-muted italic mt-0.5 line-clamp-2">{entry.description}</p>
+                )}
+              </>
+            )}
+            <p className="font-mono text-[0.6rem] text-text-faint mt-auto">
+              {entry.startTime} – {entry.endTime}
+            </p>
+          </div>
+        </div>
       </div>
+    );
+  }
 
-      {/* Therapist */}
-      <p className="font-serif text-[0.9rem] text-text leading-snug">
-        {entry.therapistName}
-      </p>
-
-      {/* Client or open indicator */}
-      <p className="font-serif text-[0.82rem] leading-snug mt-0.5" style={{ color: isOpen ? color : undefined }}>
-        {isOpen
-          ? <span className="italic" style={{ color: `${color}cc` }}>Beschikbaar</span>
-          : <span className="text-text-muted">{entry.clientName}</span>
-        }
-      </p>
-
-      {/* Location */}
-      <p className="font-mono text-[0.68rem] text-text-faint mt-1 leading-none">
-        {entry.location}
-      </p>
-
-      {/* Description — only in day view */}
-      {showDescription && entry.description && (
-        <p className="font-serif text-[0.8rem] text-text-muted italic mt-1.5 leading-snug">
-          {entry.description}
-        </p>
-      )}
-    </button>
+  // Week view card (compact)
+  return (
+    <div
+      style={cardStyle}
+      onClick={() => onClick(entry)}
+      className="group px-1.5 py-1 hover:shadow-md"
+      title={`${label} · ${entry.therapistName}${entry.clientName ? ` · ${entry.clientName}` : ''}`}
+    >
+      <div className="flex flex-col h-full overflow-hidden">
+        <div className="flex items-center gap-1 mb-0.5 flex-wrap">
+          <span
+            className="font-mono text-[0.55rem] uppercase tracking-wide leading-none shrink-0"
+            style={{ color }}
+          >
+            {label}
+          </span>
+          {isOpen && (
+            <span
+              className="font-mono text-[0.5rem] px-1 leading-4 rounded-full uppercase tracking-wide text-paper shrink-0"
+              style={{ backgroundColor: color }}
+            >
+              Open
+            </span>
+          )}
+        </div>
+        {height > 36 && (
+          <p className="font-serif text-[0.72rem] text-text leading-tight truncate">
+            {entry.therapistName}
+          </p>
+        )}
+        {height > 52 && (
+          <p className="font-serif text-[0.68rem] text-text-muted leading-tight truncate">
+            {displayName}
+          </p>
+        )}
+        {height > 72 && (
+          <p className="font-mono text-[0.58rem] text-text-faint mt-auto leading-none">
+            {entry.startTime}–{entry.endTime}
+          </p>
+        )}
+      </div>
+    </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Day column — list of entry cards, sorted by time
+// Time column (left axis)
+// ---------------------------------------------------------------------------
+
+function TimeAxis() {
+  return (
+    <div
+      className="shrink-0 w-14 border-r border-border-subtle"
+      style={{ height: `${TOTAL_HEIGHT}px`, position: 'relative' }}
+    >
+      {TIME_LABELS.map((label, i) => {
+        const top = i * 30 * PX_PER_MIN;
+        return (
+          <div
+            key={label}
+            style={{ position: 'absolute', top: `${top}px`, left: 0, right: 0 }}
+            className="flex items-start justify-end pr-2"
+          >
+            <span className="font-mono text-[0.58rem] text-text-faint leading-none -translate-y-1/2">
+              {label}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Day column (week view)
 // ---------------------------------------------------------------------------
 
 interface DayColumnProps {
   date: Date;
-  dayIndex: number;
   entries: AgendaEntry[];
+  dayIndex: number;
   onEntryClick: (entry: AgendaEntry) => void;
-  showDescription?: boolean;
+  dayView?: boolean;
 }
 
-function DayColumn({ date, dayIndex, entries, onEntryClick, showDescription = false }: DayColumnProps) {
-  const sorted   = sortByTime(entries);
-  const hasData  = entries.length > 0;
-  const dayName  = showDescription ? WEEK_DAYS_NL[dayIndex] : WEEK_DAYS_SHORT[dayIndex];
+function DayColumn({ date, entries, dayIndex, onEntryClick, dayView = false }: DayColumnProps) {
+  const laid = layoutEntries(entries);
+  const hasData = entries.length > 0;
 
   return (
-    <div className="flex flex-col min-w-0">
+    <div className="flex-1 min-w-0 border-r border-border-subtle last:border-r-0">
       {/* Day header */}
-      <div
-        className={`sticky top-0 z-10 px-3 py-2.5 border-b ${
-          hasData
-            ? 'bg-surface border-border'
-            : 'bg-paper border-border-subtle'
-        }`}
-      >
-        <p className="font-mono text-[0.62rem] uppercase tracking-widest text-text-faint leading-none mb-0.5">
-          {dayName}
+      <div className={`px-2 py-2 text-center border-b ${hasData ? 'border-border bg-surface' : 'border-border-subtle bg-paper'}`}>
+        <p className="font-mono text-[0.6rem] uppercase tracking-widest text-text-faint">
+          {WEEK_DAYS_SHORT[dayIndex]}
         </p>
-        <p className={`font-display text-lg leading-none ${hasData ? 'text-text' : 'text-text-faint'}`}>
+        <p className={`font-display text-base leading-none ${hasData ? 'text-text' : 'text-text-faint'}`}>
           {date.getDate()}
         </p>
-        {hasData && (
-          <p className="font-mono text-[0.6rem] text-text-faint mt-0.5">
-            {entries.length} {entries.length === 1 ? 'afspraak' : 'afspraken'}
-          </p>
-        )}
       </div>
 
-      {/* Entry list */}
-      <div className="flex flex-col gap-2 p-2.5 flex-1">
-        {hasData ? (
-          sorted.map((entry) => (
-            <EntryCard
-              key={entry.id}
-              entry={entry}
-              onClick={onEntryClick}
-              showDescription={showDescription}
+      {/* Time grid */}
+      <div
+        className="relative"
+        style={{ height: `${TOTAL_HEIGHT}px` }}
+      >
+        {/* Horizontal grid lines every 30 min */}
+        {TIME_LABELS.map((label, i) => {
+          const top = i * 30 * PX_PER_MIN;
+          const isHour = i % 2 === 0;
+          return (
+            <div
+              key={label}
+              style={{
+                position: 'absolute',
+                top: `${top}px`,
+                left: 0,
+                right: 0,
+                height: '1px',
+                backgroundColor: isHour ? '#e8e4dd' : '#f0ede8',
+              }}
             />
-          ))
-        ) : (
-          <div className="flex items-center justify-center py-8">
-            <span className="font-serif text-[0.8rem] text-text-faint italic">
-              Geen afspraken
-            </span>
+          );
+        })}
+
+        {/* Entries */}
+        {laid.map(({ entry, col, colCount }) => (
+          <EntryCard
+            key={entry.id}
+            entry={entry}
+            col={col}
+            colCount={colCount}
+            onClick={onEntryClick}
+            dayView={dayView}
+          />
+        ))}
+
+        {/* Empty state */}
+        {entries.length === 0 && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="font-serif text-[0.75rem] text-text-faint italic">Geen afspraken</span>
           </div>
         )}
       </div>
@@ -518,13 +670,13 @@ function DayColumn({ date, dayIndex, entries, onEntryClick, showDescription = fa
 // ---------------------------------------------------------------------------
 
 export function PlanningTab() {
-  // View state
-  const [view, setView]                   = useState<'week' | 'dag'>('week');
-  const [weekStart, setWeekStart]         = useState<Date>(DEFAULT_WEEK_START);
-  const [selectedDayIndex, setSelectedDayIndex] = useState<number>(0);
+  // --- View state ---
+  const [view, setView] = useState<'week' | 'dag'>('week');
+  const [weekStart, setWeekStart] = useState<Date>(DEFAULT_WEEK_START);
+  const [selectedDayIndex, setSelectedDayIndex] = useState<number>(0); // 0=Mon (Jun1)
 
-  // Filter state
-  const [activeTypes, setActiveTypes]         = useState<Set<AgendaActivityType>>(new Set(ALL_TYPES));
+  // --- Filter state ---
+  const [activeTypes, setActiveTypes] = useState<Set<AgendaActivityType>>(new Set(ALL_TYPES));
   const [activeLocations, setActiveLocations] = useState<Set<string>>(
     new Set(mockLocations.map((l) => l.name))
   );
@@ -535,6 +687,7 @@ export function PlanningTab() {
   );
   const [activeTherapists, setActiveTherapists] = useState<Set<string>>(new Set(allTherapists));
 
+  // --- Derived: is any filter active ---
   const hasActiveFilters = useMemo(
     () =>
       activeTypes.size < ALL_TYPES.length ||
@@ -543,11 +696,12 @@ export function PlanningTab() {
     [activeTypes, activeLocations, activeTherapists, allTherapists]
   );
 
-  // Filter handlers
+  // --- Filter toggle handlers ---
   const toggleType = useCallback((type: AgendaActivityType) => {
     setActiveTypes((prev) => {
       const next = new Set(prev);
-      if (next.has(type)) next.delete(type); else next.add(type);
+      if (next.has(type)) next.delete(type);
+      else next.add(type);
       return next;
     });
   }, []);
@@ -555,7 +709,8 @@ export function PlanningTab() {
   const toggleLocation = useCallback((loc: string) => {
     setActiveLocations((prev) => {
       const next = new Set(prev);
-      if (next.has(loc)) next.delete(loc); else next.add(loc);
+      if (next.has(loc)) next.delete(loc);
+      else next.add(loc);
       return next;
     });
   }, []);
@@ -563,7 +718,8 @@ export function PlanningTab() {
   const toggleTherapist = useCallback((name: string) => {
     setActiveTherapists((prev) => {
       const next = new Set(prev);
-      if (next.has(name)) next.delete(name); else next.add(name);
+      if (next.has(name)) next.delete(name);
+      else next.add(name);
       return next;
     });
   }, []);
@@ -574,53 +730,64 @@ export function PlanningTab() {
     setActiveTherapists(new Set(allTherapists));
   }, [allTherapists]);
 
-  // Week navigation
+  // --- Week navigation ---
   const goToPrevWeek = useCallback(() => {
-    setWeekStart((prev) => { const d = new Date(prev); d.setDate(d.getDate() - 7); return d; });
+    setWeekStart((prev) => {
+      const d = new Date(prev);
+      d.setDate(d.getDate() - 7);
+      return d;
+    });
   }, []);
 
   const goToNextWeek = useCallback(() => {
-    setWeekStart((prev) => { const d = new Date(prev); d.setDate(d.getDate() + 7); return d; });
+    setWeekStart((prev) => {
+      const d = new Date(prev);
+      d.setDate(d.getDate() + 7);
+      return d;
+    });
   }, []);
 
-  const goToJune = useCallback(() => setWeekStart(DEFAULT_WEEK_START), []);
+  const goToJune = useCallback(() => {
+    setWeekStart(DEFAULT_WEEK_START);
+  }, []);
 
-  // Filtered + grouped entries
+  // --- Filtered entries ---
   const filteredEntries = useMemo(
     () =>
       mockAgendaEntries.filter(
         (e) =>
           activeTypes.has(e.activityType) &&
           activeTherapists.has(e.therapistName) &&
-          Array.from(activeLocations).some(
-            (loc) =>
-              e.location.toLowerCase().includes(loc.toLowerCase()) ||
-              loc.toLowerCase().includes(e.location.toLowerCase())
+          // Location matching: check if entry location contains any selected location name
+          Array.from(activeLocations).some((loc) =>
+            e.location.toLowerCase().includes(loc.toLowerCase()) ||
+            loc.toLowerCase().includes(e.location.toLowerCase())
           )
       ),
     [activeTypes, activeTherapists, activeLocations]
   );
 
+  // --- Entries grouped by date ---
   const weekDates = useMemo(() => getWeekDates(weekStart), [weekStart]);
 
   const entriesByDate = useMemo(() => {
     const map: Record<string, AgendaEntry[]> = {};
-    for (const d of weekDates) map[isoDate(d)] = [];
-    for (const e of filteredEntries) {
-      if (map[e.date] !== undefined) map[e.date].push(e);
+    for (const date of weekDates) {
+      map[isoDate(date)] = [];
+    }
+    for (const entry of filteredEntries) {
+      if (map[entry.date] !== undefined) {
+        map[entry.date].push(entry);
+      }
     }
     return map;
   }, [filteredEntries, weekDates]);
 
-  // Days that actually have data (used to skip empty columns in week view)
-  const daysWithData = useMemo(
-    () => weekDates.filter((d) => (entriesByDate[isoDate(d)] ?? []).length > 0),
-    [weekDates, entriesByDate]
-  );
-
-  const dayViewDate    = weekDates[selectedDayIndex];
+  // --- Day view: selected day entries ---
+  const dayViewDate = weekDates[selectedDayIndex];
   const dayViewEntries = entriesByDate[isoDate(dayViewDate)] ?? [];
 
+  // --- Entry click ---
   const handleEntryClick = useCallback((entry: AgendaEntry) => {
     console.log('Clicked:', entry.id);
   }, []);
@@ -630,45 +797,52 @@ export function PlanningTab() {
       {/* Stats bar */}
       <StatsBar />
 
-      {/* Filters + controls row */}
+      {/* Filters row */}
       <div className="flex flex-wrap items-center gap-2 px-5 py-3 bg-paper border-b border-border">
-        {/* Filters */}
+        {/* Activity type filter */}
         <ActivityFilter selected={activeTypes} onChange={toggleType} />
-        <LocationFilter selectedLocations={activeLocations} onToggle={toggleLocation} />
+
+        {/* Location filter */}
+        <LocationFilter
+          selectedLocations={activeLocations}
+          onToggle={toggleLocation}
+        />
+
+        {/* Therapist filter */}
         <TherapistFilter
           allTherapists={allTherapists}
           selectedTherapists={activeTherapists}
           onToggle={toggleTherapist}
         />
 
-        <div className="w-px h-5 bg-border mx-0.5" />
+        <div className="w-px h-5 bg-border mx-1" />
 
         {/* Week navigation */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
           <button
             onClick={goToPrevWeek}
-            className="w-7 h-7 border border-border flex items-center justify-center text-text-muted cursor-pointer hover:bg-surface-hover transition-colors"
+            className="w-7 h-7 border border-border flex items-center justify-center text-text-muted font-mono text-sm cursor-pointer hover:bg-surface-hover transition-colors"
             aria-label="Vorige week"
           >
-            <ChevronLeft />
+            ←
           </button>
           <button
             onClick={goToJune}
-            className="font-mono text-[0.68rem] text-text-muted px-3 py-1.5 border border-border cursor-pointer hover:bg-surface-hover transition-colors"
+            className="font-display text-sm text-text px-3 py-1 border border-border cursor-pointer hover:bg-surface-hover transition-colors"
             title="Terug naar juni 2026"
           >
             {formatWeekLabel(weekStart)}
           </button>
           <button
             onClick={goToNextWeek}
-            className="w-7 h-7 border border-border flex items-center justify-center text-text-muted cursor-pointer hover:bg-surface-hover transition-colors"
+            className="w-7 h-7 border border-border flex items-center justify-center text-text-muted font-mono text-sm cursor-pointer hover:bg-surface-hover transition-colors"
             aria-label="Volgende week"
           >
-            <ChevronRight />
+            →
           </button>
         </div>
 
-        <div className="w-px h-5 bg-border mx-0.5" />
+        <div className="w-px h-5 bg-border mx-1" />
 
         {/* View toggle */}
         <div className="flex">
@@ -676,11 +850,7 @@ export function PlanningTab() {
             <button
               key={v}
               onClick={() => setView(v)}
-              className={`font-mono text-[0.65rem] px-3 py-1.5 border-t border-b first:border-l border-r border-border cursor-pointer transition-colors ${
-                view === v
-                  ? 'bg-text text-paper'
-                  : 'bg-paper text-text-muted hover:bg-surface-hover'
-              }`}
+              className={`font-mono text-[0.65rem] uppercase tracking-wide px-3 py-1.5 border-t border-b first:border-l border-r border-border cursor-pointer transition-colors ${view === v ? 'bg-text text-paper' : 'bg-paper text-text-muted hover:bg-surface-hover'}`}
             >
               {v === 'week' ? 'Week' : 'Dag'}
             </button>
@@ -691,36 +861,29 @@ export function PlanningTab() {
         {hasActiveFilters && (
           <button
             onClick={clearFilters}
-            className="font-mono text-[0.65rem] text-warm underline cursor-pointer hover:text-text transition-colors ml-auto"
+            className="font-mono text-[0.65rem] uppercase tracking-wide text-warm underline cursor-pointer hover:text-text transition-colors ml-auto"
           >
             Filters wissen
           </button>
         )}
       </div>
 
-      {/* Day selector (dag view only) */}
+      {/* Day selector (only in dag view) */}
       {view === 'dag' && (
         <div className="flex border-b border-border bg-paper px-5">
           {weekDates.map((date, i) => {
-            const count      = entriesByDate[isoDate(date)]?.length ?? 0;
+            const key = isoDate(date);
+            const count = entriesByDate[key]?.length ?? 0;
             const isSelected = i === selectedDayIndex;
             return (
               <button
-                key={isoDate(date)}
+                key={key}
                 onClick={() => setSelectedDayIndex(i)}
-                className={`font-mono text-[0.65rem] px-4 py-2.5 border-b-2 cursor-pointer transition-colors flex items-center gap-1.5 ${
-                  isSelected
-                    ? 'border-text text-text'
-                    : 'border-transparent text-text-muted hover:text-text'
-                }`}
+                className={`font-mono text-[0.65rem] uppercase tracking-wide px-4 py-2.5 border-b-2 cursor-pointer transition-colors flex items-center gap-1.5 ${isSelected ? 'border-text text-text' : 'border-transparent text-text-muted hover:text-text'}`}
               >
                 {WEEK_DAYS_SHORT[i]} {date.getDate()}
                 {count > 0 && (
-                  <span
-                    className={`text-[0.55rem] px-1.5 py-0.5 rounded-full ${
-                      isSelected ? 'bg-text text-paper' : 'bg-border text-text-muted'
-                    }`}
-                  >
+                  <span className={`text-[0.55rem] px-1.5 py-0.5 rounded-full ${isSelected ? 'bg-text text-paper' : 'bg-border text-text-muted'}`}>
                     {count}
                   </span>
                 )}
@@ -730,54 +893,55 @@ export function PlanningTab() {
         </div>
       )}
 
-      {/* Calendar body */}
+      {/* Calendar grid */}
       <div className="overflow-auto flex-1">
-        {view === 'week' ? (
-          // Week view: column per day that has data (skip truly empty days)
-          <div
-            className="grid divide-x divide-border-subtle"
-            style={{
-              gridTemplateColumns: `repeat(${Math.max(daysWithData.length, 1)}, minmax(180px, 1fr))`,
-              minWidth: `${Math.max(daysWithData.length, 1) * 200}px`,
-            }}
-          >
-            {weekDates.map((date, i) => {
-              const dayEntries = entriesByDate[isoDate(date)] ?? [];
-              // In week view, only render days that have entries; show all 5 if none have data
-              const shouldShow = daysWithData.length === 0 || dayEntries.length > 0;
-              if (!shouldShow) return null;
-              return (
-                <DayColumn
-                  key={isoDate(date)}
-                  date={date}
-                  dayIndex={i}
-                  entries={dayEntries}
-                  onEntryClick={handleEntryClick}
-                  showDescription={false}
-                />
-              );
-            })}
-            {/* Fallback: all days are empty */}
-            {daysWithData.length === 0 && (
-              <div className="col-span-full flex items-center justify-center py-16">
-                <span className="font-serif text-[0.9rem] text-text-faint italic">
-                  Geen afspraken in deze week
-                </span>
-              </div>
-            )}
+        <div className="flex min-w-0" style={{ minWidth: view === 'week' ? '700px' : '400px' }}>
+          {/* Time axis */}
+          <div className="shrink-0 w-14 border-r border-border-subtle">
+            {/* Header spacer to match day header */}
+            <div className="h-[52px] border-b border-border" />
+            {/* Time labels */}
+            <div style={{ height: `${TOTAL_HEIGHT}px`, position: 'relative' }}>
+              {TIME_LABELS.map((label, i) => {
+                const top = i * 30 * PX_PER_MIN;
+                return (
+                  <div
+                    key={label}
+                    style={{ position: 'absolute', top: `${top}px`, left: 0, right: 0 }}
+                    className="flex items-start justify-end pr-2"
+                  >
+                    <span className="font-mono text-[0.58rem] text-text-faint leading-none -translate-y-[50%]">
+                      {label}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        ) : (
-          // Day view: single wide column with descriptions
-          <div className="max-w-xl">
+
+          {/* Day columns */}
+          {view === 'week' ? (
+            weekDates.map((date, i) => (
+              <DayColumn
+                key={isoDate(date)}
+                date={date}
+                entries={entriesByDate[isoDate(date)] ?? []}
+                dayIndex={i}
+                onEntryClick={handleEntryClick}
+                dayView={false}
+              />
+            ))
+          ) : (
             <DayColumn
+              key={isoDate(dayViewDate)}
               date={dayViewDate}
-              dayIndex={selectedDayIndex}
               entries={dayViewEntries}
+              dayIndex={selectedDayIndex}
               onEntryClick={handleEntryClick}
-              showDescription={true}
+              dayView={true}
             />
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
