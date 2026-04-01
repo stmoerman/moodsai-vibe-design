@@ -71,7 +71,7 @@ function IntakeCalendarPage() {
   const setLangFilter = (v: string | null) => updateParams({ taal: v });
   const setTherapistFilter = (v: string | null) => updateParams({ therapeut: v });
 
-  const [weekDate, setWeekDate] = useState(() => new Date(2026, 5, 1)); // June 1 2026
+  const [weekDate, setWeekDate] = useState(() => new Date());
   const [selectedSlot, setSelectedSlot] = useState<IntakeSlot | null>(null);
 
   const weekDates = getWeekDates(weekDate);
@@ -103,7 +103,7 @@ function IntakeCalendarPage() {
 
   function prevWeek() { setWeekDate((d) => { const n = new Date(d); n.setDate(n.getDate() - 7); return n; }); }
   function nextWeek() { setWeekDate((d) => { const n = new Date(d); n.setDate(n.getDate() + 7); return n; }); }
-  function goToday() { setWeekDate(new Date(2026, 5, 1)); } // Jump to first data week
+  function goToday() { setWeekDate(new Date()); }
 
   const activeFilters = [regionFilter, langFilter, therapistFilter].filter(Boolean).length;
 
@@ -193,7 +193,7 @@ function IntakeCalendarPage() {
             Week {weekNum} · {MONTH_NAMES[weekDates[0].getMonth()]} {weekDates[0].getFullYear()}
           </span>
           <button className="font-mono text-sm text-text-muted border border-border w-8 h-8 flex items-center justify-center cursor-pointer hover:bg-text hover:text-paper transition-colors" onClick={nextWeek}>→</button>
-          <button className="font-mono text-[0.7rem] text-text-muted border border-border px-3 py-1.5 uppercase tracking-wide cursor-pointer hover:bg-text hover:text-paper transition-colors" onClick={goToday}>Juni</button>
+          <button className="font-mono text-[0.7rem] text-text-muted border border-border px-3 py-1.5 uppercase tracking-wide cursor-pointer hover:bg-text hover:text-paper transition-colors" onClick={goToday}>Vandaag</button>
         </div>
 
         {/* Week grid */}
