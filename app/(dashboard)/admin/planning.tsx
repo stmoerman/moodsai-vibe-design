@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import {
   mockAgendaEntries,
@@ -257,10 +258,10 @@ function StatsBar() {
 interface ActivityFilterProps {
   selected: Set<AgendaActivityType>;
   onChange: (type: AgendaActivityType) => void;
+  counts: Record<AgendaActivityType, number>;
 }
 
-function ActivityFilter({ selected, onChange }: ActivityFilterProps) {
-  const stats = mockAgendaStats;
+function ActivityFilter({ selected, onChange, counts }: ActivityFilterProps) {
   const hasFilter = selected.size < ALL_TYPES.length;
 
   return (
@@ -284,7 +285,7 @@ function ActivityFilter({ selected, onChange }: ActivityFilterProps) {
         >
           {ALL_TYPES.map((type) => {
             const isOn = selected.has(type);
-            const count = stats.byType[type]?.count ?? 0;
+            const count = counts[type] ?? 0;
             return (
               <DropdownMenu.Item
                 key={type}
@@ -698,24 +699,70 @@ function DayColumn({ date, entries, dayIndex, onEntryClick, dayView = false }: D
 // ---------------------------------------------------------------------------
 
 export function PlanningTab() {
-  // --- View state ---
-  const [view, setView] = useState<'maand' | 'week' | 'dag'>('maand');
-  const [calMonth, setCalMonth] = useState(() => { const n = new Date(); return { year: n.getFullYear(), month: n.getMonth() }; });
-  const [selectedDay, setSelectedDay] = useState<string | null>(null);
-  const [weekStart, setWeekStart] = useState<Date>(DEFAULT_WEEK_START);
-  const [selectedDayIndex, setSelectedDayIndex] = useState<number>(0); // 0=Mon (Jun1)
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
-  // --- Filter state ---
-  const [activeTypes, setActiveTypes] = useState<Set<AgendaActivityType>>(new Set(['intake']));
-  const [activeLocations, setActiveLocations] = useState<Set<string>>(
-    new Set(mockLocations.map((l) => l.name))
-  );
+  // --- Read initial filter state from URL ---
+  const initialTypes = useMemo(() => {
+    const p = searchParams.get('types');
+    if (p) return new Set(p.split(',').filter((t) => ALL_TYPES.includes(t as AgendaActivityType)) as AgendaActivityType[]);
+    return new Set<AgendaActivityType>(['intake']);
+  }, []);
 
   const allTherapists = useMemo(
     () => Array.from(new Set(mockAgendaEntries.map((e) => e.therapistName))).sort(),
     []
   );
-  const [activeTherapists, setActiveTherapists] = useState<Set<string>>(new Set(allTherapists));
+
+  const initialTherapists = useMemo(() => {
+    const p = searchParams.get('therapeuten');
+    if (p) return new Set(p.split(','));
+    return new Set(allTherapists);
+  }, []);
+
+  const initialLocations = useMemo(() => {
+    const p = searchParams.get('locaties');
+    if (p) return new Set(p.split(','));
+    return new Set(mockLocations.map((l) => l.name));
+  }, []);
+
+  // --- View state ---
+  const [view, setView] = useState<'maand' | 'week' | 'dag'>('maand');
+  const [calMonth, setCalMonth] = useState(() => { const n = new Date(); return { year: n.getFullYear(), month: n.getMonth() }; });
+  const [selectedDay, setSelectedDay] = useState<string | null>(null);
+  const [weekStart, setWeekStart] = useState<Date>(DEFAULT_WEEK_START);
+  const [selectedDayIndex, setSelectedDayIndex] = useState<number>(0);
+
+  // --- Filter state ---
+  const [activeTypes, setActiveTypes] = useState<Set<AgendaActivityType>>(initialTypes);
+  const [activeLocations, setActiveLocations] = useState<Set<string>>(initialLocations);
+  const [activeTherapists, setActiveTherapists] = useState<Set<string>>(initialTherapists);
+
+  // --- Sync filters to URL ---
+  const syncFiltersToUrl = useCallback((types: Set<AgendaActivityType>, therapists: Set<string>, locations: Set<string>) => {
+    const params = new URLSearchParams(searchParams.toString());
+    // Only write non-default values
+    if (types.size === ALL_TYPES.length || (types.size === 1 && types.has('intake'))) {
+      if (types.size === 1 && types.has('intake')) params.delete('types');
+      else params.delete('types');
+    }
+    if (types.size > 0 && !(types.size === 1 && types.has('intake')) && types.size < ALL_TYPES.length) {
+      params.set('types', Array.from(types).join(','));
+    } else if (types.size === ALL_TYPES.length) {
+      params.delete('types');
+    }
+    if (therapists.size < allTherapists.length) {
+      params.set('therapeuten', Array.from(therapists).join(','));
+    } else {
+      params.delete('therapeuten');
+    }
+    if (locations.size < mockLocations.length) {
+      params.set('locaties', Array.from(locations).join(','));
+    } else {
+      params.delete('locaties');
+    }
+    router.replace(`/admin?${params.toString()}`, { scroll: false });
+  }, [searchParams, router, allTherapists]);
 
   // --- Derived: is any filter active ---
   const hasActiveFilters = useMemo(
@@ -732,33 +779,40 @@ export function PlanningTab() {
       const next = new Set(prev);
       if (next.has(type)) next.delete(type);
       else next.add(type);
+      syncFiltersToUrl(next, activeTherapists, activeLocations);
       return next;
     });
-  }, []);
+  }, [syncFiltersToUrl, activeTherapists, activeLocations]);
 
   const toggleLocation = useCallback((loc: string) => {
     setActiveLocations((prev) => {
       const next = new Set(prev);
       if (next.has(loc)) next.delete(loc);
       else next.add(loc);
+      syncFiltersToUrl(activeTypes, activeTherapists, next);
       return next;
     });
-  }, []);
+  }, [syncFiltersToUrl, activeTypes, activeTherapists]);
 
   const toggleTherapist = useCallback((name: string) => {
     setActiveTherapists((prev) => {
       const next = new Set(prev);
       if (next.has(name)) next.delete(name);
       else next.add(name);
+      syncFiltersToUrl(activeTypes, next, activeLocations);
       return next;
     });
-  }, []);
+  }, [syncFiltersToUrl, activeTypes, activeLocations]);
 
   const clearFilters = useCallback(() => {
-    setActiveTypes(new Set(ALL_TYPES));
-    setActiveLocations(new Set(mockLocations.map((l) => l.name)));
-    setActiveTherapists(new Set(allTherapists));
-  }, [allTherapists]);
+    const types = new Set(ALL_TYPES);
+    const locs = new Set(mockLocations.map((l) => l.name));
+    const therps = new Set(allTherapists);
+    setActiveTypes(types);
+    setActiveLocations(locs);
+    setActiveTherapists(therps);
+    syncFiltersToUrl(types, therps, locs);
+  }, [allTherapists, syncFiltersToUrl]);
 
   // --- Week navigation ---
   const goToPrevWeek = useCallback(() => {
@@ -797,6 +851,14 @@ export function PlanningTab() {
     [activeTypes, activeTherapists, activeLocations]
   );
 
+  // Counts per activity type (from all entries, ignoring type filter)
+  const activityCounts = useMemo(() => {
+    const c: Record<string, number> = {};
+    for (const t of ALL_TYPES) c[t] = 0;
+    for (const e of mockAgendaEntries) c[e.activityType] = (c[e.activityType] ?? 0) + 1;
+    return c as Record<AgendaActivityType, number>;
+  }, []);
+
   // --- Entries grouped by date ---
   const weekDates = useMemo(() => getWeekDates(weekStart), [weekStart]);
 
@@ -830,7 +892,7 @@ export function PlanningTab() {
       {/* Filters row */}
       <div className="flex flex-wrap items-center gap-2 px-5 py-3 bg-paper border-b border-border">
         {/* Activity type filter */}
-        <ActivityFilter selected={activeTypes} onChange={toggleType} />
+        <ActivityFilter selected={activeTypes} onChange={toggleType} counts={activityCounts} />
 
         {/* Location filter */}
         <LocationFilter
