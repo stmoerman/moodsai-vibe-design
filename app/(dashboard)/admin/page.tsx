@@ -80,7 +80,19 @@ interface CalendarEvent {
   title: string;
   type: AgendaType;
   therapist: string;
+  therapistSlug: string;
   room?: string;
+  videoRoom?: string;
+  client?: {
+    name: string;
+    initials: string;
+    dob?: string;
+    dossier?: string;
+    lastSession?: string;
+    diagnosis?: string;
+  };
+  available?: boolean; // for intake slots
+  participants?: number; // for workshops
 }
 
 // Generate events relative to current month
@@ -91,27 +103,36 @@ function generateMockEvents(): CalendarEvent[] {
 
   const d = (day: number) => `${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
   return [
-    { date: d(2), time: '09:00', endTime: '10:00', title: 'Intake J. de Vries', type: 'intake', therapist: 'Van den Berg', room: 'Kamer 1' },
-    { date: d(2), time: '11:00', endTime: '12:00', title: 'Behandeling M. Smit', type: 'behandeling', therapist: 'Kuijpers', room: 'Kamer 2' },
-    { date: d(3), time: '14:00', endTime: '16:00', title: 'Workshop Stressregulatie', type: 'workshop', therapist: 'Jansen', room: 'Groepsruimte' },
-    { date: d(4), time: '10:00', endTime: '11:00', title: 'Intake P. Bakker', type: 'intake', therapist: 'Smeets', room: 'Kamer 3' },
-    { date: d(7), time: '09:00', endTime: '10:00', title: 'Behandeling A. Hoekstra', type: 'behandeling', therapist: 'Van den Berg', room: 'Kamer 1' },
-    { date: d(7), time: '13:00', endTime: '14:00', title: 'Behandeling S. Jansen', type: 'behandeling', therapist: 'Kuijpers', room: 'Kamer 2' },
-    { date: d(8), time: '10:00', endTime: '11:30', title: 'Intake L. Visser', type: 'intake', therapist: 'Van den Berg', room: 'Kamer 1' },
-    { date: d(9), time: '09:00', endTime: '10:00', title: 'Behandeling N. Mulder', type: 'behandeling', therapist: 'Jansen', room: 'Kamer 2' },
-    { date: d(10), time: '14:00', endTime: '16:00', title: 'Workshop Mindfulness', type: 'workshop', therapist: 'Kuijpers', room: 'Groepsruimte' },
-    { date: d(11), time: '11:00', endTime: '12:00', title: 'Intake R. Hendriks', type: 'intake', therapist: 'Smeets', room: 'Kamer 3' },
-    { date: d(14), time: '09:00', endTime: '10:00', title: 'Behandeling M. de Vries', type: 'behandeling', therapist: 'Van den Berg', room: 'Kamer 1' },
-    { date: d(14), time: '10:30', endTime: '11:30', title: 'Behandeling J. Kok', type: 'behandeling', therapist: 'Kuijpers', room: 'Kamer 2' },
-    { date: d(15), time: '13:00', endTime: '14:00', title: 'Intake D. Meijer', type: 'intake', therapist: 'Jansen', room: 'Kamer 1' },
-    { date: d(17), time: '14:00', endTime: '16:00', title: 'Workshop Slaaphygiëne', type: 'workshop', therapist: 'Van den Berg', room: 'Groepsruimte' },
-    { date: d(18), time: '10:00', endTime: '11:00', title: 'Behandeling K. Willems', type: 'behandeling', therapist: 'Smeets', room: 'Kamer 3' },
-    { date: d(21), time: '09:00', endTime: '10:00', title: 'Intake F. Bos', type: 'intake', therapist: 'Van den Berg', room: 'Kamer 1' },
-    { date: d(22), time: '11:00', endTime: '12:00', title: 'Behandeling T. Vos', type: 'behandeling', therapist: 'Kuijpers', room: 'Kamer 2' },
-    { date: d(24), time: '14:00', endTime: '16:00', title: 'Workshop ACT-basis', type: 'workshop', therapist: 'Van den Berg', room: 'Groepsruimte' },
-    { date: d(25), time: '10:00', endTime: '11:00', title: 'Behandeling E. Brouwer', type: 'behandeling', therapist: 'Smeets', room: 'Kamer 3' },
-    { date: d(28), time: '09:00', endTime: '10:00', title: 'Intake W. Peters', type: 'intake', therapist: 'Van den Berg', room: 'Kamer 1' },
-    { date: d(29), time: '13:00', endTime: '14:00', title: 'Behandeling H. Dekker', type: 'behandeling', therapist: 'Kuijpers', room: 'Kamer 2' },
+    // Intake (booked)
+    { date: d(2), time: '09:00', endTime: '10:00', title: 'Intake J. de Vries', type: 'intake', therapist: 'Van den Berg', therapistSlug: 'van-den-berg', room: 'Kamer 1', videoRoom: '/r/van-den-berg', client: { name: 'J. de Vries', initials: 'JV', dob: '12-03-1988', dossier: 'D-2026-0412', diagnosis: 'Angststoornis (vermoeden)' } },
+    { date: d(4), time: '10:00', endTime: '11:00', title: 'Intake P. Bakker', type: 'intake', therapist: 'Smeets', therapistSlug: 'smeets', room: 'Kamer 3', videoRoom: '/r/smeets', client: { name: 'P. Bakker', initials: 'PB', dob: '28-07-1995', dossier: 'D-2026-0418', diagnosis: 'Burnout (vermoeden)' } },
+    { date: d(8), time: '10:00', endTime: '11:30', title: 'Intake L. Visser', type: 'intake', therapist: 'Van den Berg', therapistSlug: 'van-den-berg', room: 'Kamer 1', videoRoom: '/r/van-den-berg', client: { name: 'L. Visser', initials: 'LV', dob: '04-11-1990', dossier: 'D-2026-0425', diagnosis: 'Depressie (vermoeden)' } },
+    { date: d(11), time: '11:00', endTime: '12:00', title: 'Intake R. Hendriks', type: 'intake', therapist: 'Smeets', therapistSlug: 'smeets', room: 'Kamer 3', videoRoom: '/r/smeets', client: { name: 'R. Hendriks', initials: 'RH', dob: '19-05-1982', dossier: 'D-2026-0431', diagnosis: 'PTSS (vermoeden)' } },
+    { date: d(15), time: '13:00', endTime: '14:00', title: 'Intake D. Meijer', type: 'intake', therapist: 'Jansen', therapistSlug: 'jansen', room: 'Kamer 1', videoRoom: '/r/jansen', client: { name: 'D. Meijer', initials: 'DM', dob: '22-09-1997', dossier: 'D-2026-0440', diagnosis: 'Sociale angst (vermoeden)' } },
+    { date: d(21), time: '09:00', endTime: '10:00', title: 'Intake F. Bos', type: 'intake', therapist: 'Van den Berg', therapistSlug: 'van-den-berg', room: 'Kamer 1', videoRoom: '/r/van-den-berg', client: { name: 'F. Bos', initials: 'FB', dob: '08-01-1985', dossier: 'D-2026-0452', diagnosis: 'GAD (vermoeden)' } },
+    { date: d(28), time: '09:00', endTime: '10:00', title: 'Intake W. Peters', type: 'intake', therapist: 'Van den Berg', therapistSlug: 'van-den-berg', room: 'Kamer 1', videoRoom: '/r/van-den-berg', client: { name: 'W. Peters', initials: 'WP', dob: '15-06-1992', dossier: 'D-2026-0468', diagnosis: 'OCD (vermoeden)' } },
+    // Intake (available slots)
+    { date: d(2), time: '14:00', endTime: '15:00', title: 'Beschikbaar — Intake', type: 'intake', therapist: 'Smeets', therapistSlug: 'smeets', room: 'Kamer 3', videoRoom: '/r/smeets', available: true },
+    { date: d(9), time: '09:00', endTime: '10:00', title: 'Beschikbaar — Intake', type: 'intake', therapist: 'Jansen', therapistSlug: 'jansen', room: 'Kamer 1', videoRoom: '/r/jansen', available: true },
+    { date: d(16), time: '10:00', endTime: '11:00', title: 'Beschikbaar — Intake', type: 'intake', therapist: 'Van den Berg', therapistSlug: 'van-den-berg', room: 'Kamer 1', videoRoom: '/r/van-den-berg', available: true },
+    { date: d(23), time: '14:00', endTime: '15:00', title: 'Beschikbaar — Intake', type: 'intake', therapist: 'Smeets', therapistSlug: 'smeets', room: 'Kamer 3', videoRoom: '/r/smeets', available: true },
+    { date: d(30), time: '09:00', endTime: '10:00', title: 'Beschikbaar — Intake', type: 'intake', therapist: 'Kuijpers', therapistSlug: 'kuijpers', room: 'Kamer 2', videoRoom: '/r/kuijpers', available: true },
+    // Behandeling
+    { date: d(2), time: '11:00', endTime: '12:00', title: 'Behandeling M. Smit', type: 'behandeling', therapist: 'Kuijpers', therapistSlug: 'kuijpers', room: 'Kamer 2', videoRoom: '/r/kuijpers', client: { name: 'M. Smit', initials: 'MS', dob: '03-04-1991', dossier: 'D-2025-0289', lastSession: '25 mrt', diagnosis: 'GAD — GAD-7: 14' } },
+    { date: d(7), time: '09:00', endTime: '10:00', title: 'Behandeling A. Hoekstra', type: 'behandeling', therapist: 'Van den Berg', therapistSlug: 'van-den-berg', room: 'Kamer 1', videoRoom: '/r/van-den-berg', client: { name: 'A. Hoekstra', initials: 'AH', dob: '17-08-1986', dossier: 'D-2025-0312', lastSession: '28 mrt', diagnosis: 'Depressie — PHQ-9: 18' } },
+    { date: d(7), time: '13:00', endTime: '14:00', title: 'Behandeling S. Jansen', type: 'behandeling', therapist: 'Kuijpers', therapistSlug: 'kuijpers', room: 'Kamer 2', videoRoom: '/r/kuijpers', client: { name: 'S. Jansen', initials: 'SJ', dob: '21-12-1993', dossier: 'D-2025-0334', lastSession: '27 mrt', diagnosis: 'PTSS — PCL-5: 42' } },
+    { date: d(9), time: '09:00', endTime: '10:00', title: 'Behandeling N. Mulder', type: 'behandeling', therapist: 'Jansen', therapistSlug: 'jansen', room: 'Kamer 2', videoRoom: '/r/jansen', client: { name: 'N. Mulder', initials: 'NM', dob: '09-02-1989', dossier: 'D-2025-0356', lastSession: '26 mrt', diagnosis: 'Burnout — UBOS: hoog' } },
+    { date: d(14), time: '09:00', endTime: '10:00', title: 'Behandeling M. de Vries', type: 'behandeling', therapist: 'Van den Berg', therapistSlug: 'van-den-berg', room: 'Kamer 1', videoRoom: '/r/van-den-berg', client: { name: 'M. de Vries', initials: 'MV', dob: '14-06-1987', dossier: 'D-2025-0278', lastSession: '31 mrt', diagnosis: 'Angststoornis — GAD-7: 11' } },
+    { date: d(14), time: '10:30', endTime: '11:30', title: 'Behandeling J. Kok', type: 'behandeling', therapist: 'Kuijpers', therapistSlug: 'kuijpers', room: 'Kamer 2', videoRoom: '/r/kuijpers', client: { name: 'J. Kok', initials: 'JK', dob: '30-10-1994', dossier: 'D-2025-0398', lastSession: '28 mrt', diagnosis: 'Sociale angst — LSAS: 68' } },
+    { date: d(18), time: '10:00', endTime: '11:00', title: 'Behandeling K. Willems', type: 'behandeling', therapist: 'Smeets', therapistSlug: 'smeets', room: 'Kamer 3', videoRoom: '/r/smeets', client: { name: 'K. Willems', initials: 'KW', dob: '05-03-1996', dossier: 'D-2026-0021', lastSession: '29 mrt', diagnosis: 'Depressie — PHQ-9: 12' } },
+    { date: d(22), time: '11:00', endTime: '12:00', title: 'Behandeling T. Vos', type: 'behandeling', therapist: 'Kuijpers', therapistSlug: 'kuijpers', room: 'Kamer 2', videoRoom: '/r/kuijpers', client: { name: 'T. Vos', initials: 'TV', dob: '11-07-1990', dossier: 'D-2025-0367', lastSession: '1 apr', diagnosis: 'GAD — GAD-7: 9' } },
+    { date: d(25), time: '10:00', endTime: '11:00', title: 'Behandeling E. Brouwer', type: 'behandeling', therapist: 'Smeets', therapistSlug: 'smeets', room: 'Kamer 3', videoRoom: '/r/smeets', client: { name: 'E. Brouwer', initials: 'EB', dob: '26-01-1988', dossier: 'D-2025-0401', lastSession: '30 mrt', diagnosis: 'OCD — Y-BOCS: 22' } },
+    { date: d(29), time: '13:00', endTime: '14:00', title: 'Behandeling H. Dekker', type: 'behandeling', therapist: 'Kuijpers', therapistSlug: 'kuijpers', room: 'Kamer 2', videoRoom: '/r/kuijpers', client: { name: 'H. Dekker', initials: 'HD', dob: '18-09-1983', dossier: 'D-2025-0345', lastSession: '29 mrt', diagnosis: 'PTSS — PCL-5: 38' } },
+    // Workshops
+    { date: d(3), time: '14:00', endTime: '16:00', title: 'Workshop Stressregulatie', type: 'workshop', therapist: 'Jansen', therapistSlug: 'jansen', room: 'Groepsruimte', videoRoom: '/r/jansen-groep', participants: 8 },
+    { date: d(10), time: '14:00', endTime: '16:00', title: 'Workshop Mindfulness', type: 'workshop', therapist: 'Kuijpers', therapistSlug: 'kuijpers', room: 'Groepsruimte', videoRoom: '/r/kuijpers-groep', participants: 12 },
+    { date: d(17), time: '14:00', endTime: '16:00', title: 'Workshop Slaaphygiëne', type: 'workshop', therapist: 'Van den Berg', therapistSlug: 'van-den-berg', room: 'Groepsruimte', videoRoom: '/r/van-den-berg-groep', participants: 6 },
+    { date: d(24), time: '14:00', endTime: '16:00', title: 'Workshop ACT-basis', type: 'workshop', therapist: 'Van den Berg', therapistSlug: 'van-den-berg', room: 'Groepsruimte', videoRoom: '/r/van-den-berg-groep', participants: 10 },
   ];
 }
 
@@ -214,6 +235,7 @@ function AdminDashboard() {
 
   const filteredEvents = useMemo(() => {
     if (agendaFilter === 'alle') return events;
+    if (agendaFilter === 'intake') return events.filter((e) => e.type === 'intake' && e.available);
     return events.filter((e) => e.type === agendaFilter);
   }, [events, agendaFilter]);
 
@@ -554,12 +576,89 @@ function AdminDashboard() {
                     Sluiten
                   </button>
                 </div>
-                <div className="flex-1 overflow-y-auto p-6 space-y-2">
+                <div className="flex-1 overflow-y-auto p-6 space-y-4">
                   {eventsByDate[selectedDay].map((ev, i) => (
-                    <div key={i} className="py-3 px-4 border-l-[3px] bg-paper" style={{ borderLeftColor: EVENT_COLORS[ev.type] }}>
-                      <div className="font-mono text-[0.7rem] text-text-muted">{ev.time} – {ev.endTime}</div>
-                      <div className="font-serif text-base text-text mt-1">{ev.title}</div>
-                      <div className="font-mono text-[0.7rem] text-text-faint mt-1">{ev.therapist}{ev.room ? ` · ${ev.room}` : ''}</div>
+                    <div key={i} className="border-l-[3px] bg-paper p-5" style={{ borderLeftColor: EVENT_COLORS[ev.type] ?? EVENT_COLORS.alle }}>
+                      {/* Header */}
+                      <div className="flex items-start justify-between gap-4 mb-3">
+                        <div>
+                          <div className="font-serif text-lg text-text">{ev.title}</div>
+                          <div className="font-mono text-[0.7rem] text-text-muted mt-0.5">{ev.time} – {ev.endTime} · {ev.room}</div>
+                        </div>
+                        {ev.available && (
+                          <span className="font-mono text-[0.65rem] uppercase tracking-wide text-[#5a9a60] border border-[#5a9a60] px-2 py-0.5 shrink-0">Beschikbaar</span>
+                        )}
+                      </div>
+
+                      {/* Therapist info */}
+                      <div className="flex items-center gap-3 py-2 border-t border-border-subtle">
+                        <div className="w-7 h-7 bg-surface flex items-center justify-center font-mono text-[0.6rem] text-text-muted shrink-0">
+                          {ev.therapist.charAt(0)}
+                        </div>
+                        <div>
+                          <div className="font-serif text-sm text-text">{ev.therapist}</div>
+                          <div className="font-mono text-[0.65rem] text-warm">/r/{ev.therapistSlug}</div>
+                        </div>
+                        {ev.videoRoom && (
+                          <div className="ml-auto font-mono text-[0.65rem] text-text-faint border border-border-subtle px-2 py-0.5">
+                            Video: {ev.videoRoom}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Client details (for booked appointments) */}
+                      {ev.client && (
+                        <div className="mt-2 pt-2 border-t border-border-subtle">
+                          <div className="font-mono text-[0.65rem] text-text-muted uppercase tracking-wide mb-2">Cliënt</div>
+                          <div className="grid grid-cols-2 gap-x-6 gap-y-1.5">
+                            <div>
+                              <span className="font-mono text-[0.6rem] text-text-faint">Naam </span>
+                              <span className="font-serif text-sm text-text">{ev.client.name}</span>
+                            </div>
+                            {ev.client.dob && (
+                              <div>
+                                <span className="font-mono text-[0.6rem] text-text-faint">Geb. </span>
+                                <span className="font-serif text-sm text-text">{ev.client.dob}</span>
+                              </div>
+                            )}
+                            {ev.client.dossier && (
+                              <div>
+                                <span className="font-mono text-[0.6rem] text-text-faint">Dossier </span>
+                                <span className="font-mono text-[0.7rem] text-warm">{ev.client.dossier}</span>
+                              </div>
+                            )}
+                            {ev.client.lastSession && (
+                              <div>
+                                <span className="font-mono text-[0.6rem] text-text-faint">Laatste sessie </span>
+                                <span className="font-serif text-sm text-text">{ev.client.lastSession}</span>
+                              </div>
+                            )}
+                            {ev.client.diagnosis && (
+                              <div className="col-span-2 mt-1">
+                                <span className="font-mono text-[0.6rem] text-text-faint">Diagnose </span>
+                                <span className="font-serif text-sm text-text">{ev.client.diagnosis}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Workshop participants */}
+                      {ev.participants != null && (
+                        <div className="mt-2 pt-2 border-t border-border-subtle">
+                          <span className="font-mono text-[0.65rem] text-text-faint">Deelnemers: </span>
+                          <span className="font-mono text-[0.7rem] text-text">{ev.participants}</span>
+                        </div>
+                      )}
+
+                      {/* Available slot CTA */}
+                      {ev.available && (
+                        <div className="mt-3 pt-3 border-t border-border-subtle">
+                          <button className="font-mono text-[0.7rem] uppercase tracking-wide text-paper bg-text px-4 py-2 cursor-pointer hover:opacity-85 transition-opacity">
+                            Intake inplannen
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ))}
                   {eventsByDate[selectedDay].length === 0 && (
