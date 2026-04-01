@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
 import s from './page.module.css';
 
 function getGreeting(hour: number) {
@@ -27,19 +25,18 @@ type AppointmentType = typeof APPOINTMENT_TYPES[number];
 interface ColorOption {
   name: string;
   color: string;       // border / accent color
-  lightBg: string;     // light mode tinted background
-  darkBg: string;      // dark mode tinted background
+  lightBg: string;     // tinted background
 }
 
 const COLOR_PALETTE: ColorOption[] = [
-  { name: 'Amber',      color: '#c4a050', lightBg: '#f5edd8', darkBg: '#2a2418' },
-  { name: 'Terracotta', color: '#c47050', lightBg: '#f5e0d8', darkBg: '#2a1f18' },
-  { name: 'Sage',       color: '#5a9a60', lightBg: '#ddf0e0', darkBg: '#1a2a1c' },
-  { name: 'Dusty Blue', color: '#5078a0', lightBg: '#dce6f0', darkBg: '#1a2028' },
-  { name: 'Plum',       color: '#8a60a0', lightBg: '#ecddf0', darkBg: '#221a28' },
-  { name: 'Copper',     color: '#b0784a', lightBg: '#f2e6d8', darkBg: '#28201a' },
-  { name: 'Olive',      color: '#8a8a40', lightBg: '#eff0d8', darkBg: '#22221a' },
-  { name: 'Slate Teal', color: '#508a8a', lightBg: '#d8eff0', darkBg: '#1a2828' },
+  { name: 'Amber',      color: '#c4a050', lightBg: '#f5edd8' },
+  { name: 'Terracotta', color: '#c47050', lightBg: '#f5e0d8' },
+  { name: 'Sage',       color: '#5a9a60', lightBg: '#ddf0e0' },
+  { name: 'Dusty Blue', color: '#5078a0', lightBg: '#dce6f0' },
+  { name: 'Plum',       color: '#8a60a0', lightBg: '#ecddf0' },
+  { name: 'Copper',     color: '#b0784a', lightBg: '#f2e6d8' },
+  { name: 'Olive',      color: '#8a8a40', lightBg: '#eff0d8' },
+  { name: 'Slate Teal', color: '#508a8a', lightBg: '#d8eff0' },
 ];
 
 const DEFAULT_TYPE_COLORS: Record<AppointmentType, number> = {
@@ -199,27 +196,17 @@ export default function DashboardExample() {
   const [viewMode, setViewMode] = useState<'dag' | 'week'>('dag');
   const [isAgendaExpanded, setIsAgendaExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState('agenda');
-  const [textSize, setTextSize] = useState(0);
-  const [darkMode, setDarkMode] = useState(false);
   const [typeColors, setTypeColors] = useState<Record<AppointmentType, number>>(DEFAULT_TYPE_COLORS);
   const [showColorSettings, setShowColorSettings] = useState(false);
 
   useEffect(() => {
     setNow(new Date());
-    // Restore dark mode preference
-    const saved = localStorage.getItem('moods-dark-mode');
-    if (saved === 'true') setDarkMode(true);
     // Restore agenda colors
     const savedColors = localStorage.getItem('moods-agenda-colors');
     if (savedColors) {
       try { setTypeColors(JSON.parse(savedColors)); } catch { /* ignore */ }
     }
   }, []);
-
-  // Persist dark mode preference
-  useEffect(() => {
-    localStorage.setItem('moods-dark-mode', String(darkMode));
-  }, [darkMode]);
 
   // Persist agenda color preference
   useEffect(() => {
@@ -248,7 +235,7 @@ export default function DashboardExample() {
     if (!palette) return {};
     return {
       '--apt-color': palette.color,
-      '--apt-bg': darkMode ? palette.darkBg : palette.lightBg,
+      '--apt-bg': palette.lightBg,
     } as React.CSSProperties;
   };
 
@@ -523,42 +510,8 @@ export default function DashboardExample() {
   );
 
   return (
-    <div className={`${s.root} ${darkMode ? s.darkTheme : ''} ${textSize !== 0 ? s[`size${textSize > 0 ? 'Up' : 'Down'}${Math.abs(textSize)}`] || '' : ''}`}>
+    <div className={s.root}>
       <div className={s.dotGrid} aria-hidden="true" />
-
-      {/* Top Bar */}
-      <header className={s.topBar}>
-        <Link href="/" className={s.logo}>
-          <Image src={darkMode ? "/images/logo-white.png" : "/images/logo.png"} alt="Oh My Mood" width={120} height={32} className={s.logoImg} />
-        </Link>
-        <div className={s.topBarRight}>
-          <div className={s.sizeControls}>
-            <button className={s.sizeBtn} onClick={() => setTextSize((v) => Math.max(-2, v - 1))} disabled={textSize <= -2} title="Kleiner">A<span className={s.sizeBtnMinus}>−</span></button>
-            <button className={s.sizeBtn} onClick={() => setTextSize((v) => Math.min(2, v + 1))} disabled={textSize >= 2} title="Groter">A<span className={s.sizeBtnPlus}>+</span></button>
-          </div>
-          <button
-            className={`${s.themeToggle} ${darkMode ? s.themeToggleActive : ''}`}
-            onClick={() => setDarkMode((v) => !v)}
-            title={darkMode ? 'Licht thema' : 'Donker thema'}
-          >
-            {darkMode ? (
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                <circle cx="8" cy="8" r="3.5" />
-                <line x1="8" y1="1" x2="8" y2="3" />
-                <line x1="8" y1="13" x2="8" y2="15" />
-                <line x1="1" y1="8" x2="3" y2="8" />
-                <line x1="13" y1="8" x2="15" y2="8" />
-              </svg>
-            ) : (
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                <path d="M13.5 8.5a5.5 5.5 0 1 1-7-7 4.5 4.5 0 0 0 7 7z" />
-              </svg>
-            )}
-          </button>
-          <span className={s.userName}>Amsterdam</span>
-          <div className={s.avatar}>JS</div>
-        </div>
-      </header>
 
       {/* Welcome */}
       <div className={s.welcomeHero}>
