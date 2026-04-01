@@ -738,31 +738,30 @@ export function PlanningTab() {
   const [activeLocations, setActiveLocations] = useState<Set<string>>(initialLocations);
   const [activeTherapists, setActiveTherapists] = useState<Set<string>>(initialTherapists);
 
-  // --- Sync filters to URL ---
-  const syncFiltersToUrl = useCallback((types: Set<AgendaActivityType>, therapists: Set<string>, locations: Set<string>) => {
+  // --- Sync filters to URL (deferred to avoid setState-during-render) ---
+  useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
-    // Only write non-default values
-    if (types.size === ALL_TYPES.length || (types.size === 1 && types.has('intake'))) {
-      if (types.size === 1 && types.has('intake')) params.delete('types');
-      else params.delete('types');
-    }
-    if (types.size > 0 && !(types.size === 1 && types.has('intake')) && types.size < ALL_TYPES.length) {
-      params.set('types', Array.from(types).join(','));
-    } else if (types.size === ALL_TYPES.length) {
+    if (activeTypes.size > 0 && !(activeTypes.size === 1 && activeTypes.has('intake')) && activeTypes.size < ALL_TYPES.length) {
+      params.set('types', Array.from(activeTypes).join(','));
+    } else {
       params.delete('types');
     }
-    if (therapists.size < allTherapists.length) {
-      params.set('therapeuten', Array.from(therapists).join(','));
+    if (activeTherapists.size < allTherapists.length) {
+      params.set('therapeuten', Array.from(activeTherapists).join(','));
     } else {
       params.delete('therapeuten');
     }
-    if (locations.size < mockLocations.length) {
-      params.set('locaties', Array.from(locations).join(','));
+    if (activeLocations.size < mockLocations.length) {
+      params.set('locaties', Array.from(activeLocations).join(','));
     } else {
       params.delete('locaties');
     }
-    router.replace(`/admin?${params.toString()}`, { scroll: false });
-  }, [searchParams, router, allTherapists]);
+    const newUrl = `/admin?${params.toString()}`;
+    const currentUrl = `/admin?${searchParams.toString()}`;
+    if (newUrl !== currentUrl) {
+      router.replace(newUrl, { scroll: false });
+    }
+  }, [activeTypes, activeTherapists, activeLocations, searchParams, router, allTherapists]);
 
   // --- Derived: is any filter active ---
   const hasActiveFilters = useMemo(
@@ -779,40 +778,33 @@ export function PlanningTab() {
       const next = new Set(prev);
       if (next.has(type)) next.delete(type);
       else next.add(type);
-      syncFiltersToUrl(next, activeTherapists, activeLocations);
       return next;
     });
-  }, [syncFiltersToUrl, activeTherapists, activeLocations]);
+  }, []);
 
   const toggleLocation = useCallback((loc: string) => {
     setActiveLocations((prev) => {
       const next = new Set(prev);
       if (next.has(loc)) next.delete(loc);
       else next.add(loc);
-      syncFiltersToUrl(activeTypes, activeTherapists, next);
       return next;
     });
-  }, [syncFiltersToUrl, activeTypes, activeTherapists]);
+  }, []);
 
   const toggleTherapist = useCallback((name: string) => {
     setActiveTherapists((prev) => {
       const next = new Set(prev);
       if (next.has(name)) next.delete(name);
       else next.add(name);
-      syncFiltersToUrl(activeTypes, next, activeLocations);
       return next;
     });
-  }, [syncFiltersToUrl, activeTypes, activeLocations]);
+  }, []);
 
   const clearFilters = useCallback(() => {
-    const types = new Set(ALL_TYPES);
-    const locs = new Set(mockLocations.map((l) => l.name));
-    const therps = new Set(allTherapists);
-    setActiveTypes(types);
-    setActiveLocations(locs);
-    setActiveTherapists(therps);
-    syncFiltersToUrl(types, therps, locs);
-  }, [allTherapists, syncFiltersToUrl]);
+    setActiveTypes(new Set(ALL_TYPES));
+    setActiveLocations(new Set(mockLocations.map((l) => l.name)));
+    setActiveTherapists(new Set(allTherapists));
+  }, [allTherapists]);
 
   // --- Week navigation ---
   const goToPrevWeek = useCallback(() => {
