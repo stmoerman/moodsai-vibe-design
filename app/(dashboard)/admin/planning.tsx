@@ -810,16 +810,12 @@ export function PlanningTab() {
 
   const entriesByDate = useMemo(() => {
     const map: Record<string, AgendaEntry[]> = {};
-    for (const date of weekDates) {
-      map[isoDate(date)] = [];
-    }
     for (const entry of filteredEntries) {
-      if (map[entry.date] !== undefined) {
-        map[entry.date].push(entry);
-      }
+      if (!map[entry.date]) map[entry.date] = [];
+      map[entry.date].push(entry);
     }
     return map;
-  }, [filteredEntries, weekDates]);
+  }, [filteredEntries]);
 
   // --- Day view: selected day entries ---
   const dayViewDate = weekDates[selectedDayIndex];
