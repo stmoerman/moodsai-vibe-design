@@ -55,10 +55,10 @@ const kpis = [
 ];
 
 const quickLinks = [
-  { icon: '→', label: 'Cliënt uitnodigen', desc: 'Uitnodiging versturen' },
-  { icon: '◉', label: 'Rooster bekijken', desc: 'Weekoverzicht team' },
-  { icon: '◈', label: 'Declarabiliteit', desc: 'Controle & alerts' },
-  { icon: '◎', label: 'Verlofoverzicht', desc: 'Aanvragen & saldi' },
+  { icon: '→', label: 'Cliënt uitnodigen', desc: 'Uitnodiging versturen', href: '#' },
+  { icon: '◉', label: 'Intake agenda', desc: 'Beschikbare slots', href: '/admin/intake' },
+  { icon: '◈', label: 'Declarabiliteit', desc: 'Controle & alerts', href: '#' },
+  { icon: '◎', label: 'Verlofoverzicht', desc: 'Aanvragen & saldi', href: '#' },
 ];
 
 const navTabs = [
@@ -377,11 +377,11 @@ function AdminDashboard() {
               <div className={s.widgetTitle}>Snelkoppelingen</div>
               <div className={s.quickLinks}>
                 {quickLinks.map((link, i) => (
-                  <button key={i} className={s.quickLink}>
+                  <a key={i} href={link.href} className={s.quickLink}>
                     <span className={s.quickLinkIcon}>{link.icon}</span>
                     <div className={s.quickLinkDesc}>{link.desc}</div>
                     <div className={s.quickLinkLabel}>{link.label}</div>
-                  </button>
+                  </a>
                 ))}
               </div>
             </div>
