@@ -825,7 +825,7 @@ export function PlanningTab() {
   return (
     <div className="flex flex-col min-h-0">
       {/* Stats bar */}
-      <StatsBar />
+      {view !== 'maand' && <StatsBar />}
 
       {/* Filters row */}
       <div className="flex flex-wrap items-center gap-2 px-5 py-3 bg-paper border-b border-border">
@@ -900,7 +900,17 @@ export function PlanningTab() {
         const grid = getMonthGrid(calMonth.year, calMonth.month);
         const todayKey = isoDate(new Date());
         return (
-          <div className="bg-surface border border-border p-4">
+          <div className="bg-surface border border-border p-6">
+            {/* Legend */}
+            <div className="flex gap-5 mb-5 flex-wrap">
+              {ALL_TYPES.filter((t) => activeTypes.has(t)).map((type) => (
+                <div key={type} className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 shrink-0" style={{ background: ACTIVITY_COLORS[type] }} />
+                  <span className="font-mono text-[0.65rem] text-text-muted uppercase tracking-wide">{ACTIVITY_LABELS[type]}</span>
+                </div>
+              ))}
+            </div>
+
             <div className="grid grid-cols-7">
               {MONTH_DAY_HEADERS.map((d) => (
                 <div key={d} className="font-mono text-[0.7rem] text-text-muted uppercase tracking-wider text-center py-2.5">{d}</div>
