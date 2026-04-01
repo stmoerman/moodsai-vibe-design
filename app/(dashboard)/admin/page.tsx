@@ -223,6 +223,9 @@ function AdminDashboard() {
   // Calendar state
   const [calView, setCalView] = useState<CalendarView>('maand');
   const [calDate, setCalDate] = useState(() => new Date());
+  const [intakeSlot, setIntakeSlot] = useState<CalendarEvent | null>(null);
+  const [intakeForm, setIntakeForm] = useState({ firstName: '', lastName: '', email: '', phone: '' });
+  const [intakeSubmitted, setIntakeSubmitted] = useState(false);
   const [agendaFilter, setAgendaFilter] = useState<AgendaType>('alle');
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [events] = useState(generateMockEvents);
@@ -656,12 +659,95 @@ function AdminDashboard() {
                         </div>
                       )}
 
-                      {/* Available slot CTA */}
-                      {ev.available && (
+                      {/* Available slot — intake form */}
+                      {ev.available && intakeSlot !== ev && !intakeSubmitted && (
                         <div className="mt-3 pt-3 border-t border-border-subtle">
-                          <button className="font-mono text-[0.7rem] uppercase tracking-wide text-paper bg-text px-4 py-2 cursor-pointer hover:opacity-85 transition-opacity">
+                          <button
+                            className="font-mono text-[0.7rem] uppercase tracking-wide text-paper bg-text px-4 py-2 cursor-pointer hover:opacity-85 transition-opacity"
+                            onClick={() => { setIntakeSlot(ev); setIntakeSubmitted(false); setIntakeForm({ firstName: '', lastName: '', email: '', phone: '' }); }}
+                          >
                             Intake inplannen
                           </button>
+                        </div>
+                      )}
+
+                      {/* Intake form (expanded) */}
+                      {ev.available && intakeSlot === ev && !intakeSubmitted && (
+                        <div className="mt-3 pt-3 border-t border-border-subtle">
+                          <div className="font-mono text-[0.65rem] text-text-muted uppercase tracking-wide mb-3">Nieuwe cliënt</div>
+                          <div className="grid grid-cols-2 gap-3">
+                            <div>
+                              <label className="block font-mono text-[0.6rem] text-text-faint uppercase tracking-wide mb-1">Voornaam</label>
+                              <input
+                                type="text"
+                                className="w-full font-serif text-sm text-text bg-transparent border-b border-border-subtle py-1.5 outline-none focus:border-text transition-colors placeholder:text-text-faint"
+                                placeholder="Jan"
+                                value={intakeForm.firstName}
+                                onChange={(e) => setIntakeForm((f) => ({ ...f, firstName: e.target.value }))}
+                              />
+                            </div>
+                            <div>
+                              <label className="block font-mono text-[0.6rem] text-text-faint uppercase tracking-wide mb-1">Achternaam</label>
+                              <input
+                                type="text"
+                                className="w-full font-serif text-sm text-text bg-transparent border-b border-border-subtle py-1.5 outline-none focus:border-text transition-colors placeholder:text-text-faint"
+                                placeholder="De Vries"
+                                value={intakeForm.lastName}
+                                onChange={(e) => setIntakeForm((f) => ({ ...f, lastName: e.target.value }))}
+                              />
+                            </div>
+                            <div>
+                              <label className="block font-mono text-[0.6rem] text-text-faint uppercase tracking-wide mb-1">E-mail</label>
+                              <input
+                                type="email"
+                                className="w-full font-serif text-sm text-text bg-transparent border-b border-border-subtle py-1.5 outline-none focus:border-text transition-colors placeholder:text-text-faint"
+                                placeholder="jan@voorbeeld.nl"
+                                value={intakeForm.email}
+                                onChange={(e) => setIntakeForm((f) => ({ ...f, email: e.target.value }))}
+                              />
+                            </div>
+                            <div>
+                              <label className="block font-mono text-[0.6rem] text-text-faint uppercase tracking-wide mb-1">Telefoon</label>
+                              <input
+                                type="tel"
+                                className="w-full font-serif text-sm text-text bg-transparent border-b border-border-subtle py-1.5 outline-none focus:border-text transition-colors placeholder:text-text-faint"
+                                placeholder="06-12345678"
+                                value={intakeForm.phone}
+                                onChange={(e) => setIntakeForm((f) => ({ ...f, phone: e.target.value }))}
+                              />
+                            </div>
+                          </div>
+                          <div className="flex gap-2 mt-4">
+                            <button
+                              className="font-mono text-[0.7rem] uppercase tracking-wide text-paper bg-text px-4 py-2 cursor-pointer hover:opacity-85 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+                              disabled={!intakeForm.firstName || !intakeForm.lastName || !intakeForm.email}
+                              onClick={() => setIntakeSubmitted(true)}
+                            >
+                              Bevestigen
+                            </button>
+                            <button
+                              className="font-mono text-[0.7rem] uppercase tracking-wide text-text-muted border border-border px-4 py-2 cursor-pointer hover:bg-surface-hover transition-colors"
+                              onClick={() => setIntakeSlot(null)}
+                            >
+                              Annuleren
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Intake confirmation */}
+                      {ev.available && intakeSlot === ev && intakeSubmitted && (
+                        <div className="mt-3 pt-3 border-t border-border-subtle">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-[#5a9a60] text-lg">✓</span>
+                            <span className="font-serif text-sm text-text">Intake ingepland</span>
+                          </div>
+                          <div className="font-mono text-[0.65rem] text-text-muted">
+                            {intakeForm.firstName} {intakeForm.lastName} · {intakeForm.email}
+                          </div>
+                          <div className="font-mono text-[0.65rem] text-text-faint mt-0.5">
+                            Bevestiging wordt verstuurd naar {intakeForm.email}
+                          </div>
                         </div>
                       )}
                     </div>
