@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useState, useMemo, useCallback } from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import {
   mockAgendaEntries,
@@ -699,32 +698,10 @@ function DayColumn({ date, entries, dayIndex, onEntryClick, dayView = false }: D
 // ---------------------------------------------------------------------------
 
 export function PlanningTab() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
-  // --- Read initial filter state from URL ---
-  const initialTypes = useMemo(() => {
-    const p = searchParams.get('types');
-    if (p) return new Set(p.split(',').filter((t) => ALL_TYPES.includes(t as AgendaActivityType)) as AgendaActivityType[]);
-    return new Set<AgendaActivityType>(['intake']);
-  }, []);
-
   const allTherapists = useMemo(
     () => Array.from(new Set(mockAgendaEntries.map((e) => e.therapistName))).sort(),
     []
   );
-
-  const initialTherapists = useMemo(() => {
-    const p = searchParams.get('therapeuten');
-    if (p) return new Set(p.split(','));
-    return new Set(allTherapists);
-  }, []);
-
-  const initialLocations = useMemo(() => {
-    const p = searchParams.get('locaties');
-    if (p) return new Set(p.split(','));
-    return new Set(mockLocations.map((l) => l.name));
-  }, []);
 
   // --- View state ---
   const [view, setView] = useState<'maand' | 'week' | 'dag'>('maand');
@@ -733,35 +710,12 @@ export function PlanningTab() {
   const [weekStart, setWeekStart] = useState<Date>(DEFAULT_WEEK_START);
   const [selectedDayIndex, setSelectedDayIndex] = useState<number>(0);
 
-  // --- Filter state ---
-  const [activeTypes, setActiveTypes] = useState<Set<AgendaActivityType>>(initialTypes);
-  const [activeLocations, setActiveLocations] = useState<Set<string>>(initialLocations);
-  const [activeTherapists, setActiveTherapists] = useState<Set<string>>(initialTherapists);
-
-  // --- Sync filters to URL (deferred to avoid setState-during-render) ---
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (activeTypes.size > 0 && !(activeTypes.size === 1 && activeTypes.has('intake')) && activeTypes.size < ALL_TYPES.length) {
-      params.set('types', Array.from(activeTypes).join(','));
-    } else {
-      params.delete('types');
-    }
-    if (activeTherapists.size < allTherapists.length) {
-      params.set('therapeuten', Array.from(activeTherapists).join(','));
-    } else {
-      params.delete('therapeuten');
-    }
-    if (activeLocations.size < mockLocations.length) {
-      params.set('locaties', Array.from(activeLocations).join(','));
-    } else {
-      params.delete('locaties');
-    }
-    const newUrl = `/admin?${params.toString()}`;
-    const currentUrl = `/admin?${searchParams.toString()}`;
-    if (newUrl !== currentUrl) {
-      router.replace(newUrl, { scroll: false });
-    }
-  }, [activeTypes, activeTherapists, activeLocations, searchParams, router, allTherapists]);
+  // --- Filter state (default: all types selected) ---
+  const [activeTypes, setActiveTypes] = useState<Set<AgendaActivityType>>(new Set(ALL_TYPES));
+  const [activeLocations, setActiveLocations] = useState<Set<string>>(
+    new Set(mockLocations.map((l) => l.name))
+  );
+  const [activeTherapists, setActiveTherapists] = useState<Set<string>>(new Set(allTherapists));
 
   // --- Derived: is any filter active ---
   const hasActiveFilters = useMemo(
