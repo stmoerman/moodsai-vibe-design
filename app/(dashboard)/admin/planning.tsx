@@ -879,54 +879,24 @@ export function PlanningTab() {
 
       {/* (data source shown inline in filter row) */}
 
-      {/* Filters row */}
-      <div className="flex flex-wrap items-center gap-2 px-5 py-3 bg-paper border-b border-border">
-        {/* Activity type filter */}
+      {/* Toolbar — single row */}
+      <div className="flex items-center gap-2 px-5 py-3 bg-paper border-b border-border">
         <ActivityFilter selected={activeTypes} onChange={toggleType} counts={activityCounts} />
+        <LocationFilter selectedLocations={activeLocations} onToggle={toggleLocation} />
+        <TherapistFilter allTherapists={allTherapists} selectedTherapists={activeTherapists} onToggle={toggleTherapist} />
 
-        {/* Location filter */}
-        <LocationFilter
-          selectedLocations={activeLocations}
-          onToggle={toggleLocation}
-        />
-
-        {/* Therapist filter */}
-        <TherapistFilter
-          allTherapists={allTherapists}
-          selectedTherapists={activeTherapists}
-          onToggle={toggleTherapist}
-        />
-
-        <div className="w-px h-5 bg-border mx-1" />
+        {hasActiveFilters && (
+          <button onClick={clearFilters} className="font-mono text-[0.6rem] text-warm underline cursor-pointer hover:text-text transition-colors">Wissen</button>
+        )}
 
         <div className="flex-1" />
 
-        {/* Data source */}
-        {isLoading && <span className="font-mono text-[0.6rem] text-text-faint animate-pulse">Laden...</span>}
-        {!isLoading && (
-          <span className="font-mono text-[0.6rem] text-text-faint">
-            {dataSource === 'live' ? '●' : '○'} {allEntries.length}
-          </span>
-        )}
-
-        {/* Clear filters */}
-        {hasActiveFilters && (
-          <button
-            onClick={clearFilters}
-            className="font-mono text-[0.6rem] text-warm underline cursor-pointer hover:text-text transition-colors"
-          >
-            Wissen
-          </button>
-        )}
-      </div>
-
-      {/* Navigation + view toggle row */}
-      <div className="flex items-center gap-2 px-5 pb-3">
+        {/* Navigation */}
         <button
           onClick={view === 'maand' ? () => setCalMonth((m) => m.month === 0 ? { year: m.year - 1, month: 11 } : { ...m, month: m.month - 1 }) : goToPrevWeek}
           className="w-7 h-7 border border-border flex items-center justify-center text-text-muted font-mono text-sm cursor-pointer hover:bg-surface-hover transition-colors"
         >←</button>
-        <span className="font-display text-sm text-text min-w-[160px] text-center">
+        <span className="font-display text-sm text-text min-w-[140px] text-center">
           {view === 'maand' ? `${MONTH_NAMES[calMonth.month]} ${calMonth.year}` : formatWeekLabel(weekStart)}
         </span>
         <button
@@ -935,10 +905,10 @@ export function PlanningTab() {
         >→</button>
         <button
           onClick={() => { const n = new Date(); setCalMonth({ year: n.getFullYear(), month: n.getMonth() }); setWeekStart(DEFAULT_WEEK_START); }}
-          className="font-mono text-[0.65rem] text-text-muted border border-border px-3 py-1 uppercase tracking-wide cursor-pointer hover:bg-text hover:text-paper transition-colors"
+          className="font-mono text-[0.65rem] text-text-muted border border-border px-2.5 py-1 uppercase tracking-wide cursor-pointer hover:bg-text hover:text-paper transition-colors"
         >Vandaag</button>
 
-        <div className="flex-1" />
+        <div className="w-px h-5 bg-border-subtle mx-1" />
 
         {/* View toggle */}
         <div className="flex">
