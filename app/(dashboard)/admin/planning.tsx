@@ -715,12 +715,42 @@ export function PlanningTab() {
   const [weekStart, setWeekStart] = useState<Date>(DEFAULT_WEEK_START);
   const [selectedDayIndex, setSelectedDayIndex] = useState<number>(0);
 
-  // --- Filter state (default: all types selected) ---
-  const [activeTypes, setActiveTypes] = useState<Set<AgendaActivityType>>(new Set(ALL_TYPES));
-  const [activeLocations, setActiveLocations] = useState<Set<string>>(
-    new Set(mockLocations.map((l) => l.name))
-  );
-  const [activeTherapists, setActiveTherapists] = useState<Set<string>>(new Set(allTherapists));
+  // --- Filter state (persisted to localStorage) ---
+  const [activeTypes, setActiveTypes] = useState<Set<AgendaActivityType>>(() => {
+    if (typeof window === 'undefined') return new Set(ALL_TYPES);
+    try {
+      const saved = localStorage.getItem('moods-planning-types');
+      if (saved) return new Set(JSON.parse(saved) as AgendaActivityType[]);
+    } catch {}
+    return new Set(ALL_TYPES);
+  });
+  const [activeLocations, setActiveLocations] = useState<Set<string>>(() => {
+    if (typeof window === 'undefined') return new Set(mockLocations.map((l) => l.name));
+    try {
+      const saved = localStorage.getItem('moods-planning-locations');
+      if (saved) return new Set(JSON.parse(saved) as string[]);
+    } catch {}
+    return new Set(mockLocations.map((l) => l.name));
+  });
+  const [activeTherapists, setActiveTherapists] = useState<Set<string>>(() => {
+    if (typeof window === 'undefined') return new Set(allTherapists);
+    try {
+      const saved = localStorage.getItem('moods-planning-therapists');
+      if (saved) return new Set(JSON.parse(saved) as string[]);
+    } catch {}
+    return new Set(allTherapists);
+  });
+
+  // Persist filters to localStorage
+  useEffect(() => {
+    localStorage.setItem('moods-planning-types', JSON.stringify(Array.from(activeTypes)));
+  }, [activeTypes]);
+  useEffect(() => {
+    localStorage.setItem('moods-planning-locations', JSON.stringify(Array.from(activeLocations)));
+  }, [activeLocations]);
+  useEffect(() => {
+    localStorage.setItem('moods-planning-therapists', JSON.stringify(Array.from(activeTherapists)));
+  }, [activeTherapists]);
 
   // --- Fetch data from API when date range changes ---
   const dateRange = useMemo(() => {
@@ -804,6 +834,9 @@ export function PlanningTab() {
     setActiveTypes(new Set(ALL_TYPES));
     setActiveLocations(new Set(mockLocations.map((l) => l.name)));
     setActiveTherapists(new Set(allTherapists));
+    localStorage.removeItem('moods-planning-types');
+    localStorage.removeItem('moods-planning-locations');
+    localStorage.removeItem('moods-planning-therapists');
   }, [allTherapists]);
 
   // --- Week navigation ---
