@@ -1,0 +1,20 @@
+.passwordRow {
+  position: relative;
+}
+
+.forgotLink {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--color-text-faint);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  transition: color 0.2s;
+}
+
+.forgotLink:hover {
+  color: var(--color-text-muted);
+}
