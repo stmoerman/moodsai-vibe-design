@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import {
   mockAgendaEntries,
@@ -698,9 +698,14 @@ function DayColumn({ date, entries, dayIndex, onEntryClick, dayView = false }: D
 // ---------------------------------------------------------------------------
 
 export function PlanningTab() {
+  // --- Data state (fetched from API, fallback to mock) ---
+  const [allEntries, setAllEntries] = useState<AgendaEntry[]>(mockAgendaEntries);
+  const [isLoading, setIsLoading] = useState(false);
+  const [dataSource, setDataSource] = useState<'mock' | 'live'>('mock');
+
   const allTherapists = useMemo(
-    () => Array.from(new Set(mockAgendaEntries.map((e) => e.therapistName))).sort(),
-    []
+    () => Array.from(new Set(allEntries.map((e) => e.therapistName))).sort(),
+    [allEntries]
   );
 
   // --- View state ---
@@ -716,6 +721,47 @@ export function PlanningTab() {
     new Set(mockLocations.map((l) => l.name))
   );
   const [activeTherapists, setActiveTherapists] = useState<Set<string>>(new Set(allTherapists));
+
+  // --- Fetch data from API when date range changes ---
+  const dateRange = useMemo(() => {
+    if (view === 'maand') {
+      const start = `${calMonth.year}-${String(calMonth.month + 1).padStart(2, '0')}-01`;
+      const lastDay = new Date(calMonth.year, calMonth.month + 1, 0).getDate();
+      const end = `${calMonth.year}-${String(calMonth.month + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+      return { start, end };
+    }
+    const start = isoDate(weekStart);
+    const endDate = new Date(weekStart);
+    endDate.setDate(endDate.getDate() + 6);
+    return { start, end: isoDate(endDate) };
+  }, [view, calMonth, weekStart]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    setIsLoading(true);
+
+    fetch(`/api/agenda/entries?start=${dateRange.start}&end=${dateRange.end}&limit=2000`, { signal: controller.signal })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.entries?.length > 0) {
+          setAllEntries(data.entries);
+          setDataSource(data.mock ? 'mock' : 'live');
+          // Update therapist filter with new data
+          const newTherapists = Array.from(new Set(data.entries.map((e: AgendaEntry) => e.therapistName))).sort() as string[];
+          setActiveTherapists(new Set(newTherapists));
+        } else {
+          // No data from API for this range — keep existing
+          setDataSource('mock');
+        }
+      })
+      .catch(() => {
+        // API unreachable, keep mock data
+        setDataSource('mock');
+      })
+      .finally(() => setIsLoading(false));
+
+    return () => controller.abort();
+  }, [dateRange.start, dateRange.end]);
 
   // --- Derived: is any filter active ---
   const hasActiveFilters = useMemo(
@@ -784,7 +830,7 @@ export function PlanningTab() {
   // --- Filtered entries ---
   const filteredEntries = useMemo(
     () =>
-      mockAgendaEntries.filter(
+      allEntries.filter(
         (e) =>
           activeTypes.has(e.activityType) &&
           activeTherapists.has(e.therapistName) &&
@@ -794,16 +840,16 @@ export function PlanningTab() {
             loc.toLowerCase().includes(e.location.toLowerCase())
           )
       ),
-    [activeTypes, activeTherapists, activeLocations]
+    [activeTypes, activeTherapists, activeLocations, allEntries]
   );
 
   // Counts per activity type (from all entries, ignoring type filter)
   const activityCounts = useMemo(() => {
     const c: Record<string, number> = {};
     for (const t of ALL_TYPES) c[t] = 0;
-    for (const e of mockAgendaEntries) c[e.activityType] = (c[e.activityType] ?? 0) + 1;
+    for (const e of allEntries) c[e.activityType] = (c[e.activityType] ?? 0) + 1;
     return c as Record<AgendaActivityType, number>;
-  }, []);
+  }, [allEntries]);
 
   // --- Entries grouped by date ---
   const weekDates = useMemo(() => getWeekDates(weekStart), [weekStart]);
@@ -830,6 +876,16 @@ export function PlanningTab() {
     <div className="flex flex-col min-h-0">
       {/* Stats bar */}
       {view !== 'maand' && <StatsBar />}
+
+      {/* Data source indicator */}
+      <div className="flex items-center gap-2 px-5 py-1.5">
+        {isLoading && <span className="font-mono text-[0.6rem] text-text-faint animate-pulse">Laden...</span>}
+        {!isLoading && (
+          <span className="font-mono text-[0.6rem] text-text-faint">
+            {dataSource === 'live' ? '● Live database' : '○ Demo data'} · {allEntries.length} items
+          </span>
+        )}
+      </div>
 
       {/* Filters row */}
       <div className="flex flex-wrap items-center gap-2 px-5 py-3 bg-paper border-b border-border">
