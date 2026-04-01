@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
 import { ResponsiveGridLayout, useContainerWidth } from 'react-grid-layout';
 import type { Layout, LayoutItem } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
@@ -155,27 +153,18 @@ export default function DashboardExample3() {
   });
   const [selectedWeeks, setSelectedWeeks] = useState<Set<string>>(new Set());
   const [flowPeriod, setFlowPeriod] = useState<'Week' | 'Month' | 'Quarter'>('Month');
-  const [textSize, setTextSize] = useState(0);
-  const [darkMode, setDarkMode] = useState(false);
 
   // react-grid-layout state
   const [layout, setLayout] = useState<Layout>(DEFAULT_LAYOUT);
   const [hiddenWidgets, setHiddenWidgets] = useState<Set<string>>(new Set());
   const { width, containerRef, mounted } = useContainerWidth();
 
-  // Live clock + restore dark mode
+  // Live clock
   useEffect(() => {
     setNow(new Date());
-    const saved = localStorage.getItem('moods-dark-mode');
-    if (saved === 'true') setDarkMode(true);
     const id = setInterval(() => setNow(new Date()), 60_000);
     return () => clearInterval(id);
   }, []);
-
-  // Persist dark mode preference
-  useEffect(() => {
-    localStorage.setItem('moods-dark-mode', String(darkMode));
-  }, [darkMode]);
 
   // ⌘K to toggle AskMoody
   useEffect(() => {
@@ -324,10 +313,10 @@ export default function DashboardExample3() {
                   return (
                     <div className={s.barGroup} key={w.week}>
                       <div className={s.stackedBar} style={{ height: `${(total / maxBarTotal) * 100}%` }}>
-                        <div className={s.barSegment} style={{ background: darkMode ? '#a08060' : '#d0cdc6', flex: w.ehealth }} />
-                        <div className={s.barSegment} style={{ background: darkMode ? '#c4a070' : '#b8a898', flex: w.workshop }} />
-                        <div className={s.barSegment} style={{ background: darkMode ? '#e8e4dd' : '#8b6d4f', flex: w.treatment }} />
-                        <div className={s.barSegment} style={{ background: darkMode ? '#9a9490' : '#3a3a3a', flex: w.diagnostics }} />
+                        <div className={s.barSegment} style={{ background: '#d0cdc6', flex: w.ehealth }} />
+                        <div className={s.barSegment} style={{ background: '#b8a898', flex: w.workshop }} />
+                        <div className={s.barSegment} style={{ background: '#8b6d4f', flex: w.treatment }} />
+                        <div className={s.barSegment} style={{ background: '#3a3a3a', flex: w.diagnostics }} />
                       </div>
                     </div>
                   );
@@ -340,10 +329,10 @@ export default function DashboardExample3() {
               </div>
               <div className={s.chartLegend}>
                 {[
-                  { color: darkMode ? '#9a9490' : '#3a3a3a', label: 'Diagnostiek' },
-                  { color: darkMode ? '#e8e4dd' : '#8b6d4f', label: 'Behandeling' },
-                  { color: darkMode ? '#c4a070' : '#b8a898', label: 'Workshop' },
-                  { color: darkMode ? '#a08060' : '#d0cdc6', label: 'E-health' },
+                  { color: '#3a3a3a', label: 'Diagnostiek' },
+                  { color: '#8b6d4f', label: 'Behandeling' },
+                  { color: '#b8a898', label: 'Workshop' },
+                  { color: '#d0cdc6', label: 'E-health' },
                 ].map((l) => (
                   <div className={s.legendItem} key={l.label}>
                     <div className={s.legendSwatch} style={{ background: l.color }} />
@@ -433,11 +422,11 @@ export default function DashboardExample3() {
             </div>
             <div className={s.flowLegend}>
               <div className={s.legendItem}>
-                <div className={s.legendSwatch} style={{ background: darkMode ? '#e8e4dd' : '#3a3a3a' }} />
+                <div className={s.legendSwatch} style={{ background: '#3a3a3a' }} />
                 <span className={s.legendLabel}>Nieuwe cli&euml;nten</span>
               </div>
               <div className={s.legendItem}>
-                <div className={s.legendSwatch} style={{ background: darkMode ? '#6a6460' : '#d0cdc6' }} />
+                <div className={s.legendSwatch} style={{ background: '#d0cdc6' }} />
                 <span className={s.legendLabel}>Afgesloten trajecten</span>
               </div>
             </div>
@@ -481,60 +470,8 @@ export default function DashboardExample3() {
   }
 
   return (
-    <div className={`${s.root} ${darkMode ? s.darkTheme : ''} ${textSize !== 0 ? s[`size${textSize > 0 ? 'Up' : 'Down'}${Math.abs(textSize)}`] || '' : ''}`}>
+    <div className={s.root}>
       <div className={s.dotGrid} aria-hidden="true" />
-
-      {/* ── Top Bar ── */}
-      <header className={s.topBar}>
-        <Link href="/" className={s.logo}>
-          <Image src={darkMode ? "/images/logo-white.png" : "/images/logo.png"} alt="Oh My Mood" width={120} height={32} className={s.logoImg} />
-        </Link>
-        <div className={s.topBarRight}>
-          {/* Text size controls */}
-          <div className={s.sizeControls}>
-            <button
-              className={s.sizeBtn}
-              onClick={() => setTextSize((v) => Math.max(-2, v - 1))}
-              disabled={textSize <= -2}
-              title="Kleiner"
-            >
-              A<span className={s.sizeBtnMinus}>−</span>
-            </button>
-            <button
-              className={s.sizeBtn}
-              onClick={() => setTextSize((v) => Math.min(2, v + 1))}
-              disabled={textSize >= 2}
-              title="Groter"
-            >
-              A<span className={s.sizeBtnPlus}>+</span>
-            </button>
-          </div>
-
-          {/* Theme toggle */}
-          <button
-            className={`${s.themeToggle} ${darkMode ? s.themeToggleActive : ''}`}
-            onClick={() => setDarkMode((v) => !v)}
-            title={darkMode ? 'Licht thema' : 'Donker thema'}
-          >
-            {darkMode ? (
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                <circle cx="8" cy="8" r="3.5" />
-                <line x1="8" y1="1" x2="8" y2="3" />
-                <line x1="8" y1="13" x2="8" y2="15" />
-                <line x1="1" y1="8" x2="3" y2="8" />
-                <line x1="13" y1="8" x2="15" y2="8" />
-              </svg>
-            ) : (
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                <path d="M13.5 8.5a5.5 5.5 0 1 1-7-7 4.5 4.5 0 0 0 7 7z" />
-              </svg>
-            )}
-          </button>
-
-          <span className={s.userName}>Amsterdam</span>
-          <div className={s.avatar}>JS</div>
-        </div>
-      </header>
 
       {/* ── Welcome ── */}
       <div className={s.welcomeHero}>
