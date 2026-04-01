@@ -39,10 +39,10 @@ const hrItems = [
 ];
 
 const kpis = [
-  { value: '€139k', label: 'Omzet deze week', trend: '+8% vs vorige week', neg: false },
+  { value: '14', label: 'Nieuwe cliënten', trend: '+3 vs vorige maand', neg: false },
   { value: '87%', label: 'Gem. declarabiliteit', trend: '-2% vs target', neg: true },
-  { value: '342', label: 'Actieve cliënten', trend: '+12 deze maand', neg: false },
-  { value: '€4.2k', label: 'Gem. omzet/FTE', trend: '+3% vs vorige maand', neg: false },
+  { value: '6', label: 'E-health opdrachten', trend: '92% voltooiing', neg: false },
+  { value: '3', label: 'Workshops deze week', trend: '28 deelnemers', neg: false },
 ];
 
 const quickLinks = [
@@ -183,7 +183,7 @@ export default function AdminDashboard() {
 
           {/* Op-Ex KPIs */}
           <div className={`${s.widgetCard} ${s.gridFull}`}>
-            <div className={s.widgetTitle}>Op-Ex KPIs</div>
+            <div className={s.widgetTitle}>Kerncijfers</div>
             <div className={s.kpiRow}>
               {kpis.map((kpi, i) => (
                 <div key={i} className={s.kpi}>
