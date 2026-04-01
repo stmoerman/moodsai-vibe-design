@@ -99,7 +99,7 @@ interface CalendarEvent {
 // Convert intake slots to CalendarEvents
 function getIntakeEvents(): CalendarEvent[] {
   return mockIntakeSlots.map((slot) => {
-    const slug = slot.therapistMemberId.replace('mem-', '');
+    const slug = slot.therapistName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
     return {
       date: slot.date,
       time: slot.startTime,
@@ -580,16 +580,12 @@ function AdminDashboard() {
                         </div>
                         <div>
                           <div className="font-serif text-sm text-text">{ev.therapist}</div>
-                          <div className="font-mono text-[0.65rem] text-warm">/r/{ev.therapistSlug}</div>
+                          <a href={`/r/${ev.therapistSlug}`} className="font-mono text-[0.65rem] text-warm hover:underline no-underline" onClick={(e) => e.stopPropagation()}>/r/{ev.therapistSlug}</a>
                         </div>
-                        {ev.videoRoom && (
-                          <a
-                            href={ev.videoRoom}
-                            className="ml-auto font-mono text-[0.65rem] text-warm border border-border-subtle px-2 py-0.5 hover:bg-warm hover:text-paper transition-colors cursor-pointer no-underline"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            Video: {ev.videoRoom}
-                          </a>
+                        {ev.room && (
+                          <div className="ml-auto font-mono text-[0.65rem] text-text-faint">
+                            {ev.room}
+                          </div>
                         )}
                       </div>
 
