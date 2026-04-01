@@ -78,7 +78,7 @@
   display: block;
   margin-top: 6px;
   font-family: 'Space Mono', monospace;
-  font-size: 0.7em;
+  font-size: 0.75rem;
   color: #7a746e;
   letter-spacing: 0.04em;
 }
@@ -100,7 +100,7 @@
 
 .navTab {
   font-family: 'Space Mono', monospace;
-  font-size: 0.7em;
+  font-size: 0.75rem;
   color: #7a746e;
   background: none;
   border: none;
@@ -145,7 +145,7 @@
 .widgetCard {
   background: #faf8f5;
   border: 1px solid #d0cdc6;
-  padding: 24px 20px;
+  padding: 24px 24px;
   animation: staggerIn 0.4s ease both;
 }
 
@@ -156,7 +156,7 @@
 
 .widgetTitle {
   font-family: 'Space Mono', monospace;
-  font-size: 0.65em;
+  font-size: 0.75rem;
   color: #7a746e;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -185,7 +185,7 @@
 
 .statLabel {
   font-family: 'Space Mono', monospace;
-  font-size: 0.6rem;
+  font-size: 0.7rem;
   color: #b0a99f;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -194,7 +194,7 @@
 /* ── Section sub-heading ── */
 .sectionSub {
   font-family: 'Space Mono', monospace;
-  font-size: 0.6rem;
+  font-size: 0.7rem;
   color: #7a746e;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -213,7 +213,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 9px 0;
+  padding: 10px 0;
   border-bottom: 1px solid #e8e4dd;
 }
 
@@ -222,27 +222,27 @@
 }
 
 .listAvatar {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   background: #eeeae3;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Space Mono', monospace;
-  font-size: 0.6rem;
+  font-size: 0.7rem;
   color: #7a746e;
   flex-shrink: 0;
 }
 
 .listName {
   font-family: 'Crimson Pro', serif;
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: #3a3a3a;
 }
 
 .listMeta {
   font-family: 'Space Mono', monospace;
-  font-size: 0.55rem;
+  font-size: 0.7rem;
   color: #b0a99f;
   letter-spacing: 0.02em;
 }
@@ -253,10 +253,10 @@
 
 .listBadge {
   font-family: 'Space Mono', monospace;
-  font-size: 0.55rem;
+  font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border: 1px solid #d0cdc6;
   color: #7a746e;
 }
@@ -281,20 +281,20 @@
 .kpi {
   background: #eeeae3;
   border: 1px solid #e8e4dd;
-  padding: 16px 12px;
+  padding: 20px 14px;
   text-align: center;
 }
 
 .kpiValue {
   font-family: 'EB Garamond', serif;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   color: #3a3a3a;
   margin-bottom: 4px;
 }
 
 .kpiLabel {
   font-family: 'Space Mono', monospace;
-  font-size: 0.5rem;
+  font-size: 0.65rem;
   color: #b0a99f;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -302,7 +302,7 @@
 
 .kpiTrend {
   font-family: 'Space Mono', monospace;
-  font-size: 0.5rem;
+  font-size: 0.65rem;
   color: #5a9a60;
   margin-top: 4px;
 }
@@ -339,19 +339,19 @@
 
 .quickLinkIcon {
   font-family: 'Space Mono', monospace;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: #8b6d4f;
 }
 
 .quickLinkDesc {
   font-family: 'Crimson Pro', serif;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   color: #3a3a3a;
 }
 
 .quickLinkLabel {
   font-family: 'Space Mono', monospace;
-  font-size: 0.55rem;
+  font-size: 0.65rem;
   color: #b0a99f;
   text-transform: uppercase;
   letter-spacing: 0.06em;

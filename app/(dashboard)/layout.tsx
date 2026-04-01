@@ -33,6 +33,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className={sizeClass}>
+      <div className={s.topBarOuter}>
       <header className={s.topBar}>
         <div className={s.logo}>
           <Image
@@ -66,6 +67,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
         <button className={s.logoutBtn} onClick={logout}>Uitloggen</button>
       </header>
+      </div>
       <main className={s.content}>
         {children}
       </main>

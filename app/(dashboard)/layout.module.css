@@ -1,9 +1,14 @@
+.topBarOuter {
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
 .topBar {
   display: flex;
   align-items: center;
-  padding: 12px 24px;
-  border-bottom: 1px solid var(--color-border);
-  background: var(--color-surface);
+  padding: 12px 32px;
+  max-width: 1600px;
+  margin: 0 auto;
   gap: 16px;
 }
 
@@ -86,7 +91,7 @@
 @media (max-width: 640px) {
   .topBar {
     padding: 10px 16px;
-    gap: 8px;
+    gap: 10px;
   }
 
   .roleLabel {
