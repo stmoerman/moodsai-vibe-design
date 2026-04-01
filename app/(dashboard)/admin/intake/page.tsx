@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import Link from 'next/link';
 import { mockIntakeSlots, type IntakeSlot } from '@/data/intake-slots';
@@ -45,11 +46,32 @@ const REGION_COLORS: Record<string, string> = {
 const allRegions = [...new Set(mockIntakeSlots.map((s) => s.region).filter(Boolean))] as string[];
 const allTherapists = [...new Set(mockIntakeSlots.map((s) => s.therapistName))].sort();
 
-export default function IntakeCalendarPage() {
+export default function IntakeCalendarWrapper() {
+  return <Suspense><IntakeCalendarPage /></Suspense>;
+}
+
+function IntakeCalendarPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const regionFilter = searchParams.get('regio') || null;
+  const langFilter = searchParams.get('taal') || null;
+  const therapistFilter = searchParams.get('therapeut') || null;
+
+  const updateParams = useCallback((updates: Record<string, string | null>) => {
+    const params = new URLSearchParams(searchParams.toString());
+    for (const [key, val] of Object.entries(updates)) {
+      if (val) params.set(key, val);
+      else params.delete(key);
+    }
+    router.replace(`/admin/intake?${params.toString()}`, { scroll: false });
+  }, [searchParams, router]);
+
+  const setRegionFilter = (v: string | null) => updateParams({ regio: v });
+  const setLangFilter = (v: string | null) => updateParams({ taal: v });
+  const setTherapistFilter = (v: string | null) => updateParams({ therapeut: v });
+
   const [weekDate, setWeekDate] = useState(() => new Date(2026, 5, 1)); // June 1 2026
-  const [regionFilter, setRegionFilter] = useState<string | null>(null);
-  const [langFilter, setLangFilter] = useState<string | null>(null);
-  const [therapistFilter, setTherapistFilter] = useState<string | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<IntakeSlot | null>(null);
 
   const weekDates = getWeekDates(weekDate);
@@ -156,7 +178,7 @@ export default function IntakeCalendarPage() {
           {activeFilters > 0 && (
             <button
               className="font-mono text-[0.65rem] text-text-faint hover:text-text transition-colors cursor-pointer bg-transparent border-none underline"
-              onClick={() => { setRegionFilter(null); setLangFilter(null); setTherapistFilter(null); }}
+              onClick={() => updateParams({ regio: null, taal: null, therapeut: null })}
             >
               Filters wissen ({activeFilters})
             </button>
