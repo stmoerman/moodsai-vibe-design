@@ -365,7 +365,7 @@ function AdminDashboard() {
 
         {/* ════ Planning Tab ════ */}
         {activeTab === 'planning' && (
-          <div className="bg-surface border border-border p-6">
+          <div className="bg-surface border border-border p-6 relative">
             {/* Toolbar */}
             <div className="flex items-center gap-3 mb-5 flex-wrap">
               <div className="flex gap-1.5">
@@ -537,18 +537,35 @@ function AdminDashboard() {
             )}
 
             {/* Selected day detail (month view) */}
+            {/* Day detail overlay */}
             {calView === 'maand' && selectedDay && eventsByDate[selectedDay] && (
-              <div className="mt-5 pt-5 border-t border-border">
-                <div className="font-display text-lg text-text mb-3 capitalize">
-                  {new Date(selectedDay + 'T00:00').toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' })}
+              <div
+                className="absolute inset-4 bg-surface border border-border z-10 flex flex-col"
+                onClick={(e) => e.target === e.currentTarget && setSelectedDay(null)}
+              >
+                <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
+                  <h3 className="font-display text-xl text-text capitalize">
+                    {new Date(selectedDay + 'T00:00').toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' })}
+                  </h3>
+                  <button
+                    className="font-mono text-xs text-text-muted border border-border px-3 py-1 uppercase tracking-wide hover:bg-text hover:text-paper transition-colors cursor-pointer"
+                    onClick={() => setSelectedDay(null)}
+                  >
+                    Sluiten
+                  </button>
                 </div>
-                {eventsByDate[selectedDay].map((ev, i) => (
-                  <div key={i} className="py-2.5 px-3.5 border-l-[3px] bg-paper mb-1.5" style={{ borderLeftColor: EVENT_COLORS[ev.type] }}>
-                    <div className="font-mono text-[0.65rem] text-text-muted">{ev.time} – {ev.endTime}</div>
-                    <div className="font-serif text-[0.95rem] text-text mt-0.5">{ev.title}</div>
-                    <div className="font-mono text-[0.65rem] text-text-faint mt-0.5">{ev.therapist}{ev.room ? ` · ${ev.room}` : ''}</div>
-                  </div>
-                ))}
+                <div className="flex-1 overflow-y-auto p-6 space-y-2">
+                  {eventsByDate[selectedDay].map((ev, i) => (
+                    <div key={i} className="py-3 px-4 border-l-[3px] bg-paper" style={{ borderLeftColor: EVENT_COLORS[ev.type] }}>
+                      <div className="font-mono text-[0.7rem] text-text-muted">{ev.time} – {ev.endTime}</div>
+                      <div className="font-serif text-base text-text mt-1">{ev.title}</div>
+                      <div className="font-mono text-[0.7rem] text-text-faint mt-1">{ev.therapist}{ev.room ? ` · ${ev.room}` : ''}</div>
+                    </div>
+                  ))}
+                  {eventsByDate[selectedDay].length === 0 && (
+                    <div className="font-serif text-text-muted text-center py-12">Geen afspraken op deze dag</div>
+                  )}
+                </div>
               </div>
             )}
           </div>
