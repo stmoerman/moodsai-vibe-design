@@ -701,7 +701,7 @@ export function PlanningTab() {
   // --- View state ---
   const [view, setView] = useState<'maand' | 'week' | 'dag'>('maand');
   const [calMonth, setCalMonth] = useState(() => { const n = new Date(); return { year: n.getFullYear(), month: n.getMonth() }; });
-  const [selectedDay, setSelectedDay] = useState<string | null>(() => isoDate(new Date()));
+  const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [weekStart, setWeekStart] = useState<Date>(DEFAULT_WEEK_START);
   const [selectedDayIndex, setSelectedDayIndex] = useState<number>(0); // 0=Mon (Jun1)
 
