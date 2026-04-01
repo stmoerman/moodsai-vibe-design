@@ -16,12 +16,12 @@ import {
 // ---------------------------------------------------------------------------
 
 const ACTIVITY_COLORS: Record<AgendaActivityType, string> = {
-  behandeling: '#5a7a5a',
-  workshop: '#7a5a8a',
-  diagnostiek: '#b07a3a',
-  evaluatie: '#4a6e8a',
-  intake: '#8b6d4f',
-  reserved: '#9a9490',
+  behandeling: '#6b8f71',
+  workshop: '#8a7196',
+  diagnostiek: '#c4924a',
+  evaluatie: '#5a8aaa',
+  intake: '#b85c3a',
+  reserved: '#a8a29e',
 };
 
 const ACTIVITY_LABELS: Record<AgendaActivityType, string> = {
@@ -60,8 +60,16 @@ const WEEK_DAYS_SHORT = ['Ma', 'Di', 'Wo', 'Do', 'Vr'];
 const MONTH_DAY_HEADERS = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
 const MONTH_NAMES = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
 
-// Week of Jun 1 2026 — Mon=Jun1, Tue=Jun2, Wed=Jun3, Thu=Jun4, Fri=Jun5
-const DEFAULT_WEEK_START = new Date(2026, 5, 1); // June 1 2026 (month is 0-indexed)
+// Default to current week (Monday)
+function getCurrentMonday(): Date {
+  const d = new Date();
+  const day = d.getDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  d.setDate(d.getDate() + diff);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+const DEFAULT_WEEK_START = getCurrentMonday();
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -253,8 +261,7 @@ interface ActivityFilterProps {
 
 function ActivityFilter({ selected, onChange }: ActivityFilterProps) {
   const stats = mockAgendaStats;
-  const activeCount = ALL_TYPES.length - selected.size;
-  const hasFilter = activeCount > 0;
+  const hasFilter = selected.size < ALL_TYPES.length;
 
   return (
     <DropdownMenu.Root>
@@ -262,8 +269,8 @@ function ActivityFilter({ selected, onChange }: ActivityFilterProps) {
         <button className={`font-mono text-[0.68rem] uppercase tracking-wide px-3 py-1.5 border flex items-center gap-2 cursor-pointer transition-colors ${hasFilter ? 'border-warm text-warm bg-surface' : 'border-border text-text-muted bg-paper hover:bg-surface-hover'}`}>
           Activiteit
           {hasFilter && (
-            <span className="bg-warm text-paper text-[0.6rem] px-1.5 py-0.5 rounded-full leading-none">
-              {activeCount}
+            <span className="text-warm text-[0.6rem] leading-none">
+              {selected.size}/{ALL_TYPES.length}
             </span>
           )}
           <ChevronDown />
@@ -770,7 +777,7 @@ export function PlanningTab() {
     });
   }, []);
 
-  const goToJune = useCallback(() => {
+  const goToCurrentWeek = useCallback(() => {
     setWeekStart(DEFAULT_WEEK_START);
   }, []);
 
@@ -849,7 +856,7 @@ export function PlanningTab() {
             ←
           </button>
           <button
-            onClick={view === 'maand' ? () => { const n = new Date(); setCalMonth({ year: n.getFullYear(), month: n.getMonth() }); } : goToJune}
+            onClick={view === 'maand' ? () => { const n = new Date(); setCalMonth({ year: n.getFullYear(), month: n.getMonth() }); } : goToCurrentWeek}
             className="font-display text-sm text-text px-3 py-1 border border-border cursor-pointer hover:bg-surface-hover transition-colors min-w-[160px] text-center"
           >
             {view === 'maand' ? `${MONTH_NAMES[calMonth.month]} ${calMonth.year}` : formatWeekLabel(weekStart)}
