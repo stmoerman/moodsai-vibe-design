@@ -693,7 +693,7 @@ function DayColumn({ date, entries, dayIndex, onEntryClick, dayView = false }: D
 export function PlanningTab() {
   // --- View state ---
   const [view, setView] = useState<'maand' | 'week' | 'dag'>('maand');
-  const [calMonth, setCalMonth] = useState({ year: 2026, month: 5 }); // June 2026
+  const [calMonth, setCalMonth] = useState(() => { const n = new Date(); return { year: n.getFullYear(), month: n.getMonth() }; });
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [weekStart, setWeekStart] = useState<Date>(DEFAULT_WEEK_START);
   const [selectedDayIndex, setSelectedDayIndex] = useState<number>(0); // 0=Mon (Jun1)
@@ -849,7 +849,7 @@ export function PlanningTab() {
             ←
           </button>
           <button
-            onClick={view === 'maand' ? () => setCalMonth({ year: 2026, month: 5 }) : goToJune}
+            onClick={view === 'maand' ? () => { const n = new Date(); setCalMonth({ year: n.getFullYear(), month: n.getMonth() }); } : goToJune}
             className="font-display text-sm text-text px-3 py-1 border border-border cursor-pointer hover:bg-surface-hover transition-colors min-w-[160px] text-center"
           >
             {view === 'maand' ? `${MONTH_NAMES[calMonth.month]} ${calMonth.year}` : formatWeekLabel(weekStart)}
@@ -995,7 +995,8 @@ export function PlanningTab() {
         </div>
       )}
 
-      {/* Calendar grid */}
+      {/* Calendar grid (week/dag only) */}
+      {(view === 'week' || view === 'dag') && (
       <div className="overflow-auto flex-1">
         <div className="flex min-w-0" style={{ minWidth: view === 'week' ? '700px' : '400px' }}>
           {/* Time axis */}
@@ -1045,6 +1046,7 @@ export function PlanningTab() {
           )}
         </div>
       </div>
+      )}
     </div>
   );
 }
