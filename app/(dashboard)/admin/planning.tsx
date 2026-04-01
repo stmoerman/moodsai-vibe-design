@@ -676,7 +676,7 @@ export function PlanningTab() {
   const [selectedDayIndex, setSelectedDayIndex] = useState<number>(0); // 0=Mon (Jun1)
 
   // --- Filter state ---
-  const [activeTypes, setActiveTypes] = useState<Set<AgendaActivityType>>(new Set(ALL_TYPES));
+  const [activeTypes, setActiveTypes] = useState<Set<AgendaActivityType>>(new Set(['intake']));
   const [activeLocations, setActiveLocations] = useState<Set<string>>(
     new Set(mockLocations.map((l) => l.name))
   );
