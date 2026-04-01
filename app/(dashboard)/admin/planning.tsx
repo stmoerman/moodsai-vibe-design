@@ -57,6 +57,8 @@ for (let m = GRID_START; m < GRID_END; m += 30) {
 
 const WEEK_DAYS_NL = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag'];
 const WEEK_DAYS_SHORT = ['Ma', 'Di', 'Wo', 'Do', 'Vr'];
+const MONTH_DAY_HEADERS = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
+const MONTH_NAMES = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
 
 // Week of Jun 1 2026 — Mon=Jun1, Tue=Jun2, Wed=Jun3, Thu=Jun4, Fri=Jun5
 const DEFAULT_WEEK_START = new Date(2026, 5, 1); // June 1 2026 (month is 0-indexed)
@@ -101,6 +103,25 @@ function formatWeekLabel(weekStart: Date): string {
     return `${weekStart.getDate()}–${end.getDate()} ${months[weekStart.getMonth()]} ${weekStart.getFullYear()}`;
   }
   return `${weekStart.getDate()} ${months[weekStart.getMonth()]} – ${end.getDate()} ${months[end.getMonth()]} ${weekStart.getFullYear()}`;
+}
+
+interface MonthDay {
+  day: number;
+  current: boolean;
+}
+
+function getMonthGrid(year: number, month: number): MonthDay[] {
+  const first = new Date(year, month, 1);
+  const last = new Date(year, month + 1, 0);
+  let startDay = first.getDay() - 1;
+  if (startDay < 0) startDay = 6;
+  const prevLast = new Date(year, month, 0).getDate();
+  const days: MonthDay[] = [];
+  for (let i = startDay - 1; i >= 0; i--) days.push({ day: prevLast - i, current: false });
+  for (let d = 1; d <= last.getDate(); d++) days.push({ day: d, current: true });
+  let nextDay = 1;
+  while (days.length % 7 !== 0) days.push({ day: nextDay++, current: false });
+  return days;
 }
 
 function getInitials(name: string): string {
@@ -671,7 +692,9 @@ function DayColumn({ date, entries, dayIndex, onEntryClick, dayView = false }: D
 
 export function PlanningTab() {
   // --- View state ---
-  const [view, setView] = useState<'week' | 'dag'>('week');
+  const [view, setView] = useState<'maand' | 'week' | 'dag'>('maand');
+  const [calMonth, setCalMonth] = useState({ year: 2026, month: 5 }); // June 2026
+  const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [weekStart, setWeekStart] = useState<Date>(DEFAULT_WEEK_START);
   const [selectedDayIndex, setSelectedDayIndex] = useState<number>(0); // 0=Mon (Jun1)
 
@@ -817,26 +840,23 @@ export function PlanningTab() {
 
         <div className="w-px h-5 bg-border mx-1" />
 
-        {/* Week navigation */}
+        {/* Navigation */}
         <div className="flex items-center gap-2">
           <button
-            onClick={goToPrevWeek}
+            onClick={view === 'maand' ? () => setCalMonth((m) => m.month === 0 ? { year: m.year - 1, month: 11 } : { ...m, month: m.month - 1 }) : goToPrevWeek}
             className="w-7 h-7 border border-border flex items-center justify-center text-text-muted font-mono text-sm cursor-pointer hover:bg-surface-hover transition-colors"
-            aria-label="Vorige week"
           >
             ←
           </button>
           <button
-            onClick={goToJune}
-            className="font-display text-sm text-text px-3 py-1 border border-border cursor-pointer hover:bg-surface-hover transition-colors"
-            title="Terug naar juni 2026"
+            onClick={view === 'maand' ? () => setCalMonth({ year: 2026, month: 5 }) : goToJune}
+            className="font-display text-sm text-text px-3 py-1 border border-border cursor-pointer hover:bg-surface-hover transition-colors min-w-[160px] text-center"
           >
-            {formatWeekLabel(weekStart)}
+            {view === 'maand' ? `${MONTH_NAMES[calMonth.month]} ${calMonth.year}` : formatWeekLabel(weekStart)}
           </button>
           <button
-            onClick={goToNextWeek}
+            onClick={view === 'maand' ? () => setCalMonth((m) => m.month === 11 ? { year: m.year + 1, month: 0 } : { ...m, month: m.month + 1 }) : goToNextWeek}
             className="w-7 h-7 border border-border flex items-center justify-center text-text-muted font-mono text-sm cursor-pointer hover:bg-surface-hover transition-colors"
-            aria-label="Volgende week"
           >
             →
           </button>
@@ -846,13 +866,13 @@ export function PlanningTab() {
 
         {/* View toggle */}
         <div className="flex">
-          {(['week', 'dag'] as const).map((v) => (
+          {(['maand', 'week', 'dag'] as const).map((v) => (
             <button
               key={v}
               onClick={() => setView(v)}
               className={`font-mono text-[0.65rem] uppercase tracking-wide px-3 py-1.5 border-t border-b first:border-l border-r border-border cursor-pointer transition-colors ${view === v ? 'bg-text text-paper' : 'bg-paper text-text-muted hover:bg-surface-hover'}`}
             >
-              {v === 'week' ? 'Week' : 'Dag'}
+              {v === 'maand' ? 'Maand' : v === 'week' ? 'Week' : 'Dag'}
             </button>
           ))}
         </div>
@@ -867,6 +887,88 @@ export function PlanningTab() {
           </button>
         )}
       </div>
+
+      {/* ═══ Month view ═══ */}
+      {view === 'maand' && (() => {
+        const grid = getMonthGrid(calMonth.year, calMonth.month);
+        const todayKey = isoDate(new Date());
+        return (
+          <div className="bg-surface border border-border p-4">
+            <div className="grid grid-cols-7">
+              {MONTH_DAY_HEADERS.map((d) => (
+                <div key={d} className="font-mono text-[0.7rem] text-text-muted uppercase tracking-wider text-center py-2.5">{d}</div>
+              ))}
+              {grid.map((gd, i) => {
+                const dk = gd.current ? `${calMonth.year}-${String(calMonth.month + 1).padStart(2, '0')}-${String(gd.day).padStart(2, '0')}` : null;
+                const dayEntries = dk ? (entriesByDate[dk] ?? []) : [];
+                const isToday = dk === todayKey;
+                const isSelected = dk === selectedDay;
+                return (
+                  <div
+                    key={i}
+                    className={[
+                      'min-h-[130px] p-2 overflow-hidden transition-colors',
+                      gd.current ? 'border-t border-border-subtle/60 cursor-pointer hover:bg-surface-hover' : 'opacity-40',
+                      isToday && !isSelected ? 'bg-warm/5!' : '',
+                      isSelected ? 'bg-warm/10! ring-1 ring-warm/40 ring-inset' : '',
+                      'bg-surface',
+                    ].join(' ')}
+                    onClick={() => gd.current && dk && setSelectedDay(selectedDay === dk ? null : dk)}
+                  >
+                    <span className={`block font-mono text-xs mb-1.5 ${gd.current && isToday ? 'text-warm font-bold' : gd.current ? 'text-text' : 'text-text'}`}>{gd.day}</span>
+                    {dayEntries.slice(0, 3).map((ev, j) => (
+                      <div key={j} className="flex gap-1 items-baseline py-0.5 pl-2 mb-0.5 border-l-[3px] bg-paper/60" style={{ borderLeftColor: ACTIVITY_COLORS[ev.activityType] }}>
+                        <span className="font-mono text-[0.6rem] text-text-faint shrink-0">{ev.startTime}</span>
+                        <span className="font-serif text-[0.8rem] text-text truncate">{ev.therapistName}</span>
+                      </div>
+                    ))}
+                    {dayEntries.length > 3 && (
+                      <div className="font-mono text-[0.6rem] text-text-muted pl-2 pt-0.5">+{dayEntries.length - 3} meer</div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Day detail drawer */}
+            {selectedDay && entriesByDate[selectedDay] && (
+              <div
+                className="fixed inset-0 bg-text/10 z-50 flex justify-end"
+                onClick={(e) => e.target === e.currentTarget && setSelectedDay(null)}
+              >
+                <div className="bg-surface border-l border-border w-full max-w-md h-full shadow-lg flex flex-col">
+                  <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
+                    <h3 className="font-display text-lg text-text capitalize">
+                      {new Date(selectedDay + 'T00:00').toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' })}
+                    </h3>
+                    <button className="font-mono text-xs text-text-muted border border-border px-3 py-1 uppercase tracking-wide hover:bg-text hover:text-paper transition-colors cursor-pointer" onClick={() => setSelectedDay(null)}>Sluiten</button>
+                  </div>
+                  <div className="flex-1 overflow-y-auto p-6 space-y-3">
+                    {entriesByDate[selectedDay].map((entry) => (
+                      <div
+                        key={entry.id}
+                        className="border-l-[3px] bg-paper p-4 cursor-pointer hover:bg-surface-hover transition-colors"
+                        style={{ borderLeftColor: ACTIVITY_COLORS[entry.activityType], borderLeftStyle: entry.clientName ? 'solid' : 'dashed' }}
+                        onClick={() => console.log('Clicked:', entry.id)}
+                      >
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: ACTIVITY_COLORS[entry.activityType] }} />
+                          <span className="font-mono text-[0.7rem] text-text-muted">{entry.startTime} – {entry.endTime}</span>
+                          <span className="font-mono text-[0.6rem] text-text-faint ml-auto">{ACTIVITY_LABELS[entry.activityType]}</span>
+                        </div>
+                        <div className="font-serif text-[0.95rem] text-text">{entry.therapistName}</div>
+                        <div className="font-serif text-[0.85rem] text-text-muted">{entry.clientName ?? 'Beschikbaar'}</div>
+                        <div className="font-mono text-[0.65rem] text-text-faint mt-1">{entry.location}</div>
+                        {entry.description && <div className="font-serif text-[0.8rem] text-text-faint mt-1 italic">{entry.description}</div>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })()}
 
       {/* Day selector (only in dag view) */}
       {view === 'dag' && (
