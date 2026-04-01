@@ -454,19 +454,16 @@ function AdminDashboard() {
                     <div
                       key={i}
                       className={[
-                        'min-h-[130px] p-2 overflow-hidden transition-colors',
+                        'min-h-[130px] p-2 overflow-hidden transition-colors bg-surface',
                         gd.current
                           ? 'border-t border-border-subtle/60 cursor-pointer hover:bg-surface-hover'
-                          : '',
-                        isToday && !isSelected ? 'bg-warm/5' : '',
-                        isSelected ? 'bg-warm/10 ring-1 ring-warm/40 ring-inset' : '',
+                          : 'opacity-40',
+                        isToday && !isSelected ? 'bg-warm/5!' : '',
+                        isSelected ? 'bg-warm/10! ring-1 ring-warm/40 ring-inset' : '',
                       ].join(' ')}
                       onClick={() => gd.current && dk && setSelectedDay(selectedDay === dk ? null : dk)}
                     >
-                      {gd.current
-                        ? <span className={`block font-mono text-xs mb-1.5 ${isToday ? 'text-warm font-bold' : 'text-text'}`}>{gd.day}</span>
-                        : <span className="block font-mono text-xs mb-1.5 text-text-faint/40">{gd.day}</span>
-                      }
+                      <span className={`block font-mono text-xs mb-1.5 ${gd.current && isToday ? 'text-warm font-bold' : 'text-text'}`}>{gd.day}</span>
                       {dayEvts.slice(0, 3).map((ev, j) => (
                         <div key={j} className="flex gap-1 items-baseline py-0.5 pl-2 mb-0.5 border-l-[3px] bg-paper/60" style={{ borderLeftColor: EVENT_COLORS[ev.type] }}>
                           <span className="font-mono text-[0.6rem] text-text-faint shrink-0">{ev.time}</span>
