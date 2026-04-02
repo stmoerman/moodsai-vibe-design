@@ -67,6 +67,18 @@ const HrVerlofTab = dynamic(
   },
 );
 
+const TeamTab = dynamic(
+  () => import('./team').then((m) => ({ default: m.TeamTab })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center py-12">
+        <span className="font-mono text-[0.7rem] text-text-faint animate-pulse">Team laden...</span>
+      </div>
+    ),
+  },
+);
+
 function getGreeting(hour: number) {
   if (hour < 12) return 'Goedemorgen';
   if (hour < 18) return 'Goedemiddag';
@@ -368,13 +380,8 @@ function AdminDashboard() {
         {/* ════ HR & Verlof Tab ════ */}
         {activeTab === 'hr' && <HrVerlofTab />}
 
-        {/* ════ Team Tab (placeholder) ════ */}
-        {activeTab === 'team' && (
-          <div className="flex flex-col items-center justify-center py-20">
-            <div className="font-display text-xl text-text-muted mb-2">Team</div>
-            <div className="font-serif text-sm text-text-faint">Binnenkort beschikbaar</div>
-          </div>
-        )}
+        {/* ════ Team Tab ════ */}
+        {activeTab === 'team' && <TeamTab />}
 
         {/* ════ Rapportage Tab (placeholder) ════ */}
         {activeTab === 'rapportage' && (
