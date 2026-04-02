@@ -138,13 +138,17 @@ function OverzichtTab() {
         ) : (
           <div className="grid grid-cols-6 gap-2">
             {forecast.map((m) => (
-              <div key={m.month} className={`border p-4 text-center ${m.slots > 0 ? 'border-border bg-paper' : 'border-border-subtle/50 bg-paper/50'}`}>
+              <a
+                key={m.month}
+                href={`/admin?tab=planning&month=${m.month}`}
+                className={`border p-4 text-center no-underline block transition-colors ${m.slots > 0 ? 'border-border bg-paper hover:bg-surface-hover hover:border-text-muted cursor-pointer' : 'border-border-subtle/50 bg-paper/50 hover:bg-paper cursor-pointer'}`}
+              >
                 <div className={`font-display text-2xl ${m.slots > 0 ? 'text-text' : 'text-text-faint'}`}>{m.slots}</div>
                 <div className="font-mono text-[0.65rem] text-text-muted uppercase tracking-wide mt-1">{m.label}</div>
                 {m.slots > 0 && (
-                  <a href={`/admin?tab=planning&month=${m.month}`} className="inline-block mt-2 font-mono text-[0.55rem] text-warm uppercase tracking-wide hover:underline no-underline">Bekijk →</a>
+                  <div className="mt-2 font-mono text-[0.55rem] text-warm uppercase tracking-wide">Bekijk →</div>
                 )}
-              </div>
+              </a>
             ))}
           </div>
         )}
