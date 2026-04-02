@@ -42,6 +42,26 @@ const ALL_TYPES: AgendaActivityType[] = [
   'reserved',
 ];
 
+// Therapists from productiviteitsdetails — filters out admin/non-clinical staff
+const THERAPIST_WHITELIST = new Set([
+  'Alinda Jansen', 'Angela van der Helm', 'Angenieta Zweerus', 'Anna de Graaf-van Waveren',
+  'Anna de Vries', 'Anna Meijer', 'Anne Hoetink', 'Anne Stam', 'Anneke van der Knaap',
+  'Chiara van der Stuijt', 'Clarisse de Boer', 'Claudia Rovers', 'David Tetteroo',
+  'Davis van de Ven', 'Diana Rodriguez Marquez', 'Dieuwke Sevenster', 'Eelke Sistermans',
+  'Eline Nelissen', 'Estefania Tessier Menendez', 'Eva Papastergiou', 'Fleur Meulepas',
+  'Gabriela Hinsenveld', 'Giada Bout', 'Jasper Peeters', 'Julia Gelderblom',
+  'Julie de Rooij', 'Juliette Kolijn', 'Kaisa Spierings', 'Kate Starmans', 'Lenny Appel',
+  'Lisa Kolet', 'Lissa van Baren', 'Lois Borger', 'Lysander Verschuur', 'Malu Scholl',
+  'Marijke Curev', 'Marjolein Barink', 'Maxime Duisterhof', 'Melissa Jongste', 'Merel Kraan',
+  'Michelle van Rijn', 'Mirjam den Houdijker', 'Mirthe Keizer', 'Nathalie Nossek', 'Nout Strik',
+  'Olaf Bleijenberg', 'Pim Piepers', 'Rebekka Folkers', 'Rosie Ungheretti', 'Ruby Pouwels',
+  'Ruud Koolen', 'Sabine Vriezinga', 'Sandy Gouder de Beauregard', 'Simone Biersteker',
+  'Sofie Aartsma', 'Soleil Erens', 'Stacey van de Goor', 'Sterre Theunissen',
+  'Suzanne Holthuijsen', 'Suzanne Peek', 'Tanita Swinkels', 'Thais Midon Ibanez',
+  'Thomas Visser', 'Tisja Daamen', 'Valentine Damink', 'Vital van de Gaar',
+  'Wen Colenbrander', 'Yasemin Tanriverdi',
+]);
+
 // Time grid: 08:00 – 17:00, 30-min slots
 const GRID_START = 8 * 60; // 480 minutes
 const GRID_END = 17 * 60; // 1020 minutes
@@ -224,12 +244,17 @@ function CheckIcon() {
 // Stats bar
 // ---------------------------------------------------------------------------
 
-function StatsBar() {
-  const stats = mockAgendaStats;
+interface StatsData {
+  totalEntries: number;
+  period: string;
+  byType: Record<string, { count: number; avgDuration: number; withClient: number }>;
+}
+
+function StatsBar({ stats }: { stats: StatsData }) {
   return (
     <div className="flex flex-wrap items-center gap-x-5 gap-y-2 px-5 py-3 bg-surface border-b border-border">
       <span className="font-mono text-[0.68rem] text-text-muted uppercase tracking-wide">
-        {stats.totalEntries} afspraken · {stats.period.replace(' to ', ' – ')}
+        {stats.totalEntries} afspraken · {stats.period}
       </span>
       <div className="w-px h-4 bg-border" />
       {ALL_TYPES.map((type) => {
@@ -312,17 +337,18 @@ function ActivityFilter({ selected, onChange, counts }: ActivityFilterProps) {
 }
 
 interface LocationFilterProps {
+  locations: AgendaLocation[];
   selectedLocations: Set<string>;
   onToggle: (loc: string) => void;
 }
 
-function LocationFilter({ selectedLocations, onToggle }: LocationFilterProps) {
-  const allLocNames = mockLocations.map((l) => l.name);
+function LocationFilter({ locations, selectedLocations, onToggle }: LocationFilterProps) {
+  const allLocNames = locations.map((l) => l.name);
   const hasFilter = selectedLocations.size < allLocNames.length && selectedLocations.size > 0;
   // group by type
-  const physical = mockLocations.filter((l) => l.type === 'physical');
-  const online = mockLocations.filter((l) => l.type === 'online');
-  const other = mockLocations.filter((l) => l.type === 'home' || l.type === 'phone');
+  const physical = locations.filter((l) => l.type === 'physical');
+  const online = locations.filter((l) => l.type === 'online');
+  const other = locations.filter((l) => l.type === 'home' || l.type === 'phone');
 
   const activeCount = allLocNames.length - selectedLocations.size;
 
@@ -700,11 +726,23 @@ function DayColumn({ date, entries, dayIndex, onEntryClick, dayView = false }: D
 export function PlanningTab() {
   // --- Data state (fetched from API, fallback to mock) ---
   const [allEntries, setAllEntries] = useState<AgendaEntry[]>(mockAgendaEntries);
+  const [locations, setLocations] = useState<AgendaLocation[]>(mockLocations);
+  const [stats, setStats] = useState<StatsData>({
+    totalEntries: mockAgendaStats.totalEntries,
+    period: mockAgendaStats.period.replace(' to ', ' – '),
+    byType: mockAgendaStats.byType,
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [dataSource, setDataSource] = useState<'mock' | 'live'>('mock');
+  const [showWeekends, setShowWeekends] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('moods-planning-weekends') === 'true';
+  });
+
+  useEffect(() => { localStorage.setItem('moods-planning-weekends', String(showWeekends)); }, [showWeekends]);
 
   const allTherapists = useMemo(
-    () => Array.from(new Set(allEntries.map((e) => e.therapistName))).sort(),
+    () => Array.from(new Set(allEntries.map((e) => e.therapistName))).filter((name) => THERAPIST_WHITELIST.has(name)).sort(),
     [allEntries]
   );
 
@@ -750,12 +788,12 @@ export function PlanningTab() {
     return new Set(ALL_TYPES);
   });
   const [activeLocations, setActiveLocations] = useState<Set<string>>(() => {
-    if (typeof window === 'undefined') return new Set(mockLocations.map((l) => l.name));
+    if (typeof window === 'undefined') return new Set(mockLocations.map((l: AgendaLocation) => l.name));
     try {
       const saved = localStorage.getItem('moods-planning-locations');
       if (saved) return new Set(JSON.parse(saved) as string[]);
     } catch {}
-    return new Set(mockLocations.map((l) => l.name));
+    return new Set(mockLocations.map((l: AgendaLocation) => l.name));
   });
   const [activeTherapists, setActiveTherapists] = useState<Set<string>>(() => {
     if (typeof window === 'undefined') return new Set(allTherapists);
@@ -818,13 +856,42 @@ export function PlanningTab() {
     return () => controller.abort();
   }, [dateRange.start, dateRange.end]);
 
+  // --- Fetch locations once on mount ---
+  useEffect(() => {
+    fetch('/api/agenda/locations')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.locations?.length > 0) {
+          setLocations(data.locations);
+          setActiveLocations(new Set(data.locations.map((l: AgendaLocation) => l.name)));
+        }
+      })
+      .catch(() => { /* keep mock locations */ });
+  }, []);
+
+  // --- Fetch stats when date range changes ---
+  useEffect(() => {
+    fetch(`/api/agenda/stats?start=${dateRange.start}&end=${dateRange.end}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.totalEntries != null) {
+          setStats({
+            totalEntries: data.totalEntries,
+            period: `${dateRange.start} – ${dateRange.end}`,
+            byType: data.byType ?? {},
+          });
+        }
+      })
+      .catch(() => { /* keep current stats */ });
+  }, [dateRange.start, dateRange.end]);
+
   // --- Derived: is any filter active ---
   const hasActiveFilters = useMemo(
     () =>
       activeTypes.size < ALL_TYPES.length ||
-      activeLocations.size < mockLocations.length ||
+      activeLocations.size < locations.length ||
       activeTherapists.size < allTherapists.length,
-    [activeTypes, activeLocations, activeTherapists, allTherapists]
+    [activeTypes, activeLocations, activeTherapists, allTherapists, locations]
   );
 
   // --- Filter toggle handlers ---
@@ -857,12 +924,12 @@ export function PlanningTab() {
 
   const clearFilters = useCallback(() => {
     setActiveTypes(new Set(ALL_TYPES));
-    setActiveLocations(new Set(mockLocations.map((l) => l.name)));
+    setActiveLocations(new Set(locations.map((l) => l.name)));
     setActiveTherapists(new Set(allTherapists));
     localStorage.removeItem('moods-planning-types');
     localStorage.removeItem('moods-planning-locations');
     localStorage.removeItem('moods-planning-therapists');
-  }, [allTherapists]);
+  }, [allTherapists, locations]);
 
   // --- Week navigation ---
   const goToPrevWeek = useCallback(() => {
@@ -933,14 +1000,14 @@ export function PlanningTab() {
   return (
     <div className="flex flex-col min-h-0">
       {/* Stats bar */}
-      {view !== 'maand' && <StatsBar />}
+      {view !== 'maand' && <StatsBar stats={stats} />}
 
       {/* (data source shown inline in filter row) */}
 
       {/* Toolbar — single row */}
       <div className="flex items-center gap-2 px-5 py-3 bg-paper border-b border-border">
         <ActivityFilter selected={activeTypes} onChange={toggleType} counts={activityCounts} />
-        <LocationFilter selectedLocations={activeLocations} onToggle={toggleLocation} />
+        <LocationFilter locations={locations} selectedLocations={activeLocations} onToggle={toggleLocation} />
         <TherapistFilter allTherapists={allTherapists} selectedTherapists={activeTherapists} onToggle={toggleTherapist} />
 
         {hasActiveFilters && (
@@ -967,6 +1034,12 @@ export function PlanningTab() {
         >Vandaag</button>
 
         <div className="w-px h-5 bg-border-subtle mx-1" />
+
+        {/* Weekend toggle */}
+        <button
+          onClick={() => setShowWeekends((v) => !v)}
+          className={`font-mono text-[0.65rem] uppercase tracking-wide px-3 py-1.5 border border-border cursor-pointer transition-colors ${showWeekends ? 'bg-text text-paper' : 'bg-paper text-text-muted hover:bg-surface-hover'}`}
+        >Za/Zo</button>
 
         {/* View toggle */}
         <div className="flex">
@@ -998,11 +1071,13 @@ export function PlanningTab() {
               ))}
             </div>
 
-            <div className="grid grid-cols-7">
-              {MONTH_DAY_HEADERS.map((d) => (
+            <div className={`grid ${showWeekends ? 'grid-cols-7' : 'grid-cols-5'}`}>
+              {(showWeekends ? MONTH_DAY_HEADERS : MONTH_DAY_HEADERS.slice(0, 5)).map((d) => (
                 <div key={d} className="font-mono text-[0.7rem] text-text-muted uppercase tracking-wider text-center py-2.5">{d}</div>
               ))}
               {grid.map((gd, i) => {
+                const colIndex = i % 7;
+                if (!showWeekends && colIndex >= 5) return null;
                 const dk = gd.current ? `${calMonth.year}-${String(calMonth.month + 1).padStart(2, '0')}-${String(gd.day).padStart(2, '0')}` : null;
                 const dayEntries = dk ? (entriesByDate[dk] ?? []) : [];
                 const isToday = dk === todayKey;
