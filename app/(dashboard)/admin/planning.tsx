@@ -742,7 +742,7 @@ export function PlanningTab() {
   useEffect(() => { localStorage.setItem('moods-planning-weekends', String(showWeekends)); }, [showWeekends]);
 
   const allTherapists = useMemo(
-    () => Array.from(new Set(allEntries.map((e) => e.therapistName))).filter((name) => THERAPIST_WHITELIST.has(name)).sort(),
+    () => Array.from(new Set(allEntries.map((e) => e.therapistName))).sort(),
     [allEntries]
   );
 
