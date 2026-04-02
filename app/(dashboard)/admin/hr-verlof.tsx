@@ -69,7 +69,7 @@ export function HrVerlofTab() {
     <div className={s.grid}>
       {/* Ziekmeldingen */}
       <div className={s.widgetCard}>
-        <div className={s.widgetTitle}>Ziekmeldingen</div>
+        <div className="flex items-center justify-between"><div className={s.widgetTitle} style={{ marginBottom: 0 }}>Ziekmeldingen</div><a href="/admin/ziekmeldingen" className="font-mono text-[0.6rem] text-warm uppercase tracking-wide hover:underline no-underline">Bekijk alle →</a></div>
         {sickEntries.length === 0 ? (
           <div className="font-serif text-sm text-text-faint py-4">Geen actieve ziekmeldingen</div>
         ) : (
@@ -99,7 +99,7 @@ export function HrVerlofTab() {
 
       {/* Verlof aankomend */}
       <div className={s.widgetCard}>
-        <div className={s.widgetTitle}>Verlof aankomend</div>
+        <div className="flex items-center justify-between"><div className={s.widgetTitle} style={{ marginBottom: 0 }}>Verlof aankomend</div><a href="/admin/verlof" className="font-mono text-[0.6rem] text-warm uppercase tracking-wide hover:underline no-underline">Bekijk alle →</a></div>
         {timeOff.length === 0 ? (
           <div className="font-serif text-sm text-text-faint py-4">Geen verlof ingepland</div>
         ) : (
