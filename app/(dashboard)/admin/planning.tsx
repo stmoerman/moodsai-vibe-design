@@ -723,6 +723,7 @@ export function PlanningTab() {
     const n = new Date(); return { year: n.getFullYear(), month: n.getMonth() };
   });
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
+  const [drawerTimeFilter, setDrawerTimeFilter] = useState<'alle' | 'ochtend' | 'middag'>('alle');
   const [weekStart, setWeekStart] = useState<Date>(() => {
     if (typeof window !== 'undefined') {
       try {
@@ -1040,14 +1041,32 @@ export function PlanningTab() {
                 onClick={(e) => e.target === e.currentTarget && setSelectedDay(null)}
               >
                 <div className="bg-surface border border-border w-full max-w-md h-full shadow-lg flex flex-col">
-                  <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
-                    <h3 className="font-display text-lg text-text capitalize">
-                      {new Date(selectedDay + 'T00:00').toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' })}
-                    </h3>
-                    <button className="font-mono text-xs text-text-muted border border-border px-3 py-1 uppercase tracking-wide hover:bg-text hover:text-paper transition-colors cursor-pointer" onClick={() => setSelectedDay(null)}>Sluiten</button>
+                  <div className="px-6 py-4 border-b border-border-subtle">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="font-display text-lg text-text capitalize">
+                        {new Date(selectedDay + 'T00:00').toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' })}
+                      </h3>
+                      <button className="font-mono text-xs text-text-muted border border-border px-3 py-1 uppercase tracking-wide hover:bg-text hover:text-paper transition-colors cursor-pointer" onClick={() => setSelectedDay(null)}>Sluiten</button>
+                    </div>
+                    <div className="flex gap-1">
+                      {([['alle', 'Alle'], ['ochtend', '08:00–12:00'], ['middag', '12:00–17:00']] as const).map(([key, label]) => (
+                        <button
+                          key={key}
+                          onClick={() => setDrawerTimeFilter(key)}
+                          className={`font-mono text-[0.6rem] uppercase tracking-wide px-2.5 py-1 border cursor-pointer transition-colors ${drawerTimeFilter === key ? 'bg-text text-paper border-text' : 'border-border text-text-muted hover:bg-surface-hover'}`}
+                        >{label}</button>
+                      ))}
+                    </div>
                   </div>
                   <div className="flex-1 overflow-y-auto p-6 space-y-3">
-                    {entriesByDate[selectedDay].map((entry) => (
+                    {entriesByDate[selectedDay]
+                      .filter((entry) => {
+                        if (drawerTimeFilter === 'alle') return true;
+                        const mins = parseInt(entry.startTime.split(':')[0]) * 60 + parseInt(entry.startTime.split(':')[1]);
+                        if (drawerTimeFilter === 'ochtend') return mins < 720; // before 12:00
+                        return mins >= 720; // 12:00+
+                      })
+                      .map((entry) => (
                       <div
                         key={entry.id}
                         className="border-l-[3px] bg-paper p-4 cursor-pointer hover:bg-surface-hover transition-colors"
