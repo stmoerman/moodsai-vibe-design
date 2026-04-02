@@ -329,7 +329,8 @@ interface LocationFilterProps {
   onToggle: (loc: string) => void;
 }
 
-function LocationFilter({ locations = [], selectedLocations, onToggle }: LocationFilterProps) {
+function LocationFilter({ locations: rawLocations, selectedLocations, onToggle }: LocationFilterProps) {
+  const locations = rawLocations ?? [];
   const allLocNames = locations.map((l) => l.name);
   const hasFilter = selectedLocations.size < allLocNames.length && selectedLocations.size > 0;
   // group by type
