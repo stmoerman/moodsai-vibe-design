@@ -79,14 +79,14 @@ export function HrVerlofTab() {
                 {entry.firstName.charAt(0)}{entry.lastName.charAt(0)}
               </div>
               <div>
-                <div className={s.listName}>{entry.firstName} {entry.lastName}</div>
-                <div className={s.listMeta}>
+                <div className="font-serif text-[0.95rem] text-text font-medium">{entry.firstName} {entry.lastName}</div>
+                <div className="font-mono text-[0.7rem] text-text-muted">
                   Sinds {new Date(entry.phaseStart).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })}
                   {entry.notes ? ` · ${entry.notes}` : ''}
                 </div>
               </div>
               <div className={s.listSpacer} />
-              <span className={`${s.listBadge} ${s.badgeWarning}`}>
+              <span className={`font-mono text-[0.65rem] uppercase tracking-wide px-2 py-0.5 border ${entry.percentage >= 100 ? 'border-[#c47050] text-[#c47050] bg-[#c47050]/5' : 'border-[#b07a3a] text-[#b07a3a] bg-[#b07a3a]/5'}`}>
                 {entry.percentage >= 100 ? 'Ziek' : `${100 - entry.percentage}% herstel`}
               </span>
             </div>
@@ -109,15 +109,15 @@ export function HrVerlofTab() {
                 {entry.firstName.charAt(0)}{entry.lastName.charAt(0)}
               </div>
               <div>
-                <div className={s.listName}>{entry.firstName} {entry.lastName}</div>
-                <div className={s.listMeta}>
+                <div className="font-serif text-[0.95rem] text-text font-medium">{entry.firstName} {entry.lastName}</div>
+                <div className="font-mono text-[0.7rem] text-text-muted">
                   {new Date(entry.startDate).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })}
                   {entry.startDate !== entry.endDate ? ` – ${new Date(entry.endDate).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })}` : ''}
                   {entry.notes ? ` · ${entry.notes}` : ''}
                 </div>
               </div>
               <div className={s.listSpacer} />
-              <span className={`${s.listBadge} ${s.badgePending}`}>
+              <span className="font-mono text-[0.65rem] uppercase tracking-wide px-2 py-0.5 border border-[#5a9a60] text-[#5a9a60] bg-[#5a9a60]/5">
                 {LEAVE_TYPE_LABELS[entry.type] ?? entry.baseType}
               </span>
             </div>

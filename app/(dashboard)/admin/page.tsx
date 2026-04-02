@@ -367,6 +367,22 @@ function AdminDashboard() {
 
         {/* ════ HR & Verlof Tab ════ */}
         {activeTab === 'hr' && <HrVerlofTab />}
+
+        {/* ════ Team Tab (placeholder) ════ */}
+        {activeTab === 'team' && (
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="font-display text-xl text-text-muted mb-2">Team</div>
+            <div className="font-serif text-sm text-text-faint">Binnenkort beschikbaar</div>
+          </div>
+        )}
+
+        {/* ════ Rapportage Tab (placeholder) ════ */}
+        {activeTab === 'rapportage' && (
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="font-display text-xl text-text-muted mb-2">Rapportage</div>
+            <div className="font-serif text-sm text-text-faint">Binnenkort beschikbaar</div>
+          </div>
+        )}
       </div>
     </div>
   );

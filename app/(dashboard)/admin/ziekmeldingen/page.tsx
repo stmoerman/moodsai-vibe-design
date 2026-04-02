@@ -82,7 +82,7 @@ export default function ZiekmeldingenPage() {
 
   return (
     <div className="min-h-screen bg-paper">
-      <div className="max-w-[1400px] mx-auto px-8 py-8">
+      <div className="max-w-[1600px] mx-auto px-8 py-8">
         <Link href="/admin?tab=hr" className="font-mono text-xs text-text-muted hover:text-text transition-colors no-underline">← Terug naar HR & Verlof</Link>
         <h1 className="font-display text-2xl text-warm mt-2 mb-1">Ziekmeldingen</h1>
         <p className="font-mono text-xs text-text-muted mb-6">{list.length} {showActiveOnly ? 'actieve' : 'totaal'} meldingen</p>
@@ -145,8 +145,8 @@ export default function ZiekmeldingenPage() {
             )}
           </div>
 
-          {/* Sidebar */}
-          <div className="w-72 shrink-0 space-y-4">
+          {/* Sidebar — mt matches toolbar height so stats align with first entry */}
+          <div className="w-72 shrink-0 space-y-4 mt-[52px]">
             {/* Stats */}
             <div className="bg-surface border border-border p-5">
               <div className="font-mono text-[0.7rem] text-text-muted uppercase tracking-wide mb-4">Overzicht</div>
