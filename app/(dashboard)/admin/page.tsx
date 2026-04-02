@@ -169,7 +169,7 @@ function AdminDashboard() {
             </div>
 
             <div className={`${s.widgetCard} ${s.gridFull}`}>
-              <div className={s.widgetTitle}>Kerncijfers</div>
+              <div className={s.widgetTitle}>Analytics</div>
               <div className={s.kpiRow}>
                 {kpis.map((kpi, i) => (
                   <div key={i} className={s.kpi}>
@@ -182,7 +182,7 @@ function AdminDashboard() {
             </div>
 
             <div className={`${s.widgetCard} ${s.gridFull}`}>
-              <div className={s.widgetTitle}>Snelkoppelingen</div>
+              <div className={s.widgetTitle}>Acties</div>
               <div className={s.quickLinks}>
                 {quickLinks.map((link, i) => (
                   <a key={i} href={link.href} className={s.quickLink}>
