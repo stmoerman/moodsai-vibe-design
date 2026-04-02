@@ -1244,6 +1244,118 @@ export function PlanningTab() {
         </div>
       </div>
       )}
+
+      {/* ═══ Uitgenodigde cliënten ═══ */}
+      <InvitedClientsTable />
+    </div>
+  );
+}
+
+/* ── Mock invited clients data ── */
+const INVITED_CLIENTS = [
+  { id: '1', firstName: 'Jan', lastName: 'De Vries', email: 'jan.devries@gmail.com', phone: '06-12345678', dob: '1988-03-12', invitedAt: '2026-03-28', status: 'onboarding', reminders: 0, location: 'Utrecht' },
+  { id: '2', firstName: 'Maria', lastName: 'Bakker', email: 'maria.bakker@outlook.com', phone: '06-98765432', dob: '1995-07-28', invitedAt: '2026-03-25', status: 'invited', reminders: 2, location: 'Amsterdam' },
+  { id: '3', firstName: 'Pieter', lastName: 'Jansen', email: 'p.jansen@hotmail.com', phone: '06-11223344', dob: '1982-11-04', invitedAt: '2026-03-22', status: 'intake_booked', reminders: 1, location: 'Rotterdam' },
+  { id: '4', firstName: 'Sophie', lastName: 'Meijer', email: 'sophie.m@gmail.com', phone: null, dob: '1997-09-15', invitedAt: '2026-03-20', status: 'invited', reminders: 3, location: 'Nijmegen' },
+  { id: '5', firstName: 'Thomas', lastName: 'Van den Berg', email: 'tvandenberg@live.nl', phone: '06-55667788', dob: '1990-01-22', invitedAt: '2026-03-18', status: 'onboarding', reminders: 1, location: 'Amsterdam' },
+  { id: '6', firstName: 'Lisa', lastName: 'Visser', email: 'lisa.visser@proton.me', phone: '06-44332211', dob: '1993-05-30', invitedAt: '2026-03-15', status: 'intake_booked', reminders: 0, location: 'Utrecht' },
+  { id: '7', firstName: 'Ahmed', lastName: 'El Amrani', email: 'ahmed.ea@gmail.com', phone: '06-77889900', dob: '1985-12-08', invitedAt: '2026-03-12', status: 'invited', reminders: 4, location: null },
+  { id: '8', firstName: 'Emma', lastName: 'De Groot', email: 'emma.degroot@yahoo.com', phone: null, dob: '2000-02-14', invitedAt: '2026-03-10', status: 'expired', reminders: 5, location: 'Heerlen' },
+];
+
+const CLIENT_STATUS_LABELS: Record<string, { label: string; color: string }> = {
+  invited: { label: 'Uitgenodigd', color: '#b07a3a' },
+  onboarding: { label: 'Onboarding', color: '#4a6e8a' },
+  intake_booked: { label: 'Intake gepland', color: '#5a9a60' },
+  expired: { label: 'Verlopen', color: '#9a9490' },
+};
+
+function InvitedClientsTable() {
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+
+  const filtered = INVITED_CLIENTS.filter(c => {
+    if (statusFilter !== 'all' && c.status !== statusFilter) return false;
+    if (search && !`${c.firstName} ${c.lastName} ${c.email}`.toLowerCase().includes(search.toLowerCase())) return false;
+    return true;
+  });
+
+  return (
+    <div className="mt-4 bg-surface border border-border">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-border-subtle">
+        <div className="font-mono text-[0.75rem] text-text-muted uppercase tracking-wide">Uitgenodigde cliënten</div>
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Zoek op naam of e-mail..."
+            className="font-serif text-sm text-text bg-transparent border-b border-border py-1 outline-none focus:border-text transition-colors placeholder:text-text-faint w-52"
+          />
+          <div className="flex">
+            {[{ value: 'all', label: 'Alle' }, { value: 'invited', label: 'Uitgenodigd' }, { value: 'onboarding', label: 'Onboarding' }, { value: 'intake_booked', label: 'Gepland' }].map(opt => (
+              <button
+                key={opt.value}
+                onClick={() => setStatusFilter(opt.value)}
+                className={`font-mono text-[0.6rem] uppercase tracking-wide px-2.5 py-1 border-t border-b first:border-l border-r border-border cursor-pointer transition-colors ${statusFilter === opt.value ? 'bg-text text-paper' : 'bg-paper text-text-muted hover:bg-surface-hover'}`}
+              >{opt.label}</button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <table className="w-full">
+        <thead>
+          <tr className="border-b border-border-subtle">
+            <th className="text-left font-mono text-[0.65rem] text-text-faint uppercase tracking-wide px-5 py-2.5">Naam</th>
+            <th className="text-left font-mono text-[0.65rem] text-text-faint uppercase tracking-wide px-3 py-2.5">E-mail</th>
+            <th className="text-left font-mono text-[0.65rem] text-text-faint uppercase tracking-wide px-3 py-2.5">Telefoon</th>
+            <th className="text-left font-mono text-[0.65rem] text-text-faint uppercase tracking-wide px-3 py-2.5">Geb. datum</th>
+            <th className="text-left font-mono text-[0.65rem] text-text-faint uppercase tracking-wide px-3 py-2.5">Locatie</th>
+            <th className="text-left font-mono text-[0.65rem] text-text-faint uppercase tracking-wide px-3 py-2.5">Uitgenodigd</th>
+            <th className="text-center font-mono text-[0.65rem] text-text-faint uppercase tracking-wide px-3 py-2.5">Herinneringen</th>
+            <th className="text-left font-mono text-[0.65rem] text-text-faint uppercase tracking-wide px-3 py-2.5">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filtered.length === 0 ? (
+            <tr><td colSpan={8} className="text-center font-serif text-sm text-text-faint py-8">Geen cliënten gevonden</td></tr>
+          ) : filtered.map(c => {
+            const st = CLIENT_STATUS_LABELS[c.status] ?? { label: c.status, color: '#9a9490' };
+            return (
+              <tr key={c.id} className="border-b border-border-subtle/50 hover:bg-surface-hover transition-colors">
+                <td className="px-5 py-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-paper border border-border-subtle flex items-center justify-center font-mono text-[0.6rem] text-text-muted shrink-0">
+                      {c.firstName[0]}{c.lastName[0]}
+                    </div>
+                    <span className="font-serif text-[0.9rem] text-text font-medium">{c.firstName} {c.lastName}</span>
+                  </div>
+                </td>
+                <td className="px-3 py-3 font-mono text-[0.75rem] text-text-muted">{c.email}</td>
+                <td className="px-3 py-3 font-mono text-[0.75rem] text-text-muted">{c.phone ?? '—'}</td>
+                <td className="px-3 py-3 font-mono text-[0.75rem] text-text-muted">
+                  {new Date(c.dob).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short', year: 'numeric' })}
+                </td>
+                <td className="px-3 py-3 font-mono text-[0.75rem] text-text-muted">{c.location ?? 'Landelijk'}</td>
+                <td className="px-3 py-3 font-mono text-[0.75rem] text-text-muted">
+                  {new Date(c.invitedAt).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })}
+                </td>
+                <td className="px-3 py-3 text-center">
+                  <span className={`font-mono text-[0.75rem] ${c.reminders >= 3 ? 'text-[#c47050] font-medium' : 'text-text-muted'}`}>
+                    {c.reminders}
+                  </span>
+                </td>
+                <td className="px-3 py-3">
+                  <span className="font-mono text-[0.6rem] uppercase tracking-wide px-2 py-0.5 border" style={{ borderColor: st.color, color: st.color }}>
+                    {st.label}
+                  </span>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 }
