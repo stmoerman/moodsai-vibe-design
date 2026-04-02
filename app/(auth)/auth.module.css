@@ -167,28 +167,3 @@
   color: var(--color-text-muted);
   margin-bottom: 24px;
 }
-
-.otpRow {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  margin-bottom: 24px;
-}
-
-.otpInput {
-  width: 44px;
-  height: 52px;
-  text-align: center;
-  font-family: var(--font-mono);
-  font-size: 1.2rem;
-  color: var(--color-text);
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid var(--color-border);
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.otpInput:focus {
-  border-bottom-color: var(--color-text);
-}

@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth, ROLE_ROUTES } from '@/contexts/AuthContext';
 import a from '../auth.module.css';
 import s from './page.module.css';
 
@@ -19,8 +19,17 @@ export default function LoginPage() {
     if (!email || !password) return;
     setLoading(true);
     login(email);
+    // Map email to role and go directly to dashboard
+    const roleMap: Record<string, string> = {
+      'therapist-demo@moodsai.ai': 'therapist',
+      'client-demo@moodsai.ai': 'client',
+      'admin-demo@moodsai.ai': 'admin',
+      'owner-demo@moodsai.ai': 'owner',
+    };
+    const role = roleMap[email.toLowerCase()] ?? 'client';
+    const dest = ROLE_ROUTES[role] ?? '/client';
     setTimeout(() => {
-      router.push('/verify');
+      router.push(dest);
     }, 1500);
   }
 
