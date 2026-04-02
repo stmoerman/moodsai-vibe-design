@@ -482,7 +482,7 @@ export default function DashboardExample3() {
             className={s.greetingUnderlinePath}
           />
         </svg>
-        <span className={s.dateTime}>BI Dashboard &middot; Amsterdam &middot; {dateStr}</span>
+        <span className={s.dateTime} suppressHydrationWarning>BI Dashboard &middot; Amsterdam &middot; {dateStr}</span>
       </div>
 
       {/* ── Navigation Tabs ── */}

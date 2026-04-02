@@ -34,12 +34,6 @@
   75% { transform: rotate(0.5deg); }
 }
 
-/* ── Text size scaling ── */
-.sizeUp1 { font-size: 110%; }
-.sizeUp2 { font-size: 120%; }
-.sizeDown1 { font-size: 90%; }
-.sizeDown2 { font-size: 80%; }
-
 /* ── Root ── */
 .root {
   position: relative;
@@ -60,102 +54,6 @@
   pointer-events: none;
   z-index: 0;
   animation: fadeIn 0.3s ease both;
-}
-
-/* ── Top Bar (48px) ── */
-.topBar {
-  position: relative;
-  z-index: 10;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  max-width: 1600px;
-  margin: 0 auto;
-  padding: 0 32px;
-  border-bottom: 1px solid #d0cdc6;
-  background: #eeeae3;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-}
-
-.logoImg {
-  height: 28px;
-  width: auto;
-  object-fit: contain;
-}
-
-.topBarRight {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-/* ── Text size controls ── */
-.sizeControls {
-  display: flex;
-  gap: 2px;
-}
-
-.sizeBtn {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.7em;
-  color: #3a3a3a;
-  background: none;
-  border: 1px solid #d0cdc6;
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-  position: relative;
-  padding: 0;
-}
-
-.sizeBtn:hover:not(:disabled) {
-  background: #3a3a3a;
-  color: #eeeae3;
-}
-
-.sizeBtn:disabled {
-  opacity: 0.25;
-  cursor: default;
-}
-
-.sizeBtnMinus,
-.sizeBtnPlus {
-  font-size: 0.5rem;
-  position: absolute;
-  bottom: 2px;
-  right: 2px;
-  line-height: 1;
-}
-
-.userName {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.7em;
-  color: #7a746e;
-  letter-spacing: 0.04em;
-}
-
-.avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #d0cdc6;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.6em;
-  color: #3a3a3a;
-  letter-spacing: 0.04em;
 }
 
 /* ── Welcome Hero ── */
@@ -1393,10 +1291,6 @@
 
 /* ── Mobile ── */
 @media (max-width: 768px) {
-  .topBar {
-    padding: 0 16px;
-  }
-
   .welcomeHero {
     padding: 16px 16px 8px;
   }
