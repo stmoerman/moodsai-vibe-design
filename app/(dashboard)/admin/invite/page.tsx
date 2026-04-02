@@ -110,7 +110,7 @@ export default function InvitePage() {
 
             {error && <div className="mb-4 font-mono text-[0.7rem] text-[#c47050]">{error}</div>}
 
-            <button type="submit" disabled={loading || !form.firstName || !form.lastName || !form.email} className="w-full font-mono text-[0.8rem] font-bold uppercase tracking-wider text-paper bg-text py-3.5 cursor-pointer hover:opacity-85 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed">
+            <button type="submit" disabled={loading || !form.firstName || !form.lastName || !form.email} className="w-full font-mono text-[0.8rem] font-bold uppercase tracking-wider text-white bg-warm py-3.5 cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed">
               {loading ? 'Versturen...' : 'Uitnodiging versturen'}
             </button>
 
@@ -129,7 +129,7 @@ export default function InvitePage() {
                 <a href={onboardingUrl} className="font-mono text-[0.7rem] text-warm break-all hover:underline no-underline">{onboardingUrl}</a>
               </div>
             )}
-            <button onClick={reset} className="font-mono text-[0.75rem] uppercase tracking-wide text-paper bg-text px-6 py-2.5 cursor-pointer hover:opacity-85 transition-opacity">Nog een uitnodiging</button>
+            <button onClick={reset} className="font-mono text-[0.75rem] uppercase tracking-wide text-white bg-warm px-6 py-2.5 cursor-pointer hover:opacity-90 transition-opacity">Nog een uitnodiging</button>
             <div className="mt-6">
               <Link href="/admin" className="font-serif text-sm text-text-muted hover:text-text transition-colors no-underline">← Terug naar dashboard</Link>
             </div>

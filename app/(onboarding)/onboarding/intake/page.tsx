@@ -183,7 +183,7 @@ export default function IntakeSlotPicker() {
             </div>
             <div className="flex gap-2">
               <button onClick={() => setSelected(null)} className="font-mono text-[0.7rem] text-text-muted border border-border px-4 py-2 cursor-pointer hover:bg-surface-hover transition-colors">Annuleren</button>
-              <button onClick={handleConfirm} disabled={sending} className="font-mono text-[0.7rem] text-paper bg-text px-4 py-2 cursor-pointer hover:opacity-85 transition-opacity disabled:opacity-50">{sending ? 'Bevestigen...' : 'Bevestigen'}</button>
+              <button onClick={handleConfirm} disabled={sending} className="font-mono text-[0.7rem] text-white bg-warm px-4 py-2 cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50">{sending ? 'Bevestigen...' : 'Bevestigen'}</button>
             </div>
           </div>
         </div>

@@ -109,7 +109,7 @@ function OnboardingWizard() {
 
           {passwordError && <div className="mb-4 font-mono text-[0.7rem] text-[#c47050]">{passwordError}</div>}
 
-          <button onClick={handlePasswordSubmit} disabled={!password || !confirmPassword} className="w-full font-mono text-[0.8rem] font-bold uppercase tracking-wider text-paper bg-text py-3.5 cursor-pointer hover:opacity-85 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed">Verder</button>
+          <button onClick={handlePasswordSubmit} disabled={!password || !confirmPassword} className="w-full font-mono text-[0.8rem] font-bold uppercase tracking-wider text-white bg-warm py-3.5 cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed">Verder</button>
         </div>
       )}
 
@@ -152,7 +152,7 @@ function OnboardingWizard() {
           <h1 className="font-display text-2xl text-text mb-2">Kun je kort omschrijven waarom je hulp zoekt?</h1>
           <p className="font-serif text-sm text-text-muted mb-8">Je antwoord wordt alleen gedeeld met je therapeut</p>
           <textarea className="w-full font-serif text-base text-text bg-transparent border border-border p-4 outline-none focus:border-text transition-colors resize-none h-32 placeholder:text-text-faint mb-6" placeholder="Bijv. ik ervaar veel stress op werk..." value={data.reason} onChange={(e) => setData((d) => ({ ...d, reason: e.target.value }))} />
-          <button onClick={handleReasonSubmit} className="w-full font-mono text-[0.8rem] font-bold uppercase tracking-wider text-paper bg-text py-3.5 cursor-pointer hover:opacity-85 transition-opacity">Verder naar intake planning</button>
+          <button onClick={handleReasonSubmit} className="w-full font-mono text-[0.8rem] font-bold uppercase tracking-wider text-white bg-warm py-3.5 cursor-pointer hover:opacity-90 transition-opacity">Verder naar intake planning</button>
           <button onClick={handleReasonSubmit} className="w-full mt-3 font-serif text-sm text-text-faint hover:text-text transition-colors cursor-pointer bg-transparent border-none">Overslaan</button>
         </div>
       )}
