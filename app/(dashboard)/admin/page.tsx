@@ -142,7 +142,7 @@ function OverzichtTab() {
                 <div className={`font-display text-2xl ${m.slots > 0 ? 'text-text' : 'text-text-faint'}`}>{m.slots}</div>
                 <div className="font-mono text-[0.65rem] text-text-muted uppercase tracking-wide mt-1">{m.label}</div>
                 {m.slots > 0 && (
-                  <a href={`/admin?tab=planning`} className="inline-block mt-2 font-mono text-[0.55rem] text-warm uppercase tracking-wide hover:underline no-underline">Bekijk →</a>
+                  <a href={`/admin?tab=planning&month=${m.month}`} className="inline-block mt-2 font-mono text-[0.55rem] text-warm uppercase tracking-wide hover:underline no-underline">Bekijk →</a>
                 )}
               </div>
             ))}

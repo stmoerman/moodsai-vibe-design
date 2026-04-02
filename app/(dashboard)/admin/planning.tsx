@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import {
   mockAgendaEntries,
@@ -710,6 +711,7 @@ function DayColumn({ date, entries, dayIndex, onEntryClick, dayView = false }: D
 // ---------------------------------------------------------------------------
 
 export function PlanningTab() {
+  const searchParams = useSearchParams();
   // --- Data state (fetched from API, fallback to mock) ---
   const [allEntries, setAllEntries] = useState<AgendaEntry[]>(mockAgendaEntries);
   const [locations, setLocations] = useState<AgendaLocation[]>(mockLocations);
@@ -739,7 +741,13 @@ export function PlanningTab() {
     if (typeof window === 'undefined') return 'maand';
     return (localStorage.getItem('moods-planning-view') as 'maand' | 'week' | 'dag') ?? 'maand';
   });
+  const monthParam = searchParams.get('month'); // e.g. "2026-06"
   const [calMonth, setCalMonth] = useState(() => {
+    // URL param takes priority (from forecast card click)
+    if (monthParam) {
+      const [y, m] = monthParam.split('-').map(Number);
+      if (y && m) return { year: y, month: m - 1 };
+    }
     if (typeof window !== 'undefined') {
       try {
         const saved = localStorage.getItem('moods-planning-month');
@@ -1138,9 +1146,13 @@ export function PlanningTab() {
                         <div className="flex items-center gap-2 mb-1.5">
                           <span className="w-2 h-2 rounded-full shrink-0" style={{ background: ACTIVITY_COLORS[entry.activityType] }} />
                           <span className="font-mono text-[0.8rem] text-text-muted">{entry.startTime} – {entry.endTime}</span>
-                          <span className="font-mono text-[0.7rem] text-text-muted ml-auto">{ACTIVITY_LABELS[entry.activityType]}</span>
+                          <span className="font-mono text-[0.65rem] text-text-faint">({entry.duration} min)</span>
+                          <span className="font-mono text-[0.7rem] font-semibold ml-auto" style={{ color: ACTIVITY_COLORS[entry.activityType] }}>{ACTIVITY_LABELS[entry.activityType]}</span>
                         </div>
-                        <div className="font-serif text-base text-text font-medium">{entry.therapistName}</div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-serif text-base text-text font-medium">{entry.therapistName}</span>
+                          {entry.status && <span className="font-mono text-[0.6rem] uppercase tracking-wide px-1.5 py-0.5 border border-border text-text-muted">{entry.status}</span>}
+                        </div>
                         <div className="font-serif text-[0.95rem] text-text">{entry.clientName ?? 'Beschikbaar'}</div>
                         <div className="font-mono text-[0.75rem] text-text-muted mt-1">{entry.location}</div>
                         {entry.description && <div className="font-serif text-[0.85rem] text-text-muted mt-1 italic">{entry.description}</div>}
