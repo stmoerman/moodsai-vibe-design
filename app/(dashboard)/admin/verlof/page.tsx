@@ -30,10 +30,19 @@ const RANGE_OPTIONS = [
   { label: '1 jaar', days: 365 },
 ];
 
+const TYPE_FILTER_OPTIONS: { label: string; value: 'all' | 'LEAVE' | 'OVERTIME' | 'TRANSACTION' }[] = [
+  { label: 'Alle', value: 'all' },
+  { label: 'Verlof', value: 'LEAVE' },
+  { label: 'Overuren', value: 'OVERTIME' },
+  { label: 'Transactie', value: 'TRANSACTION' },
+];
+
 export default function VerlofPage() {
   const [entries, setEntries] = useState<TimeOffEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [rangeDays, setRangeDays] = useState(90);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [typeFilter, setTypeFilter] = useState<'all' | 'LEAVE' | 'OVERTIME' | 'TRANSACTION'>('all');
 
   useEffect(() => {
     setLoading(true);
@@ -48,9 +57,14 @@ export default function VerlofPage() {
       .finally(() => setLoading(false));
   }, [rangeDays]);
 
+  // Apply filters
+  let filtered = entries;
+  if (typeFilter !== 'all') filtered = filtered.filter(e => e.baseType === typeFilter);
+  if (searchQuery) filtered = filtered.filter(e => `${e.firstName} ${e.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()));
+
   // Group by month
   const byMonth = new Map<string, TimeOffEntry[]>();
-  for (const e of entries) {
+  for (const e of filtered) {
     const month = new Date(e.startDate).toLocaleDateString('nl-NL', { month: 'long', year: 'numeric' });
     if (!byMonth.has(month)) byMonth.set(month, []);
     byMonth.get(month)!.push(e);
@@ -61,9 +75,9 @@ export default function VerlofPage() {
       <div className="max-w-[1200px] mx-auto px-8 py-8">
         <Link href="/admin?tab=hr" className="font-mono text-xs text-text-muted hover:text-text transition-colors no-underline">← Terug naar HR & Verlof</Link>
         <h1 className="font-display text-2xl text-warm mt-2 mb-1">Verlof aankomend</h1>
-        <p className="font-mono text-xs text-text-muted mb-6">{entries.length} verlofaanvragen · komende {rangeDays} dagen</p>
+        <p className="font-mono text-xs text-text-muted mb-6">{filtered.length} verlofaanvragen · komende {rangeDays} dagen</p>
 
-        <div className="flex items-center gap-1 mb-6">
+        <div className="flex items-center gap-1 mb-6 flex-wrap">
           {RANGE_OPTIONS.map(opt => (
             <button
               key={opt.days}
@@ -71,11 +85,31 @@ export default function VerlofPage() {
               className={`font-mono text-[0.7rem] uppercase tracking-wide px-3 py-1.5 border cursor-pointer transition-colors ${rangeDays === opt.days ? 'bg-text text-paper border-text' : 'border-border text-text-muted hover:bg-surface-hover'}`}
             >{opt.label}</button>
           ))}
+
+          <div className="w-px h-5 bg-border-subtle mx-2" />
+
+          {TYPE_FILTER_OPTIONS.map(opt => (
+            <button
+              key={opt.value}
+              onClick={() => setTypeFilter(opt.value)}
+              className={`font-mono text-[0.7rem] uppercase tracking-wide px-3 py-1.5 border cursor-pointer transition-colors ${typeFilter === opt.value ? 'bg-text text-paper border-text' : 'border-border text-text-muted hover:bg-surface-hover'}`}
+            >{opt.label}</button>
+          ))}
+
+          <div className="w-px h-5 bg-border-subtle mx-2" />
+
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            placeholder="Zoek op naam..."
+            className="font-mono text-[0.7rem] px-3 py-1.5 border border-border bg-paper text-text placeholder:text-text-faint focus:outline-none focus:border-text transition-colors"
+          />
         </div>
 
         {loading ? (
           <div className="font-mono text-sm text-text-faint animate-pulse py-8">Laden...</div>
-        ) : entries.length === 0 ? (
+        ) : filtered.length === 0 ? (
           <div className="font-serif text-text-muted py-8">Geen verlof ingepland</div>
         ) : (
           Array.from(byMonth.entries()).map(([month, monthEntries]) => (
