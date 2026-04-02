@@ -64,115 +64,109 @@ const navTabs = [
 
 
 /* ── Overzicht Tab (fetches live data) ── */
+const MONTH_NAMES_SHORT = ['Jan', 'Feb', 'Mrt', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec'];
+
+interface MonthForecast { month: string; label: string; slots: number; }
+
 function OverzichtTab() {
-  const [intakeData, setIntakeData] = useState<{ monthSlots: number; weekSlots: number; todaySlots: number; topLocation: string; topLocationCount: number; locations: { name: string; count: number }[] } | null>(null);
-  const [todayData, setTodayData] = useState<{ total: number; therapists: number; firstTime: string; lastTime: string; byType: Record<string, number> } | null>(null);
+  const [forecast, setForecast] = useState<MonthForecast[]>([]);
+  const [todayData, setTodayData] = useState<{ total: number; therapists: number; firstTime: string; lastTime: string } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const now = new Date();
     const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-    const monthStart = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
-    const monthEnd = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()).padStart(2, '0')}`;
-    // Week: Monday of current week
-    const day = now.getDay();
-    const mondayOffset = day === 0 ? -6 : 1 - day;
-    const monday = new Date(now);
-    monday.setDate(now.getDate() + mondayOffset);
-    const friday = new Date(monday);
-    friday.setDate(monday.getDate() + 4);
-    const weekStart = `${monday.getFullYear()}-${String(monday.getMonth() + 1).padStart(2, '0')}-${String(monday.getDate()).padStart(2, '0')}`;
-    const weekEnd = `${friday.getFullYear()}-${String(friday.getMonth() + 1).padStart(2, '0')}-${String(friday.getDate()).padStart(2, '0')}`;
+
+    // Build 6 month ranges
+    const months: { start: string; end: string; label: string }[] = [];
+    for (let i = 0; i < 6; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
+      const last = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+      const start = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`;
+      const end = `${last.getFullYear()}-${String(last.getMonth() + 1).padStart(2, '0')}-${String(last.getDate()).padStart(2, '0')}`;
+      months.push({ start, end, label: `${MONTH_NAMES_SHORT[d.getMonth()]} ${d.getFullYear()}` });
+    }
+
+    // Fetch the full 6-month range in one call
+    const rangeStart = months[0].start;
+    const rangeEnd = months[months.length - 1].end;
 
     Promise.all([
-      // Month intake slots
-      fetch(`/api/agenda/entries?start=${monthStart}&end=${monthEnd}&types=intake&limit=2000`).then(r => r.json()).catch(() => ({ entries: [] })),
-      // Week intake slots
-      fetch(`/api/agenda/entries?start=${weekStart}&end=${weekEnd}&types=intake&limit=500`).then(r => r.json()).catch(() => ({ entries: [] })),
-      // Today all entries
+      fetch(`/api/agenda/entries?start=${rangeStart}&end=${rangeEnd}&types=intake&limit=2000`).then(r => r.json()).catch(() => ({ entries: [] })),
       fetch(`/api/agenda/entries?start=${today}&end=${today}&limit=2000`).then(r => r.json()).catch(() => ({ entries: [] })),
-    ]).then(([monthRes, weekRes, todayRes]) => {
-      const monthEntries = (monthRes.entries ?? []).filter((e: { clientName: string | null }) => !e.clientName);
-      const weekEntries = (weekRes.entries ?? []).filter((e: { clientName: string | null }) => !e.clientName);
-      const todayEntries = (todayRes.entries ?? []).filter((e: { clientName: string | null }) => !e.clientName);
-
-      // Count by location for month
-      const locCounts: Record<string, number> = {};
-      for (const e of monthEntries) {
-        const desc = (e as { description?: string }).description ?? '';
-        const loc = (e as { location?: string }).location ?? '';
-        const combined = `${desc} ${loc}`.toLowerCase();
-        for (const city of ['amsterdam', 'utrecht', 'rotterdam', 'nijmegen', 'heerlen', 'venray']) {
-          if (combined.includes(city)) {
-            const cityName = city.charAt(0).toUpperCase() + city.slice(1);
-            locCounts[cityName] = (locCounts[cityName] ?? 0) + 1;
-            break;
-          }
-        }
-        if (!Object.keys(locCounts).some(c => `${desc} ${loc}`.toLowerCase().includes(c.toLowerCase()))) {
-          locCounts['Online'] = (locCounts['Online'] ?? 0) + 1;
-        }
+    ]).then(([intakeRes, todayRes]) => {
+      // Count open intake slots per month
+      const openSlots = (intakeRes.entries ?? []).filter((e: { clientName: string | null }) => !e.clientName);
+      const monthCounts: Record<string, number> = {};
+      for (const e of openSlots) {
+        const m = (e as { date: string }).date.slice(0, 7); // "2026-06"
+        monthCounts[m] = (monthCounts[m] ?? 0) + 1;
       }
-      const sortedLocs = Object.entries(locCounts).sort((a, b) => b[1] - a[1]).map(([name, count]) => ({ name, count }));
-
-      setIntakeData({
-        monthSlots: monthEntries.length,
-        weekSlots: weekEntries.length,
-        todaySlots: todayEntries.length,
-        topLocation: sortedLocs[0]?.name ?? '—',
-        topLocationCount: sortedLocs[0]?.count ?? 0,
-        locations: sortedLocs,
-      });
+      const fc: MonthForecast[] = months.map(m => ({
+        month: m.start.slice(0, 7),
+        label: m.label,
+        slots: monthCounts[m.start.slice(0, 7)] ?? 0,
+      }));
+      setForecast(fc);
 
       // Today stats
       const allToday = todayRes.entries ?? [];
       const therapistSet = new Set(allToday.map((e: { therapistName: string }) => e.therapistName));
       const times = allToday.map((e: { startTime: string }) => e.startTime).filter(Boolean).sort();
       const endTimes = allToday.map((e: { endTime: string }) => e.endTime).filter(Boolean).sort();
-      const byType: Record<string, number> = {};
-      for (const e of allToday) { byType[(e as { activityType: string }).activityType] = (byType[(e as { activityType: string }).activityType] ?? 0) + 1; }
-
       setTodayData({
         total: allToday.length,
         therapists: therapistSet.size,
         firstTime: times[0] ?? '—',
         lastTime: endTimes[endTimes.length - 1] ?? '—',
-        byType,
       });
     }).finally(() => setLoading(false));
   }, []);
 
+  const totalOpen = forecast.reduce((sum, m) => sum + m.slots, 0);
+
   return (
     <div className={s.grid}>
-      {/* Intake capaciteit */}
-      <div className={s.widgetCard}>
-        <div className={s.widgetTitle}>Intake capaciteit</div>
+      {/* Intake forecast — full width */}
+      <div className={`${s.widgetCard} ${s.gridFull}`}>
+        <div className="flex items-center justify-between mb-4">
+          <div className={s.widgetTitle} style={{ marginBottom: 0 }}>Open intake slots</div>
+          {!loading && <span className="font-mono text-[0.7rem] text-text-muted">{totalOpen} totaal komende 6 maanden</span>}
+        </div>
         {loading ? (
           <div className="font-mono text-[0.7rem] text-text-faint animate-pulse py-4">Laden...</div>
-        ) : intakeData ? (
+        ) : (
+          <div className="grid grid-cols-6 gap-2">
+            {forecast.map((m) => (
+              <div key={m.month} className={`border p-4 text-center ${m.slots > 0 ? 'border-border bg-paper' : 'border-border-subtle/50 bg-paper/50'}`}>
+                <div className={`font-display text-2xl ${m.slots > 0 ? 'text-text' : 'text-text-faint'}`}>{m.slots}</div>
+                <div className="font-mono text-[0.65rem] text-text-muted uppercase tracking-wide mt-1">{m.label}</div>
+                {m.slots > 0 && (
+                  <a href={`/admin?tab=planning`} className="inline-block mt-2 font-mono text-[0.55rem] text-warm uppercase tracking-wide hover:underline no-underline">Bekijk →</a>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Vandaag */}
+      <div className={s.widgetCard}>
+        <div className={s.widgetTitle}>Vandaag</div>
+        {loading ? (
+          <div className="font-mono text-[0.7rem] text-text-faint animate-pulse py-4">Laden...</div>
+        ) : todayData ? (
           <>
             <div className={s.statRow}>
-              <div className={s.stat}><div className={s.statValue}>{intakeData.monthSlots}</div><div className={s.statLabel}>Open deze maand</div></div>
-              <div className={s.stat}><div className={s.statValue}>{intakeData.weekSlots}</div><div className={s.statLabel}>Open deze week</div></div>
-              <div className={s.stat}><div className={s.statValue}>{intakeData.todaySlots}</div><div className={s.statLabel}>Vandaag</div></div>
+              <div className={s.stat}><div className={s.statValue}>{todayData.total}</div><div className={s.statLabel}>Afspraken</div></div>
+              <div className={s.stat}><div className={s.statValue}>{todayData.therapists}</div><div className={s.statLabel}>Therapeuten</div></div>
             </div>
-            {intakeData.locations.length > 0 && (
-              <>
-                <div className={`${s.sectionSub} ${s.sectionSubFirst}`}>Slots per locatie</div>
-                {intakeData.locations.slice(0, 5).map((loc, i) => (
-                  <div key={i} className={s.listItem}>
-                    <div className={s.listAvatar}>{loc.name.charAt(0)}</div>
-                    <div><div className={s.listName}>{loc.name}</div></div>
-                    <div className={s.listSpacer} />
-                    <span className="font-mono text-[0.75rem] text-text">{loc.count}</span>
-                  </div>
-                ))}
-              </>
-            )}
+            <div className={s.listItem}>
+              <div className={s.listAvatar}>▶</div>
+              <div><div className={s.listName}>Eerste: {todayData.firstTime}</div><div className={s.listMeta}>Laatste: {todayData.lastTime}</div></div>
+            </div>
           </>
-        ) : (
-          <div className="font-serif text-sm text-text-faint py-4">Geen data beschikbaar</div>
-        )}
+        ) : null}
       </div>
 
       {/* HR Snapshot */}
@@ -191,21 +185,6 @@ function OverzichtTab() {
             <span className={`${s.listBadge} ${item.badgeType === 'warning' ? s.badgeWarning : s.badgePending}`}>{item.badge}</span>
           </div>
         ))}
-      </div>
-
-      {/* Vandaag */}
-      <div className={`${s.widgetCard} ${s.gridFull}`}>
-        <div className={s.widgetTitle}>Vandaag</div>
-        {loading ? (
-          <div className="font-mono text-[0.7rem] text-text-faint animate-pulse py-4">Laden...</div>
-        ) : todayData ? (
-          <div className={s.kpiRow}>
-            <div className={s.kpi}><div className={s.kpiValue}>{todayData.total}</div><div className={s.kpiLabel}>Afspraken</div></div>
-            <div className={s.kpi}><div className={s.kpiValue}>{todayData.therapists}</div><div className={s.kpiLabel}>Therapeuten actief</div></div>
-            <div className={s.kpi}><div className={s.kpiValue}>{todayData.firstTime}</div><div className={s.kpiLabel}>Eerste afspraak</div></div>
-            <div className={s.kpi}><div className={s.kpiValue}>{todayData.lastTime}</div><div className={s.kpiLabel}>Laatste afspraak</div></div>
-          </div>
-        ) : null}
       </div>
 
       {/* Acties */}
