@@ -123,7 +123,7 @@ const MONTH_NAMES_SHORT = ['Jan', 'Feb', 'Mrt', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug
 
 interface MonthForecast { month: string; label: string; slots: number; }
 interface HrStats { currentlySick: number; onLeaveToday: number; contractsExpiring90d: number; }
-interface SickEntry { name: string; since: string; }
+interface SickEntry { firstName: string; lastName: string; percentage: number; phaseStart: string; status: string; notes: string | null; }
 
 function OverzichtTab() {
   const [forecast, setForecast] = useState<MonthForecast[]>([]);
@@ -251,16 +251,20 @@ function OverzichtTab() {
               <div className={s.stat}><div className={s.statValue}>{hrStats?.contractsExpiring90d ?? '—'}</div><div className={s.statLabel}>Contracten &lt;90d</div></div>
             </div>
             {sickEntries.slice(0, 4).map((entry, i) => {
-              const initials = entry.name.split(' ').map((p: string) => p[0]).slice(0, 2).join('').toUpperCase();
+              const name = `${entry.firstName ?? ''} ${entry.lastName ?? ''}`.trim() || '—';
+              const initials = `${(entry.firstName ?? '?')[0]}${(entry.lastName ?? '?')[0]}`.toUpperCase();
+              const since = entry.phaseStart ? new Date(entry.phaseStart).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' }) : '';
               return (
                 <div key={i} className={s.listItem}>
                   <div className={s.listAvatar}>{initials}</div>
                   <div>
-                    <div className={s.listName}>{entry.name}</div>
-                    <div className={s.listMeta}>Sinds {entry.since}</div>
+                    <div className={s.listName}>{name}</div>
+                    <div className={s.listMeta}>{since ? `Sinds ${since}` : ''}</div>
                   </div>
                   <div className={s.listSpacer} />
-                  <span className={`${s.listBadge} ${s.badgeWarning}`}>Ziek</span>
+                  <span className={`${s.listBadge} ${s.badgeWarning}`}>
+                    {entry.percentage >= 100 ? 'Ziek' : `${100 - entry.percentage}% herstel`}
+                  </span>
                 </div>
               );
             })}
