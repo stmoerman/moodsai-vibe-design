@@ -185,6 +185,26 @@ function EmployeeCard({ employee, isSick, onClick }: EmployeeCardProps) {
 }
 
 // ---------------------------------------------------------------------------
+// Table Sort Header
+// ---------------------------------------------------------------------------
+
+type SortCol = 'naam' | 'functie' | 'locatie' | 'team' | 'contract';
+
+function SortHeader({ label, col, activeCol, asc, onSort }: {
+  label: string; col: SortCol; activeCol: SortCol; asc: boolean; onSort: (col: SortCol) => void;
+}) {
+  const isActive = col === activeCol;
+  return (
+    <th
+      className="font-mono text-[0.6rem] uppercase tracking-wider text-text-muted text-left py-2.5 px-3 cursor-pointer hover:text-text transition-colors select-none whitespace-nowrap"
+      onClick={() => onSort(col)}
+    >
+      {label} {isActive ? (asc ? '↑' : '↓') : ''}
+    </th>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Main Component
 // ---------------------------------------------------------------------------
 
@@ -241,6 +261,36 @@ export function TeamTab() {
     if (teamFilter) result = result.filter((e) => e.team === teamFilter);
     return result;
   }, [employees, search, statusFilter, locatieFilter, teamFilter]);
+
+  const [sortCol, setSortCol] = useState<SortCol>('naam');
+  const [sortAsc, setSortAsc] = useState(true);
+
+  const sortedEmployees = useMemo(() => {
+    const sorted = [...filteredEmployees];
+    sorted.sort((a, b) => {
+      let aVal = '';
+      let bVal = '';
+      switch (sortCol) {
+        case 'naam': aVal = `${a.lastName} ${a.firstName}`; bVal = `${b.lastName} ${b.firstName}`; break;
+        case 'functie': aVal = a.function ?? ''; bVal = b.function ?? ''; break;
+        case 'locatie': aVal = a.locatie ?? ''; bVal = b.locatie ?? ''; break;
+        case 'team': aVal = a.team ?? ''; bVal = b.team ?? ''; break;
+        case 'contract': aVal = a.contractType ?? ''; bVal = b.contractType ?? ''; break;
+      }
+      const cmp = aVal.localeCompare(bVal, 'nl');
+      return sortAsc ? cmp : -cmp;
+    });
+    return sorted;
+  }, [filteredEmployees, sortCol, sortAsc]);
+
+  const handleSort = useCallback((col: SortCol) => {
+    if (col === sortCol) {
+      setSortAsc((prev) => !prev);
+    } else {
+      setSortCol(col);
+      setSortAsc(true);
+    }
+  }, [sortCol]);
 
   const hasFilters = search !== '' || statusFilter !== 'all' || locatieFilter !== null || teamFilter !== null;
 
@@ -410,8 +460,59 @@ export function TeamTab() {
           ))}
         </div>
       ) : (
-        <div className="px-5 py-4 text-center font-mono text-[0.65rem] text-text-faint">
-          Tabel weergave — komt in de volgende stap
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="border-b border-border bg-surface sticky top-0">
+              <tr>
+                <SortHeader label="Naam" col="naam" activeCol={sortCol} asc={sortAsc} onSort={handleSort} />
+                <SortHeader label="Functie" col="functie" activeCol={sortCol} asc={sortAsc} onSort={handleSort} />
+                <SortHeader label="Locatie" col="locatie" activeCol={sortCol} asc={sortAsc} onSort={handleSort} />
+                <SortHeader label="Team" col="team" activeCol={sortCol} asc={sortAsc} onSort={handleSort} />
+                <th className="font-mono text-[0.6rem] uppercase tracking-wider text-text-muted text-left py-2.5 px-3">Status</th>
+                <SortHeader label="Contract" col="contract" activeCol={sortCol} asc={sortAsc} onSort={handleSort} />
+              </tr>
+            </thead>
+            <tbody>
+              {sortedEmployees.map((emp) => {
+                const isSick = sickNames.has(`${emp.firstName} ${emp.lastName}`);
+                const status = isSick ? 'sick' : emp.isActive ? 'active' : 'inactive';
+                return (
+                  <tr
+                    key={emp.id}
+                    className="border-b border-border-subtle/60 hover:bg-surface-hover transition-colors cursor-pointer"
+                    onClick={() => console.log('Clicked employee:', emp.id)}
+                  >
+                    <td className="py-2.5 px-3">
+                      <div className="flex items-center gap-2.5">
+                        <div
+                          className="w-7 h-7 rounded-full flex items-center justify-center text-paper font-mono text-[0.55rem] font-bold shrink-0"
+                          style={{ backgroundColor: avatarColor(emp.firstName, emp.lastName) }}
+                        >
+                          {getInitials(emp.firstName, emp.lastName)}
+                        </div>
+                        <span className="font-serif text-[0.9rem] text-text font-medium">{emp.firstName} {emp.lastName}</span>
+                      </div>
+                    </td>
+                    <td className="py-2.5 px-3 font-mono text-[0.7rem] text-text-muted">{emp.function ?? '—'}</td>
+                    <td className="py-2.5 px-3 font-mono text-[0.7rem] text-text-muted">{emp.locatie ?? '—'}</td>
+                    <td className="py-2.5 px-3 font-mono text-[0.7rem] text-text-muted">{emp.team ?? '—'}</td>
+                    <td className="py-2.5 px-3">
+                      <span className={`font-mono text-[0.6rem] uppercase tracking-wide px-2 py-0.5 border inline-block ${
+                        status === 'sick'
+                          ? 'border-[#c47050] text-[#c47050] bg-[#c47050]/5'
+                          : status === 'active'
+                            ? 'border-[#5a9a60] text-[#5a9a60] bg-[#5a9a60]/5'
+                            : 'border-border text-text-faint bg-surface'
+                      }`}>
+                        {status === 'sick' ? 'Ziek' : status === 'active' ? 'Actief' : 'Inactief'}
+                      </span>
+                    </td>
+                    <td className="py-2.5 px-3 font-mono text-[0.7rem] text-text-muted">{emp.contractType ?? '—'}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       )}
     </div>
