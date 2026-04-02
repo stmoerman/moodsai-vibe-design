@@ -79,6 +79,18 @@ const TeamTab = dynamic(
   },
 );
 
+const RapportageTab = dynamic(
+  () => import('./rapportage').then((m) => ({ default: m.RapportageTab })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center py-12">
+        <span className="font-mono text-[0.7rem] text-text-faint animate-pulse">Rapportage laden...</span>
+      </div>
+    ),
+  },
+);
+
 function getGreeting(hour: number) {
   if (hour < 12) return 'Goedemorgen';
   if (hour < 18) return 'Goedemiddag';
@@ -383,13 +395,8 @@ function AdminDashboard() {
         {/* ════ Team Tab ════ */}
         {activeTab === 'team' && <TeamTab />}
 
-        {/* ════ Rapportage Tab (placeholder) ════ */}
-        {activeTab === 'rapportage' && (
-          <div className="flex flex-col items-center justify-center py-20">
-            <div className="font-display text-xl text-text-muted mb-2">Rapportage</div>
-            <div className="font-serif text-sm text-text-faint">Binnenkort beschikbaar</div>
-          </div>
-        )}
+        {/* ════ Rapportage Tab ════ */}
+        {activeTab === 'rapportage' && <RapportageTab />}
       </div>
     </div>
   );
