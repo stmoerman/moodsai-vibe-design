@@ -94,12 +94,6 @@ const pendingInvites = [
   { initials: 'JH', name: 'J. Hendriks', role: 'Admin', sent: '29 mrt' },
 ];
 
-const hrItems = [
-  { initials: 'AH', name: 'A. Hoekstra', reason: 'Ziek gemeld', badge: 'Afwezig', badgeType: 'warning' as const },
-  { initials: 'PD', name: 'P. Dijkstra', reason: 'Verlofaanvraag · 14-18 apr', badge: 'In afwachting', badgeType: 'pending' as const },
-  { initials: 'SJ', name: 'S. Jansen', reason: 'Verlofaanvraag · 21-22 apr', badge: 'In afwachting', badgeType: 'pending' as const },
-  { initials: 'MK', name: 'M.D. Kemme', reason: 'Declarabiliteit onder target (68%)', badge: 'Alert', badgeType: 'warning' as const },
-];
 
 const kpis = [
   { value: '14', label: 'Nieuwe cliënten', trend: '+3 vs vorige maand', neg: false },
@@ -128,10 +122,14 @@ const navTabs = [
 const MONTH_NAMES_SHORT = ['Jan', 'Feb', 'Mrt', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec'];
 
 interface MonthForecast { month: string; label: string; slots: number; }
+interface HrStats { currentlySick: number; onLeaveToday: number; contractsExpiring90d: number; }
+interface SickEntry { name: string; since: string; }
 
 function OverzichtTab() {
   const [forecast, setForecast] = useState<MonthForecast[]>([]);
   const [todayData, setTodayData] = useState<{ total: number; therapists: number; firstTime: string; lastTime: string } | null>(null);
+  const [hrStats, setHrStats] = useState<HrStats | null>(null);
+  const [sickEntries, setSickEntries] = useState<SickEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -155,7 +153,9 @@ function OverzichtTab() {
     Promise.all([
       fetch(`/api/agenda/entries?start=${rangeStart}&end=${rangeEnd}&types=intake&limit=2000`).then(r => r.json()).catch(() => ({ entries: [] })),
       fetch(`/api/agenda/entries?start=${today}&end=${today}&limit=2000`).then(r => r.json()).catch(() => ({ entries: [] })),
-    ]).then(([intakeRes, todayRes]) => {
+      fetch('/api/hr/stats').then(r => r.json()).catch(() => null),
+      fetch('/api/hr/sick-leave').then(r => r.json()).catch(() => ({ currentlySick: [] })),
+    ]).then(([intakeRes, todayRes, hrStatsRes, sickRes]) => {
       // Count open intake slots per month
       const openSlots = (intakeRes.entries ?? []).filter((e: { clientName: string | null }) => !e.clientName);
       const monthCounts: Record<string, number> = {};
@@ -181,6 +181,10 @@ function OverzichtTab() {
         firstTime: times[0] ?? '—',
         lastTime: endTimes[endTimes.length - 1] ?? '—',
       });
+
+      // HR stats
+      if (hrStatsRes) setHrStats(hrStatsRes);
+      setSickEntries(sickRes?.currentlySick ?? []);
     }).finally(() => setLoading(false));
   }, []);
 
@@ -237,19 +241,34 @@ function OverzichtTab() {
       {/* HR Snapshot */}
       <div className={s.widgetCard}>
         <div className={s.widgetTitle}>HR Snapshot</div>
-        <div className={s.statRow}>
-          <div className={s.stat}><div className={s.statValue}>1</div><div className={s.statLabel}>Afwezig</div></div>
-          <div className={s.stat}><div className={s.statValue}>2</div><div className={s.statLabel}>Verlofaanvragen</div></div>
-          <div className={s.stat}><div className={s.statValue}>1</div><div className={s.statLabel}>Alert</div></div>
-        </div>
-        {hrItems.map((item, i) => (
-          <div key={i} className={s.listItem}>
-            <div className={s.listAvatar}>{item.initials}</div>
-            <div><div className={s.listName}>{item.name}</div><div className={s.listMeta}>{item.reason}</div></div>
-            <div className={s.listSpacer} />
-            <span className={`${s.listBadge} ${item.badgeType === 'warning' ? s.badgeWarning : s.badgePending}`}>{item.badge}</span>
-          </div>
-        ))}
+        {loading ? (
+          <div className="font-mono text-[0.7rem] text-text-faint animate-pulse py-4">Laden...</div>
+        ) : (
+          <>
+            <div className={s.statRow}>
+              <div className={s.stat}><div className={s.statValue}>{hrStats?.currentlySick ?? '—'}</div><div className={s.statLabel}>Ziek</div></div>
+              <div className={s.stat}><div className={s.statValue}>{hrStats?.onLeaveToday ?? '—'}</div><div className={s.statLabel}>Verlof vandaag</div></div>
+              <div className={s.stat}><div className={s.statValue}>{hrStats?.contractsExpiring90d ?? '—'}</div><div className={s.statLabel}>Contracten &lt;90d</div></div>
+            </div>
+            {sickEntries.slice(0, 4).map((entry, i) => {
+              const initials = entry.name.split(' ').map((p: string) => p[0]).slice(0, 2).join('').toUpperCase();
+              return (
+                <div key={i} className={s.listItem}>
+                  <div className={s.listAvatar}>{initials}</div>
+                  <div>
+                    <div className={s.listName}>{entry.name}</div>
+                    <div className={s.listMeta}>Sinds {entry.since}</div>
+                  </div>
+                  <div className={s.listSpacer} />
+                  <span className={`${s.listBadge} ${s.badgeWarning}`}>Ziek</span>
+                </div>
+              );
+            })}
+            <a href="/admin/ziekmeldingen" className="block font-mono text-[0.65rem] text-text-muted hover:text-text mt-3 transition-colors">
+              Bekijk alle →
+            </a>
+          </>
+        )}
       </div>
 
       {/* Acties */}
