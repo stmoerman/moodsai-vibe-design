@@ -57,6 +57,16 @@ const PlanningTab = dynamic(
   },
 );
 
+const HrVerlofTab = dynamic(
+  () => import('./hr-verlof').then((m) => ({ default: m.HrVerlofTab })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center py-12"><span className="font-mono text-[0.7rem] text-text-faint animate-pulse">HR data laden...</span></div>
+    ),
+  },
+);
+
 function getGreeting(hour: number) {
   if (hour < 12) return 'Goedemorgen';
   if (hour < 18) return 'Goedemiddag';
@@ -331,6 +341,9 @@ function AdminDashboard() {
 
         {/* ════ Planning Tab ════ */}
         {activeTab === 'planning' && <PlanningTab />}
+
+        {/* ════ HR & Verlof Tab ════ */}
+        {activeTab === 'hr' && <HrVerlofTab />}
       </div>
     </div>
   );
