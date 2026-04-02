@@ -2,9 +2,21 @@
 
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { useAuth } from '@/contexts/AuthContext';
-import { PlanningTab } from './planning';
 import s from './page.module.css';
+
+const PlanningTab = dynamic(
+  () => import('./planning').then((m) => ({ default: m.PlanningTab })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center py-12">
+        <span className="font-mono text-[0.7rem] text-text-faint animate-pulse">Planning laden...</span>
+      </div>
+    ),
+  },
+);
 
 function getGreeting(hour: number) {
   if (hour < 12) return 'Goedemorgen';

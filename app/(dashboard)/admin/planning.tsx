@@ -713,8 +713,6 @@ function DayColumn({ date, entries, dayIndex, onEntryClick, dayView = false }: D
 
 export function PlanningTab() {
   const searchParams = useSearchParams();
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
   // --- Data state (fetched from API, fallback to mock) ---
   const [allEntries, setAllEntries] = useState<AgendaEntry[]>(mockAgendaEntries);
   const [locations, setLocations] = useState<AgendaLocation[]>(mockLocations);
@@ -995,10 +993,6 @@ export function PlanningTab() {
   const handleEntryClick = useCallback((entry: AgendaEntry) => {
     console.log('Clicked:', entry.id);
   }, []);
-
-  if (!mounted) {
-    return <div className="flex items-center justify-center py-12"><span className="font-mono text-[0.7rem] text-text-faint animate-pulse">Planning laden...</span></div>;
-  }
 
   return (
     <div className="flex flex-col min-h-0">
