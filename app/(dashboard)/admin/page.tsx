@@ -48,7 +48,7 @@ const kpis = [
 ];
 
 const quickLinks = [
-  { icon: '→', label: 'Cliënt uitnodigen', desc: 'Uitnodiging versturen', href: '#' },
+  { icon: '→', label: 'Cliënt uitnodigen', desc: 'Uitnodiging versturen', href: '/admin/invite' },
   { icon: '◉', label: 'Intake agenda', desc: 'Beschikbare slots', href: '/admin/intake' },
   { icon: '◈', label: 'Declarabiliteit', desc: 'Controle & alerts', href: '#' },
   { icon: '◎', label: 'Verlofoverzicht', desc: 'Aanvragen & saldi', href: '#' },
