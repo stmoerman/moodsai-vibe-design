@@ -271,7 +271,7 @@ function AdminDashboard() {
             className={s.greetingUnderlinePath}
           />
         </svg>
-        <span className={s.dateTime}>Admin &middot; Amsterdam &middot; {dateStr} &middot; {timeStr}</span>
+        <span className={s.dateTime} suppressHydrationWarning>Admin &middot; Amsterdam &middot; {dateStr} &middot; {timeStr}</span>
       </div>
 
       {/* ── Navigation Tabs ── */}
