@@ -16,12 +16,12 @@ import {
 // ---------------------------------------------------------------------------
 
 const ACTIVITY_COLORS: Record<AgendaActivityType, string> = {
-  behandeling: '#6b8f71',
-  workshop: '#8a7196',
-  diagnostiek: '#c4924a',
-  evaluatie: '#5a8aaa',
-  intake: '#b85c3a',
-  reserved: '#a8a29e',
+  behandeling: '#2d9e47',
+  workshop: '#7c3aed',
+  diagnostiek: '#e68a00',
+  evaluatie: '#2577b5',
+  intake: '#dc4323',
+  reserved: '#78716c',
 };
 
 const ACTIVITY_LABELS: Record<AgendaActivityType, string> = {
@@ -342,7 +342,7 @@ interface LocationFilterProps {
   onToggle: (loc: string) => void;
 }
 
-function LocationFilter({ locations, selectedLocations, onToggle }: LocationFilterProps) {
+function LocationFilter({ locations = [], selectedLocations, onToggle }: LocationFilterProps) {
   const allLocNames = locations.map((l) => l.name);
   const hasFilter = selectedLocations.size < allLocNames.length && selectedLocations.size > 0;
   // group by type
@@ -417,7 +417,7 @@ interface TherapistFilterProps {
   onToggle: (t: string) => void;
 }
 
-function TherapistFilter({ allTherapists, selectedTherapists, onToggle }: TherapistFilterProps) {
+function TherapistFilter({ allTherapists = [], selectedTherapists, onToggle }: TherapistFilterProps) {
   const hasFilter = selectedTherapists.size < allTherapists.length && selectedTherapists.size > 0;
   const activeCount = allTherapists.length - selectedTherapists.size;
 
@@ -495,13 +495,13 @@ function EntryCard({ entry, col, colCount, onClick, dayView = false }: EntryCard
     height: `${height}px`,
     left: `calc(${leftPct}% + ${col > 0 ? 2 : 0}px)`,
     width: `calc(${widthPct}% - ${col > 0 ? 3 : 2}px)`,
-    borderLeft: `3px solid ${color}`,
+    borderLeft: `4px solid ${color}`,
     borderTop: isOpen ? `1px dashed ${color}` : `1px solid transparent`,
     borderRight: isOpen ? `1px dashed ${color}` : '1px solid transparent',
     borderBottom: isOpen ? `1px dashed ${color}` : `1px solid transparent`,
     backgroundColor: isOpen
-      ? `${color}12`
-      : `${color}18`,
+      ? `${color}18`
+      : `${color}20`,
     cursor: 'pointer',
     overflow: 'hidden',
     zIndex: 2,
@@ -1086,17 +1086,15 @@ export function PlanningTab() {
                   <div
                     key={i}
                     className={[
-                      'min-h-[130px] p-2 overflow-hidden transition-colors',
+                      'min-h-[130px] p-2 overflow-hidden transition-colors bg-surface',
                       gd.current ? 'border-t border-border-subtle/60 cursor-pointer hover:bg-surface-hover' : 'opacity-40',
-                      isToday && !isSelected ? 'bg-warm/5!' : '',
-                      isSelected ? 'bg-warm/10! ring-1 ring-warm/40 ring-inset' : '',
-                      'bg-surface',
+                      isSelected ? 'ring-1 ring-warm/40 ring-inset' : '',
                     ].join(' ')}
                     onClick={() => gd.current && dk && setSelectedDay(selectedDay === dk ? null : dk)}
                   >
-                    <span className={`block font-mono text-xs mb-1.5 ${gd.current && isToday ? 'text-warm font-bold' : gd.current ? 'text-text' : 'text-text'}`}>{gd.day}</span>
+                    <span className={`inline-flex items-center justify-center font-mono text-xs mb-1.5 ${gd.current && isToday ? 'bg-warm text-paper font-bold w-6 h-6 rounded-full' : gd.current ? 'text-text' : 'text-text'}`}>{gd.day}</span>
                     {dayEntries.slice(0, 3).map((ev, j) => (
-                      <div key={j} className="flex gap-1 items-baseline py-0.5 pl-2 mb-0.5 border-l-[3px] bg-paper/60" style={{ borderLeftColor: ACTIVITY_COLORS[ev.activityType] }}>
+                      <div key={j} className="flex gap-1 items-baseline py-0.5 pl-2 mb-0.5 border-l-4 rounded-r-sm" style={{ borderLeftColor: ACTIVITY_COLORS[ev.activityType], backgroundColor: `${ACTIVITY_COLORS[ev.activityType]}12` }}>
                         <span className="font-mono text-[0.6rem] text-text-faint shrink-0">{ev.startTime}</span>
                         <span className="font-serif text-[0.8rem] text-text truncate">{ev.therapistName}</span>
                       </div>
@@ -1145,8 +1143,8 @@ export function PlanningTab() {
                       .map((entry) => (
                       <div
                         key={entry.id}
-                        className="border-l-[3px] bg-paper p-4 cursor-pointer hover:bg-surface-hover transition-colors"
-                        style={{ borderLeftColor: ACTIVITY_COLORS[entry.activityType], borderLeftStyle: entry.clientName ? 'solid' : 'dashed' }}
+                        className="border-l-4 rounded-r-sm p-4 cursor-pointer hover:brightness-95 transition-all"
+                        style={{ borderLeftColor: ACTIVITY_COLORS[entry.activityType], borderLeftStyle: entry.clientName ? 'solid' : 'dashed', backgroundColor: `${ACTIVITY_COLORS[entry.activityType]}12` }}
                         onClick={() => console.log('Clicked:', entry.id)}
                       >
                         <div className="flex items-center gap-2 mb-1.5">
