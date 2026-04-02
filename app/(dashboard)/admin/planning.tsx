@@ -42,24 +42,10 @@ const ALL_TYPES: AgendaActivityType[] = [
   'reserved',
 ];
 
-// Therapists from productiviteitsdetails — filters out admin/non-clinical staff
-const THERAPIST_WHITELIST = new Set([
-  'Alinda Jansen', 'Angela van der Helm', 'Angenieta Zweerus', 'Anna de Graaf-van Waveren',
-  'Anna de Vries', 'Anna Meijer', 'Anne Hoetink', 'Anne Stam', 'Anneke van der Knaap',
-  'Chiara van der Stuijt', 'Clarisse de Boer', 'Claudia Rovers', 'David Tetteroo',
-  'Davis van de Ven', 'Diana Rodriguez Marquez', 'Dieuwke Sevenster', 'Eelke Sistermans',
-  'Eline Nelissen', 'Estefania Tessier Menendez', 'Eva Papastergiou', 'Fleur Meulepas',
-  'Gabriela Hinsenveld', 'Giada Bout', 'Jasper Peeters', 'Julia Gelderblom',
-  'Julie de Rooij', 'Juliette Kolijn', 'Kaisa Spierings', 'Kate Starmans', 'Lenny Appel',
-  'Lisa Kolet', 'Lissa van Baren', 'Lois Borger', 'Lysander Verschuur', 'Malu Scholl',
-  'Marijke Curev', 'Marjolein Barink', 'Maxime Duisterhof', 'Melissa Jongste', 'Merel Kraan',
-  'Michelle van Rijn', 'Mirjam den Houdijker', 'Mirthe Keizer', 'Nathalie Nossek', 'Nout Strik',
-  'Olaf Bleijenberg', 'Pim Piepers', 'Rebekka Folkers', 'Rosie Ungheretti', 'Ruby Pouwels',
-  'Ruud Koolen', 'Sabine Vriezinga', 'Sandy Gouder de Beauregard', 'Simone Biersteker',
-  'Sofie Aartsma', 'Soleil Erens', 'Stacey van de Goor', 'Sterre Theunissen',
-  'Suzanne Holthuijsen', 'Suzanne Peek', 'Tanita Swinkels', 'Thais Midon Ibanez',
-  'Thomas Visser', 'Tisja Daamen', 'Valentine Damink', 'Vital van de Gaar',
-  'Wen Colenbrander', 'Yasemin Tanriverdi',
+// System/non-therapist accounts to exclude from the therapist dropdown
+const SYSTEM_ACCOUNTS = new Set([
+  'Admin A', 'Workshops W', 'ADHD A', 'Intake I',
+  'RB Intake RB', 'Planning P', 'Dekker F',
 ]);
 
 // Time grid: 08:00 – 17:00, 30-min slots
@@ -742,7 +728,9 @@ export function PlanningTab() {
   useEffect(() => { localStorage.setItem('moods-planning-weekends', String(showWeekends)); }, [showWeekends]);
 
   const allTherapists = useMemo(
-    () => Array.from(new Set(allEntries.map((e) => e.therapistName))).sort(),
+    () => Array.from(new Set(allEntries.map((e) => e.therapistName)))
+      .filter((name) => !SYSTEM_ACCOUNTS.has(name))
+      .sort(),
     [allEntries]
   );
 
@@ -1150,12 +1138,12 @@ export function PlanningTab() {
                         <div className="flex items-center gap-2 mb-1.5">
                           <span className="w-2 h-2 rounded-full shrink-0" style={{ background: ACTIVITY_COLORS[entry.activityType] }} />
                           <span className="font-mono text-[0.8rem] text-text-muted">{entry.startTime} – {entry.endTime}</span>
-                          <span className="font-mono text-[0.7rem] text-text-faint ml-auto">{ACTIVITY_LABELS[entry.activityType]}</span>
+                          <span className="font-mono text-[0.7rem] text-text-muted ml-auto">{ACTIVITY_LABELS[entry.activityType]}</span>
                         </div>
                         <div className="font-serif text-base text-text font-medium">{entry.therapistName}</div>
-                        <div className="font-serif text-[0.95rem] text-text-muted">{entry.clientName ?? 'Beschikbaar'}</div>
-                        <div className="font-mono text-[0.75rem] text-text-faint mt-1">{entry.location}</div>
-                        {entry.description && <div className="font-serif text-[0.85rem] text-text-faint mt-1 italic">{entry.description}</div>}
+                        <div className="font-serif text-[0.95rem] text-text">{entry.clientName ?? 'Beschikbaar'}</div>
+                        <div className="font-mono text-[0.75rem] text-text-muted mt-1">{entry.location}</div>
+                        {entry.description && <div className="font-serif text-[0.85rem] text-text-muted mt-1 italic">{entry.description}</div>}
                       </div>
                     ))}
                   </div>
