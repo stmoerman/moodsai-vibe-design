@@ -126,6 +126,65 @@ function CheckIcon() {
 }
 
 // ---------------------------------------------------------------------------
+// Employee Card
+// ---------------------------------------------------------------------------
+
+interface EmployeeCardProps {
+  employee: Employee;
+  isSick: boolean;
+  onClick: () => void;
+}
+
+function EmployeeCard({ employee, isSick, onClick }: EmployeeCardProps) {
+  const initials = getInitials(employee.firstName, employee.lastName);
+  const color = avatarColor(employee.firstName, employee.lastName);
+  const status = isSick ? 'sick' : employee.isActive ? 'active' : 'inactive';
+
+  return (
+    <div
+      onClick={onClick}
+      className="bg-surface border border-border p-4 cursor-pointer hover:bg-surface-hover transition-colors flex flex-col gap-2"
+    >
+      <div className="flex items-center gap-3">
+        <div
+          className="w-10 h-10 rounded-full flex items-center justify-center text-paper font-mono text-[0.7rem] font-bold shrink-0"
+          style={{ backgroundColor: color }}
+        >
+          {initials}
+        </div>
+        <div className="min-w-0">
+          <div className="font-serif text-[0.95rem] text-text font-medium truncate">
+            {employee.firstName} {employee.lastName}
+          </div>
+          <div className="font-mono text-[0.65rem] text-text-muted uppercase tracking-wide truncate">
+            {employee.function ?? '—'}
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-col gap-0.5 mt-1">
+        <div className="font-mono text-[0.65rem] text-text-faint truncate">
+          {employee.locatie ?? '—'}
+        </div>
+        <div className="font-mono text-[0.65rem] text-text-faint truncate">
+          {employee.team ?? '—'}
+        </div>
+      </div>
+      <div className="mt-auto pt-2">
+        <span className={`font-mono text-[0.6rem] uppercase tracking-wide px-2 py-0.5 border inline-block ${
+          status === 'sick'
+            ? 'border-[#c47050] text-[#c47050] bg-[#c47050]/5'
+            : status === 'active'
+              ? 'border-[#5a9a60] text-[#5a9a60] bg-[#5a9a60]/5'
+              : 'border-border text-text-faint bg-surface'
+        }`}>
+          {status === 'sick' ? 'Ziek' : status === 'active' ? 'Actief' : 'Inactief'}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Main Component
 // ---------------------------------------------------------------------------
 
@@ -339,9 +398,20 @@ export function TeamTab() {
         <div className="flex flex-col items-center justify-center py-16">
           <div className="font-serif text-sm text-text-faint">Geen medewerkers gevonden</div>
         </div>
+      ) : viewMode === 'cards' ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 p-5">
+          {filteredEmployees.map((emp) => (
+            <EmployeeCard
+              key={emp.id}
+              employee={emp}
+              isSick={sickNames.has(`${emp.firstName} ${emp.lastName}`)}
+              onClick={() => console.log('Clicked employee:', emp.id)}
+            />
+          ))}
+        </div>
       ) : (
         <div className="px-5 py-4 text-center font-mono text-[0.65rem] text-text-faint">
-          {filteredEmployees.length} medewerkers — view: {viewMode}
+          Tabel weergave — komt in de volgende stap
         </div>
       )}
     </div>
