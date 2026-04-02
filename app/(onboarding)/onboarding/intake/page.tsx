@@ -146,20 +146,24 @@ export default function IntakeSlotPicker() {
         {weekDates.map((wd, i) => {
           const key = isoDate(wd);
           const daySlots = slotsByDate[key] ?? [];
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const isPast = wd < today;
           return (
-            <div key={i} className="border-r border-border-subtle/50 last:border-r-0">
+            <div key={i} className={`border-r border-border-subtle/50 last:border-r-0 ${isPast ? 'opacity-40' : ''}`}>
               <div className="text-center py-3 border-b border-border-subtle">
                 <div className="font-mono text-[0.65rem] text-text-muted uppercase">{DAY_LABELS[i]}</div>
                 <div className="font-display text-lg text-text">{wd.getDate()}</div>
               </div>
               <div className="p-2 space-y-1.5">
                 {loading && i === 0 && <div className="font-mono text-[0.6rem] text-text-faint text-center py-4 animate-pulse">Laden...</div>}
-                {!loading && daySlots.map((slot) => (
+                {!loading && !isPast && daySlots.map((slot) => (
                   <button key={slot.id} onClick={() => setSelected(slot)} className={`w-full py-2.5 px-3 border text-center cursor-pointer transition-colors ${selected?.id === slot.id ? 'border-warm bg-warm/10 text-text' : 'border-border-subtle bg-paper hover:border-border hover:bg-surface-hover text-text'}`}>
                     <span className="font-mono text-[0.75rem]">{slot.startTime}</span>
                   </button>
                 ))}
-                {!loading && daySlots.length === 0 && <div className="font-mono text-[0.6rem] text-text-faint/50 text-center py-6">—</div>}
+                {!loading && isPast && daySlots.length > 0 && <div className="font-mono text-[0.6rem] text-text-faint/50 text-center py-6">Verlopen</div>}
+                {!loading && !isPast && daySlots.length === 0 && <div className="font-mono text-[0.6rem] text-text-faint/50 text-center py-6">—</div>}
               </div>
             </div>
           );
