@@ -723,7 +723,7 @@ export function PlanningTab() {
     const n = new Date(); return { year: n.getFullYear(), month: n.getMonth() };
   });
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
-  const [drawerTimeFilter, setDrawerTimeFilter] = useState<'alle' | 'ochtend' | 'middag'>('alle');
+  const [drawerTimeFilter, setDrawerTimeFilter] = useState<'alle' | 'ochtend' | 'middag' | 'avond'>('alle');
   const [weekStart, setWeekStart] = useState<Date>(() => {
     if (typeof window !== 'undefined') {
       try {
@@ -1049,7 +1049,7 @@ export function PlanningTab() {
                       <button className="font-mono text-xs text-text-muted border border-border px-3 py-1 uppercase tracking-wide hover:bg-text hover:text-paper transition-colors cursor-pointer" onClick={() => setSelectedDay(null)}>Sluiten</button>
                     </div>
                     <div className="flex gap-1">
-                      {([['alle', 'Alle'], ['ochtend', '08:00–12:00'], ['middag', '12:00–17:00']] as const).map(([key, label]) => (
+                      {([['alle', 'Alle'], ['ochtend', '08:00–12:00'], ['middag', '12:00–17:00'], ['avond', '17:00+']] as const).map(([key, label]) => (
                         <button
                           key={key}
                           onClick={() => setDrawerTimeFilter(key)}
@@ -1063,8 +1063,9 @@ export function PlanningTab() {
                       .filter((entry) => {
                         if (drawerTimeFilter === 'alle') return true;
                         const mins = parseInt(entry.startTime.split(':')[0]) * 60 + parseInt(entry.startTime.split(':')[1]);
-                        if (drawerTimeFilter === 'ochtend') return mins < 720; // before 12:00
-                        return mins >= 720; // 12:00+
+                        if (drawerTimeFilter === 'ochtend') return mins < 720;
+                        if (drawerTimeFilter === 'middag') return mins >= 720 && mins < 1020;
+                        return mins >= 1020; // 17:00+
                       })
                       .map((entry) => (
                       <div
@@ -1073,15 +1074,15 @@ export function PlanningTab() {
                         style={{ borderLeftColor: ACTIVITY_COLORS[entry.activityType], borderLeftStyle: entry.clientName ? 'solid' : 'dashed' }}
                         onClick={() => console.log('Clicked:', entry.id)}
                       >
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: ACTIVITY_COLORS[entry.activityType] }} />
-                          <span className="font-mono text-[0.7rem] text-text-muted">{entry.startTime} – {entry.endTime}</span>
-                          <span className="font-mono text-[0.6rem] text-text-faint ml-auto">{ACTIVITY_LABELS[entry.activityType]}</span>
+                        <div className="flex items-center gap-2 mb-1.5">
+                          <span className="w-2 h-2 rounded-full shrink-0" style={{ background: ACTIVITY_COLORS[entry.activityType] }} />
+                          <span className="font-mono text-[0.8rem] text-text-muted">{entry.startTime} – {entry.endTime}</span>
+                          <span className="font-mono text-[0.7rem] text-text-faint ml-auto">{ACTIVITY_LABELS[entry.activityType]}</span>
                         </div>
-                        <div className="font-serif text-[0.95rem] text-text">{entry.therapistName}</div>
-                        <div className="font-serif text-[0.85rem] text-text-muted">{entry.clientName ?? 'Beschikbaar'}</div>
-                        <div className="font-mono text-[0.65rem] text-text-faint mt-1">{entry.location}</div>
-                        {entry.description && <div className="font-serif text-[0.8rem] text-text-faint mt-1 italic">{entry.description}</div>}
+                        <div className="font-serif text-base text-text font-medium">{entry.therapistName}</div>
+                        <div className="font-serif text-[0.95rem] text-text-muted">{entry.clientName ?? 'Beschikbaar'}</div>
+                        <div className="font-mono text-[0.75rem] text-text-faint mt-1">{entry.location}</div>
+                        {entry.description && <div className="font-serif text-[0.85rem] text-text-faint mt-1 italic">{entry.description}</div>}
                       </div>
                     ))}
                   </div>
