@@ -11,8 +11,47 @@ const PlanningTab = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex items-center justify-center py-12">
-        <span className="font-mono text-[0.7rem] text-text-faint animate-pulse">Planning laden...</span>
+      <div className="animate-pulse">
+        {/* Toolbar skeleton */}
+        <div className="flex items-center gap-2 px-5 py-3 bg-paper border-b border-border">
+          <div className="h-8 w-24 bg-border-subtle/60" />
+          <div className="h-8 w-24 bg-border-subtle/60" />
+          <div className="h-8 w-28 bg-border-subtle/60" />
+          <div className="flex-1" />
+          <div className="h-8 w-8 bg-border-subtle/60" />
+          <div className="h-8 w-36 bg-border-subtle/60" />
+          <div className="h-8 w-8 bg-border-subtle/60" />
+          <div className="h-8 w-16 bg-border-subtle/60" />
+          <div className="h-8 w-px bg-border-subtle mx-1" />
+          <div className="h-8 w-36 bg-border-subtle/60" />
+        </div>
+        {/* Calendar skeleton */}
+        <div className="bg-surface border border-border p-6">
+          {/* Legend */}
+          <div className="flex gap-4 mb-5">
+            {[1,2,3,4,5,6].map(i => <div key={i} className="h-3 w-20 bg-border-subtle/40" />)}
+          </div>
+          {/* Day headers */}
+          <div className="grid grid-cols-7 mb-1">
+            {[1,2,3,4,5,6,7].map(i => <div key={i} className="h-4 w-8 mx-auto bg-border-subtle/40" />)}
+          </div>
+          {/* Grid rows */}
+          {[1,2,3,4,5].map(row => (
+            <div key={row} className="grid grid-cols-7 border-t border-border-subtle/30">
+              {[1,2,3,4,5,6,7].map(col => (
+                <div key={col} className="min-h-[110px] p-2">
+                  <div className="h-3 w-4 bg-border-subtle/40 mb-2" />
+                  {row <= 2 && col <= 5 && (
+                    <>
+                      <div className="h-5 w-full bg-border-subtle/30 mb-1" />
+                      <div className="h-5 w-3/4 bg-border-subtle/20" />
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
     ),
   },
