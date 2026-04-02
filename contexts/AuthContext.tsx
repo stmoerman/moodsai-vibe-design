@@ -26,7 +26,7 @@ const ROLE_ROUTES: Record<string, string> = {
   therapist: '/therapist',
   client: '/client',
   admin: '/admin',
-  owner: '/owner',
+  owner: '/dashboard',
 };
 
 const STORAGE_KEY = 'moods-demo-auth';
