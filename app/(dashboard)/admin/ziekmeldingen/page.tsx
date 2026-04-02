@@ -25,6 +25,8 @@ export default function ZiekmeldingenPage() {
   const [entries, setEntries] = useState<SickEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [showActiveOnly, setShowActiveOnly] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState<'date' | 'name' | 'percentage'>('date');
 
   useEffect(() => {
     fetch('/api/hr/sick-leave')
@@ -34,7 +36,13 @@ export default function ZiekmeldingenPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const filtered = showActiveOnly ? entries.filter(e => !e.phaseEnd) : entries;
+  let filtered = showActiveOnly ? entries.filter(e => !e.phaseEnd) : entries;
+
+  if (searchQuery) {
+    filtered = filtered.filter(e =>
+      `${e.firstName} ${e.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }
 
   // Group by person (latest phase per dossier)
   const grouped = new Map<string, SickEntry>();
@@ -44,7 +52,18 @@ export default function ZiekmeldingenPage() {
       grouped.set(key, e);
     }
   }
-  const list = Array.from(grouped.values()).sort((a, b) => new Date(b.phaseStart).getTime() - new Date(a.phaseStart).getTime());
+
+  const list = Array.from(grouped.values()).sort((a, b) => {
+    if (sortBy === 'name') {
+      const lastCmp = a.lastName.localeCompare(b.lastName, 'nl');
+      return lastCmp !== 0 ? lastCmp : a.firstName.localeCompare(b.firstName, 'nl');
+    }
+    if (sortBy === 'percentage') {
+      return b.percentage - a.percentage;
+    }
+    // 'date' — phaseStart descending (default)
+    return new Date(b.phaseStart).getTime() - new Date(a.phaseStart).getTime();
+  });
 
   return (
     <div className="min-h-screen bg-paper">
@@ -53,7 +72,7 @@ export default function ZiekmeldingenPage() {
         <h1 className="font-display text-2xl text-warm mt-2 mb-1">Ziekmeldingen</h1>
         <p className="font-mono text-xs text-text-muted mb-6">{list.length} {showActiveOnly ? 'actieve' : 'totaal'} meldingen</p>
 
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex flex-wrap items-center gap-3 mb-6">
           <button
             onClick={() => setShowActiveOnly(true)}
             className={`font-mono text-[0.7rem] uppercase tracking-wide px-3 py-1.5 border cursor-pointer transition-colors ${showActiveOnly ? 'bg-text text-paper border-text' : 'border-border text-text-muted hover:bg-surface-hover'}`}
@@ -62,6 +81,29 @@ export default function ZiekmeldingenPage() {
             onClick={() => setShowActiveOnly(false)}
             className={`font-mono text-[0.7rem] uppercase tracking-wide px-3 py-1.5 border cursor-pointer transition-colors ${!showActiveOnly ? 'bg-text text-paper border-text' : 'border-border text-text-muted hover:bg-surface-hover'}`}
           >Alle fases</button>
+
+          <span className="w-px h-5 bg-border-subtle shrink-0" />
+
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            placeholder="Zoek op naam..."
+            className="font-serif text-sm text-text bg-transparent border-b border-border py-1.5 outline-none focus:border-text transition-colors placeholder:text-text-faint w-48"
+          />
+
+          <span className="w-px h-5 bg-border-subtle shrink-0" />
+
+          {(['date', 'name', 'percentage'] as const).map(option => {
+            const labels: Record<typeof option, string> = { date: 'Datum', name: 'Naam', percentage: 'Ernst' };
+            return (
+              <button
+                key={option}
+                onClick={() => setSortBy(option)}
+                className={`font-mono text-[0.7rem] uppercase tracking-wide px-3 py-1.5 border cursor-pointer transition-colors ${sortBy === option ? 'bg-text text-paper border-text' : 'border-border text-text-muted hover:bg-surface-hover'}`}
+              >{labels[option]}</button>
+            );
+          })}
         </div>
 
         {loading ? (
