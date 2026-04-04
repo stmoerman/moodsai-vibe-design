@@ -22,6 +22,8 @@ interface Employee {
   team: string | null;
   functieCode: string | null;
   doelstellingProcent: number | null;
+  recentSessions: number;
+  activityTypes: string[];
 }
 
 interface HrStats {
@@ -53,6 +55,24 @@ function nameHash(name: string): number {
   }
   return Math.abs(hash);
 }
+
+const ACTIVITY_COLORS: Record<string, string> = {
+  behandeling: '#2d9e47',
+  workshop: '#7c3aed',
+  diagnostiek: '#e68a00',
+  evaluatie: '#2577b5',
+  intake: '#dc4323',
+  reserved: '#78716c',
+};
+
+const ACTIVITY_LABELS: Record<string, string> = {
+  behandeling: 'Behandeling',
+  workshop: 'Workshop',
+  diagnostiek: 'Diagnostiek',
+  evaluatie: 'Evaluatie',
+  intake: 'Intake',
+  reserved: 'Gereserveerd',
+};
 
 const AVATAR_COLORS = [
   '#6b8f71', '#8a7196', '#c4924a', '#5a8aaa', '#b85c3a',
@@ -162,13 +182,36 @@ function EmployeeCard({ employee, isSick, onClick }: EmployeeCardProps) {
         </div>
       </div>
       <div className="flex flex-col gap-0.5 mt-1">
-        <div className="font-mono text-[0.65rem] text-text-faint truncate">
-          {employee.locatie ?? '—'}
-        </div>
-        <div className="font-mono text-[0.65rem] text-text-faint truncate">
-          {employee.team ?? '—'}
-        </div>
+        {employee.locatie && (
+          <div className="font-mono text-[0.65rem] text-text-muted truncate">
+            {employee.locatie}
+          </div>
+        )}
+        {employee.team && (
+          <div className="font-mono text-[0.65rem] text-text-faint truncate">
+            {employee.team}
+          </div>
+        )}
+        {employee.recentSessions > 0 && (
+          <div className="font-mono text-[0.6rem] text-text-faint">
+            {employee.recentSessions} sessies (3 mnd)
+          </div>
+        )}
       </div>
+      {/* Activity type pills */}
+      {employee.activityTypes.length > 0 && (
+        <div className="flex gap-1 flex-wrap mt-1">
+          {employee.activityTypes.slice(0, 3).map((at) => (
+            <span
+              key={at}
+              className="font-mono text-[0.5rem] uppercase tracking-wide px-1.5 py-0.5 border"
+              style={{ borderColor: ACTIVITY_COLORS[at] ?? '#999', color: ACTIVITY_COLORS[at] ?? '#999' }}
+            >
+              {ACTIVITY_LABELS[at] ?? at}
+            </span>
+          ))}
+        </div>
+      )}
       <div className="mt-auto pt-2">
         <span className={`font-mono text-[0.6rem] uppercase tracking-wide px-2 py-0.5 border inline-block ${
           status === 'sick'
